@@ -3,4 +3,66 @@ title: "Node Plugins"
 description: "Node plugins..."
 ---
 
-- Node plugins @David
+# Adding a node
+
+What are nodes?
+Nodes are the building blocks of workflows, the squares you see in the flow builder.
+
+Nodes are comprised of three main components, the connectors (inputs and outputs of the node), their config (the settings you see when you click on a node), and their logic (the code that runs when the node is triggered).
+
+```python
+from noxus.nodes import (
+    Connector,
+    BaseNode,
+    ConfigToggle,
+    NodeConfiguration,
+    Parameter,
+    ExecutionContext,
+    TypeDefinition,
+    DataType,
+)
+
+class StringUpperCaserNodeConfig(NodeConfiguration):
+    remove_numbers: bool = Parameter(
+        default = False,
+        display= ConfigToggle(label='Remove numbers'),
+    )
+
+class StringUpperCaserNode(BaseNode[StringUpperCaserNodeConfig]):
+    node_name = "StringUpperCaserNode"
+    title = "Upper case a string"
+    color = "#E9F6EF"
+    image = "https://example.com/uppercase.png"
+    description = "This module enables you to upper-case an input."
+    small_description = "Upper-case an input."
+    visible = True
+
+
+    config_class = StringUpperCaserNodeConfig
+    inputs = [
+        Connector(
+            name = 'input',
+            label = 'Input to upper-case',
+            definition = TypeDefinition(data_type=DataType.str, is_list=False),
+            optional = False,
+        )
+    ]
+    outputs = [
+        Connector(
+            name = 'output',
+            label = 'Upper-cased output',
+            definition = TypeDefinition(data_type=DataType.str, is_list=False),
+            optional = False,
+        )
+    ]
+
+    def call(self, ctx: ExecutionContext, input: str) -> str:
+        '''
+        The arguments after ctx are passed automatically as the type and names of the inputs.
+        '''
+        if self.config.remove_numbers: # the config is accessible via self.config
+            input = ''.join(i for i in input if not i.isdigit())
+        return {"output": input.upper()} # the key must match the name in the outputs
+```
+
+The final step is to return the node in the `nodes` method of your plugin.
