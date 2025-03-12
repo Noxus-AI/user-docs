@@ -260,6 +260,7 @@
             "group": "Extending the platform",
             "pages": [
               "technical-reference/v0/extending-the-platform/plugins",
+              "technical-reference/v0/extending-the-platform/noxus-configuration-language",
               "technical-reference/v0/extending-the-platform/node-plugins",
               "technical-reference/v0/extending-the-platform/trigger-plugins",
               "technical-reference/v0/extending-the-platform/plugins-integrations",
