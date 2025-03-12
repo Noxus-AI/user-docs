@@ -87,15 +87,11 @@
               },
               {
                 "group": "Calendly",
-                "pages": [
-                  "Documentation/Integration Modules/CReadEvents"
-                ]
+                "pages": ["Documentation/Integration Modules/CReadEvents"]
               },
               {
                 "group": "Github",
-                "pages": [
-                  "Documentation/Integration Modules/GReadProfile"
-                ]
+                "pages": ["Documentation/Integration Modules/GReadProfile"]
               },
               {
                 "group": "Google",
@@ -144,15 +140,11 @@
               },
               {
                 "group": "Telegram",
-                "pages": [
-                  "Documentation/Integration Modules/TelegramW"
-                ]
+                "pages": ["Documentation/Integration Modules/TelegramW"]
               },
               {
                 "group": "Typeform",
-                "pages": [
-                  "Documentation/Integration Modules/ReadTypeform"
-                ]
+                "pages": ["Documentation/Integration Modules/ReadTypeform"]
               },
               {
                 "group": "Youtube",
@@ -178,9 +170,7 @@
         "groups": [
           {
             "group": "API Reference",
-            "pages": [
-              "api-reference/introduction"
-            ]
+            "pages": ["api-reference/introduction"]
           },
           {
             "group": "Workflows",
@@ -224,6 +214,57 @@
               "api-reference/v1/public-delete-conversation",
               "api-reference/v1/public-add-message",
               "api-reference/v1/public-refresh-message"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Technical Reference",
+        "groups": [
+          {
+            "group": "Technical Reference",
+            "pages": ["technical-reference/introduction"]
+          },
+          {
+            "group": "Platform Infrastructure",
+            "pages": [
+              "technical-reference/v0/platform-infrastructure/services",
+              "technical-reference/v0/platform-infrastructure/databases",
+              "technical-reference/v0/platform-infrastructure/healthchecks",
+              "technical-reference/v0/platform-infrastructure/containers",
+              "technical-reference/v0/platform-infrastructure/vm-setup"
+            ]
+          },
+          {
+            "group": "Deployment",
+            "pages": ["technical-reference/v0/deployment/how-to"]
+          },
+          {
+            "group": "Platform configuration",
+            "pages": [
+              "technical-reference/v0/platform-configuration/environment-variables",
+              "technical-reference/v0/platform-configuration/configurations"
+            ]
+          },
+          {
+            "group": "Using the API",
+            "pages": [
+              "technical-reference/v0/api/authentication",
+              "technical-reference/v0/api/entities",
+              "technical-reference/v0/api/monitoring",
+              "technical-reference/v0/api/rate-limits",
+              "technical-reference/v0/api/client-sdk"
+            ]
+          },
+          {
+            "group": "Extending the platform",
+            "pages": [
+              "technical-reference/v0/extending-the-platform/plugins",
+              "technical-reference/v0/extending-the-platform/node-plugins",
+              "technical-reference/v0/extending-the-platform/trigger-plugins",
+              "technical-reference/v0/extending-the-platform/kb-plugins",
+              "technical-reference/v0/extending-the-platform/plugins-deployment",
+              "technical-reference/v0/extending-the-platform/plugins-versioning"
             ]
           }
         ]
