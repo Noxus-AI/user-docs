@@ -3,6 +3,143 @@ title: "Entities"
 description: "Entities..."
 ---
 
-- Authentication @Gonçalo
-  - Api key
-  - OAuth
+- Entities (Explain API methods alongside)
+  - Users, Groups, Tenants @Gonçalo
+  - Workflows @David
+    - create workflows
+  - Runs @Jorge
+    - sync
+    - async
+  - KnowledgeBases @Allen
+  - Agents @Allen
+  - Multi-agent environments ## @Jorge / @Allen to plan
+
+# Knowledge Bases
+
+Knowledge Bases (KBs) are collections of documents and data that can be used to provide context and information to AI agents. They serve as the foundation for enabling AI to access, understand, and utilize structured and unstructured information.
+
+## Overview
+
+A Knowledge Base acts as a centralized repository that:
+- Stores and organizes documents and data
+- Processes content for optimal AI consumption
+- Enables efficient retrieval of relevant information
+- Supports multiple data sources and formats
+
+## Supported Sources
+
+Knowledge Bases can ingest content from various sources:
+
+- **Document Upload**
+  - Direct file uploads (PDFs, text files, images)
+  - Supports batch uploading of multiple files
+
+- **Google Drive**
+  - Integration with Google Drive
+  - Import documents and files directly from Drive
+
+- **OneDrive**
+  - Microsoft OneDrive integration
+  - Access and import OneDrive documents
+
+- **Websites**
+  - Web crawling and content extraction
+  - Configurable crawl depth and URL patterns
+
+## Common Operations
+
+### Creating a Knowledge Base
+
+You can create a new Knowledge Base within a group using the Knowledge Base creation endpoint. This returns the created KB object with its unique identifier.
+
+### Adding Documents
+
+The platform provides endpoints to upload and train documents in a Knowledge Base. This supports:
+- Multiple file uploads
+- Custom path prefixes for organization
+- Automatic processing and indexing
+
+### Managing Documents
+
+Document management is handled through various endpoints that allow you to:
+- Retrieve documents with specific status (e.g., trained, training, error)
+- Remove documents from the Knowledge Base
+- Update document metadata and organization
+
+### Viewing and Updating
+
+Knowledge Base details, including document status, can be retrieved through dedicated endpoints. You can also update KB properties and settings as needed.
+
+
+You can monitor processing through dedicated run endpoints that provide detailed information about ongoing and completed operations.
+
+
+# Agents
+
+Agents are AI assistants that help users accomplish tasks through natural language conversations. They combine language understanding, knowledge retrieval, and reasoning capabilities to provide helpful responses.
+
+## Overview
+
+Agents in the platform are designed to:
+- Understand and respond to user queries in natural language
+- Access and utilize knowledge from connected knowledge bases
+- Maintain context throughout multi-turn conversations
+- Execute specific functions based on user requests
+
+## Agent Capabilities
+
+### Web Research
+
+Agents can perform web research to find relevant information based on user queries. This includes:
+- Searching the web
+- Retrieving information from websites
+- Providing links to the user
+
+### Knowledge Integration
+
+Agents can be connected to knowledge bases to enhance their responses with:
+- Domain-specific information
+- Company documentation and policies
+- Custom data sources relevant to your use case
+
+
+### Support for questions about the Noxus Platform
+
+Agents can be configured to answer questions about the Noxus Platform. This includes:
+- How to use the platform
+- What features are available
+- How to get support
+
+
+### Running Workflows
+
+Agents can execute specific functions based on user requests. This includes:
+- Running workflows
+- Triggering external actions or integrations
+
+## Conversations
+
+Conversations are the primary way users interact with agents. A conversation:
+
+### Conversation Structure
+
+- Represents a complete interaction session between a user and an agent
+- Contains a sequence of messages exchanged between participants
+- Preserves context and history for more natural interactions
+
+### Message Types
+
+Within conversations, different types of messages can be exchanged:
+
+- **User Messages**: Queries, instructions, or information provided by the user
+- **Agent Responses**: Text-based replies, suggestions, or answers from the agent
+- **Rich Content**: Formatted text, links, and other structured information
+
+### Conversation Management
+
+Users can manage their agent interactions through:
+
+- Starting new conversations with specific agents
+- Continuing existing conversations with preserved context
+- Viewing conversation history for reference
+- Organizing conversations by topic or purpose
