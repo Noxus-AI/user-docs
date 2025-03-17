@@ -1,45 +1,659 @@
 ---
 title: "Noxus Configuration Language"
-description: "Documentation for the Noxus Configuration Language - a system for generating dynamic forms from static definitions. Learn about the available components and their parameters for building interactive configuration interfaces."
+description: "The Noxus Configuration Language (NCL) is a powerful system for building dynamic, interactive configuration interfaces from static definitions. It provides a comprehensive set of components that can be combined to create intuitive forms, preference panels, and configuration screens throughout the Noxus platform."
 mode: "wide"
 ---
 
-| Name                           | Parameters                                                                                                                                                               | Output Type          | Image Example                                                                                                         |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| ConfigSelect                   | • <b>values</b>: list[Any]<br />• <b>placeholder</b>: str \| None                                                                                                        | str                  | <div align="center">[View](https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigSelect.png)</div>      |
-| ConfigChipsSelect              | • <b>values</b>: list[Any]<br />• <b>can_wrap</b>: bool<br />• <b>label</b>: str \| None                                                                                 | str                  |                                                                                                                       |
-| ConfigTypeSelect               | • <b>values</b>: list[Any]                                                                                                                                               | str                  | <div align="center">[View](https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigTypeSelect.png)</div>  |
-| ConfigText                     | • <b>placeholder</b>: str \| None<br />• <b>number_of_lines</b>: int<br />• <b>show_refresh</b>: bool<br />• <b>is_code</b>: bool                                        | str                  |                                                                                                                       |
-| ConfigChipsText                | • <b>placeholder</b>: str \| None<br />• <b>bottom_text</b>: str \| None<br />• <b>chips_are_closable</b>: bool                                                          | str                  |                                                                                                                       |
-| ConfigTextVariables            | • <b>placeholder</b>: str \| None<br />• <b>number_of_lines</b>: int<br />• <b>connector_name</b>: str                                                                   | str                  |                                                                                                                       |
-| ConfigRichTextVariables        | • <b>placeholder</b>: str \| None<br />• <b>number_of_lines</b>: int<br />• <b>connector_name</b>: str                                                                   | str                  |                                                                                                                       |
-| ConfigBigText                  | • <b>placeholder</b>: str \| None<br />• <b>number_of_lines</b>: int                                                                                                     | str                  |                                                                                                                       |
-| ConfigDynamicText              | No additional parameters                                                                                                                                                 | str                  |                                                                                                                       |
-| ConfigTimePicker               | No additional parameters                                                                                                                                                 | str (time format)    |                                                                                                                       |
-| ConfigNumber                   | No additional parameters                                                                                                                                                 | float                |                                                                                                                       |
-| ConfigNumberSlider             | • <b>min</b>: float \| int<br />• <b>max</b>: float \| int<br />• <b>step</b>: float \| int                                                                              | float                |                                                                                                                       |
-| ConfigNumberRange              | • <b>min</b>: float \| int<br />• <b>max</b>: float \| int                                                                                                               | float                |                                                                                                                       |
-| ConfigToggle                   | No additional parameters                                                                                                                                                 | bool                 | <div align="center">[View](https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigToggle.png)</div>      |
-| ConfigModelSelect              | • <b>endpoint</b>: str<br />• <b>model_type</b>: str                                                                                                                     | list[str]            | <div align="center">[View](https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigModelSelect.png)</div> |
-| ConfigChipsListText            | • <b>placeholder</b>: str \| None<br />• <b>max_values</b>: int \| None<br />• <b>bottom_text</b>: str \| None<br />• <b>chips_are_closable</b>: bool                    | list[str]            |                                                                                                                       |
-| ConfigRichTextVariablesAI      | • <b>placeholder</b>: str \| None<br />• <b>number_of_lines</b>: int<br />• <b>connector_name</b>: str                                                                   | list[str]            |                                                                                                                       |
-| ConfigConditionSelect          | • <b>connector_name</b>: str<br />• <b>values</b>: list[Any]                                                                                                             | list[str , None]     |                                                                                                                       |
-| ConfigMultiSelect              | • <b>values</b>: list[Any]<br />• <b>placeholder</b>: str \| None<br />• <b>max_options</b>: int \| None                                                                 | list[dict[str, str]] | <div align="center">[View](https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigMultiSelect.png)</div> |
-| ConfigDictList                 | • <b>keys</b>: list[str]                                                                                                                                                 | list[dict[str, Any]] |                                                                                                                       |
-| ConfigDictComplexList          | • <b>subtitle</b>: str \| None<br />• <b>keys</b>: list[ConfigDictEntry]                                                                                                 | list[dict[str, Any]] |                                                                                                                       |
-| ConfigDictListWithoutConnector | • <b>key_label</b>: str<br />• <b>value_label</b>: str<br />• <b>key_prefix</b>: str<br />• <b>value_placeholder</b>: str<br />• <b>required_keys</b>: list[str] \| None | list[dict[str, Any]] |                                                                                                                       |
-| ConfigComplexCondition         | No additional parameters                                                                                                                                                 | list[dict]           |                                                                                                                       |
-| ConfigTypeDictArray            | • <b>values</b>: list[str]<br />• <b>type_map</b>: dict[str, str]                                                                                                        | list[dict]           |                                                                                                                       |
-| ConfigScrapeWebsiteList        | No additional parameters                                                                                                                                                 | list[dict]           |                                                                                                                       |
-| ConfigFile                     | No additional parameters                                                                                                                                                 | list[File]           |                                                                                                                       |
-| ConfigFileArray                | No additional parameters                                                                                                                                                 | list[File]           |                                                                                                                       |
-| ConfigGdrivePicker             | • <b>multi_select</b>: bool<br />• <b>file_type</b>: GdriveFileType \| None<br />• <b>setIncludeFolders</b>: bool                                                        | list[GoogleFile]     |                                                                                                                       |
-| ConfigOneDrivePicker           | • <b>base_url</b>: str \| None<br />• <b>multi_select</b>: bool<br />• <b>file_type</b>: str \| None<br />• <b>set_include_folders</b>: bool<br />• <b>name</b>: str     | list[OneDriveFile]   |                                                                                                                       |
-| ConfigDivider                  | • <b>label</b>: str                                                                                                                                                      | None (UI element)    |                                                                                                                       |
-| ConfigBanner                   | • <b>label</b>: str<br />• <b>style</b>: "info" \| "warning" \| "error"                                                                                                  | None (UI element)    |                                                                                                                       |
-| ConfigTextDisplay              | • <b>label</b>: str<br />• <b>title</b>: str \| None<br />• <b>text</b>: str \| None                                                                                     | None (UI element)    |                                                                                                                       |
-| ConfigVariableInputValue       | • <b>types</b>: list[str]                                                                                                                                                | Any                  |                                                                                                                       |
-| ConfigSearchBar                | WARNING WARNING not used!! WARNING WARNING                                                                                                                               | str                  |                                                                                                                       |
-| ConfigDisplayDict              | WARNING WARNING not used!! WARNING WARNING                                                                                                                               | dict[str, Any]       |                                                                                                                       |
-| ConfigTextArray                | WARNING WARNING not used!! WARNING WARNING                                                                                                                               | list[str]            |                                                                                                                       |
-| ConfigDynamicSelect            | WARNING WARNING not used!! WARNING WARNING                                                                                                                               | ???????              |                                                                                                                       |
+<Info>
+  NCL components automatically handle validation, state management, and UI
+  rendering, allowing you to focus on defining the structure and behavior of
+  your configuration interfaces.
+</Info>
+
+## Getting Started
+
+Configuration components can be combined to create forms that collect and validate user input. Each component produces a specific data type output that can be used in your application logic.
+
+<CardGroup cols={2}>
+  <Card title="Basic Input" icon="keyboard">
+    Simple components for text, numbers, toggles, and selections that form the
+    building blocks of most configurations.
+  </Card>
+  <Card title="Complex Controls" icon="sliders">
+    Advanced components like sliders, multi-selects, and conditional inputs for
+    sophisticated configuration needs.
+  </Card>
+  <Card title="Structured Data" icon="table-cells">
+    Components for handling lists, dictionaries, and other structured data
+    formats.
+  </Card>
+  <Card title="UI Elements" icon="palette">
+    Visual components like dividers, banners, and text displays to improve form
+    organization and user experience.
+  </Card>
+</CardGroup>
+
+### Example Configuration
+
+Here's a simple example of how NCL components can be used to create a model configuration interface:
+
+```python
+from spotflow.config import Parameter, NodeConfiguration, ConfigText, ConfigTypeSelect...
+
+...
+
+class InputNodeConfiguration(NodeConfiguration):
+    label: str = Parameter(
+        default="",
+        display=ConfigText(
+            label="Input name",
+            tooltip="Name displayed in the input interface",
+        ),
+    )
+    type: str = Parameter(
+        default="str",
+        display=ConfigTypeSelect(
+            label="Input Type", values=["str", "Image", "Audio", "File"]
+        ),
+    )
+    fixed_value: bool = Parameter(
+        default=False,
+        description="Assign a constant value to the input that the users are unable to modify",
+        display=ConfigToggle(
+            label="Fixed Value", tooltip="Input with a constant value"
+        ),
+    )
+```
+<Frame caption="The configuration above will produce the following interface:">
+  <img
+    src="https://storage.googleapis.com/image-storage-spot-manual/docs/ExampleConfig.png"
+    alt="Example Configuration"
+
+  />
+</Frame>
+
+## Component Categories
+
+### Text Input Components
+
+Components for capturing and displaying text input in various formats.
+
+<CardGroup cols={2}>
+  <Card title="ConfigText" icon="font">
+    <div className="mt-2">
+      Basic single or multi-line text input with optional placeholder text.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>placeholder</strong> <em>(str)</em> - Default text shown when the field is empty</li>
+        <li><strong>number_of_lines</strong> <em>(int)</em> - Number of visible text lines, defaults to 1</li>
+        <li><strong>show_refresh</strong> <em>(bool)</em> - Whether to show a refresh button</li>
+        <li><strong>is_code</strong> <em>(bool)</em> - Whether to use monospace font and code styling</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> str
+    </div>
+  </Card>
+  <Card title="ConfigBigText" icon="align-left">
+    <div className="mt-2">
+      Extended text area for longer content with customizable height.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>placeholder</strong> <em>(str)</em> - Default text shown when the field is empty</li>
+        <li><strong>number_of_lines</strong> <em>(int)</em> - Number of visible text lines, defaults to 5</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> str
+    </div>
+  </Card>
+  <Card title="ConfigRichTextVariables" icon="pen-to-square">
+    <div className="mt-2">
+      Rich text editor with variable insertion capabilities.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>placeholder</strong> <em>(str)</em> - Default text shown when the field is empty</li>
+        <li><strong>number_of_lines</strong> <em>(int)</em> - Number of visible text lines</li>
+        <li><strong>connector_name</strong> <em>(str)</em> - Name of the connector providing variables</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> str
+      <br />
+      <br />
+      <img
+        src="https://storage.googleapis.com/image-storage-spot-manual/docs/RichTextField.png"
+        alt="ConfigRichTextVariables example"
+        width="100%"
+      />
+    </div>
+  </Card>
+</CardGroup>
+
+### Selection Components
+
+Components for choosing from predefined options or sets of values.
+
+<CardGroup cols={2}>
+  <Card title="ConfigSelect" icon="hand-pointer">
+    <div className="mt-2">
+      Standard dropdown select for choosing a single option from a list.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>values</strong> <em>(list[str] or list[dict])</em> - List of options to select from</li>
+        <li><strong>placeholder</strong> <em>(str)</em> - Text displayed when no option is selected</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> str
+      <br />
+      <br />
+      <img
+        src="https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigSelect.png"
+        alt="ConfigSelect example"
+        width="100%"
+      />
+    </div>
+  </Card>
+  <Card title="ConfigMultiSelect" icon="check-double">
+    <div className="mt-2">
+      Dropdown that allows selecting multiple options from a list.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>values</strong> <em>(list[str] or list[dict])</em> - List of options to select from</li>
+        <li><strong>placeholder</strong> <em>(str)</em> - Text displayed when no options are selected</li>
+        <li><strong>max_options</strong> <em>(int)</em> - Maximum number of options that can be selected</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[dict[str, str]]
+      <br />
+      <br />
+      <img
+        src="https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigMultiSelect.png"
+        alt="ConfigMultiSelect example"
+        width="100%"
+      />
+    </div>
+  </Card>
+  <Card title="ConfigTypeSelect" icon="sitemap">
+    <div className="mt-2">
+      Type-aware selection component with specialized UI based on data types.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>values</strong> <em>(list[str])</em> - List of data type options to select from</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> str
+      <br />
+      <br />
+      <img
+        src="https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigTypeSelect.png"
+        alt="ConfigTypeSelect example"
+        width="100%"
+      />
+    </div>
+  </Card>
+  <Card title="ConfigChipsSelect" icon="tags">
+    <div className="mt-2">
+      Selection component that displays options as interactive chips.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>values</strong> <em>(list[str] or list[dict])</em> - List of options to display as chips</li>
+        <li><strong>can_wrap</strong> <em>(bool)</em> - Whether chips can wrap to multiple lines</li>
+        <li><strong>label</strong> <em>(str)</em> - Label text displayed above the chips</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> str
+      <br />
+      <br />
+      <img
+        src="https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigChipsSelect.png"
+        alt="ConfigChipsSelect example"
+        width="100%"
+      />
+    </div>
+  </Card>
+</CardGroup>
+
+### Numeric Components
+
+Components specialized for numeric input and ranges.
+
+<CardGroup cols={2}>
+  <Card title="ConfigNumber" icon="hashtag">
+    <div className="mt-2">
+      Basic numeric input field for integers or decimal values.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li>No specific parameters required</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> float
+    </div>
+  </Card>
+  <Card title="ConfigNumberSlider" icon="sliders">
+    <div className="mt-2">
+      Interactive slider for selecting a numeric value within a defined range.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>min</strong> <em>(float)</em> - Minimum value of the slider</li>
+        <li><strong>max</strong> <em>(float)</em> - Maximum value of the slider</li>
+        <li><strong>step</strong> <em>(float)</em> - Increment step size for the slider</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> float
+      <br />
+      <br />
+      <img
+        src="https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigNumberSlider.png"
+        alt="ConfigNumberSlider example"
+        width="100%"
+      />
+    </div>
+  </Card>
+  <Card title="ConfigNumberRange" icon="arrows-left-right">
+    <div className="mt-2">
+      Numeric input field with up/down arrows that enforces minimum and maximum value constraints.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>min</strong> <em>(float)</em> - Minimum value of the range</li>
+        <li><strong>max</strong> <em>(float)</em> - Maximum value of the range</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> float
+    </div>
+  </Card>
+</CardGroup>
+
+### Boolean Components
+
+Components for toggling options on or off.
+
+<CardGroup cols={1}>
+  <Card title="ConfigToggle" icon="toggle-on">
+    <div className="mt-2">
+      Simple toggle switch for boolean values.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li>No specific parameters required</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> bool
+      <br />
+      <br />
+      <img
+        src="https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigToggle.png"
+        alt="ConfigToggle example"
+        width="50%"
+      />
+    </div>
+  </Card>
+</CardGroup>
+
+### List and Collection Components
+
+Components for managing collections of items or structured data.
+
+<CardGroup cols={2}>
+  <Card title="ConfigChipsListText" icon="list-ul">
+    <div className="mt-2">
+      Input field that converts text entries into a list of chips.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>placeholder</strong> <em>(str)</em> - Text displayed in the input field</li>
+        <li><strong>max_values</strong> <em>(int)</em> - Maximum number of chips that can be added</li>
+        <li><strong>bottom_text</strong> <em>(str)</em> - Helper text displayed below the component</li>
+        <li><strong>chips_are_closable</strong> <em>(bool)</em> - Whether chips can be removed by clicking an X</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[str]
+      <br />
+      <br />
+      <img
+        src="https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigChipsListText.png"
+        alt="ConfigChipsListText example"
+        width="100%"
+      />
+    </div>
+  </Card>
+  <Card title="ConfigDictList" icon="table-list">
+    <div className="mt-2">
+      Creates an editable list of dictionaries with predefined keys.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>keys</strong> <em>(list[str])</em> - List of keys for each dictionary entry</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[dict[str, Any]]
+      <br />
+      <br />
+      <img
+        src="https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigDictList.png"
+        alt="ConfigDictList example"
+        width="100%"
+      />
+    </div>
+  </Card>
+</CardGroup>
+
+### Special Purpose Components
+
+Components designed for specific platform integrations and use cases.
+
+<CardGroup cols={2}>
+  <Card title="ConfigModelSelect" icon="brain">
+    <div className="mt-2">
+      Specialized component for selecting AI models from available endpoints.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>endpoint</strong> <em>(str)</em> - API endpoint to fetch available models</li>
+        <li><strong>model_type</strong> <em>(str)</em> - Type of model to filter by</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[str]
+      <br />
+      <br />
+      <img
+        src="https://storage.googleapis.com/image-storage-spot-manual/docs/ConfigModelSelect.png"
+        alt="ConfigModelSelect example"
+        width="100%"
+      />
+    </div>
+  </Card>
+  <Card title="ConfigTimePicker" icon="clock">
+    <div className="mt-2">
+      Specialized input for selecting time values.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li>No specific parameters required</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> str (time format)
+    </div>
+  </Card>
+  <Card title="ConfigFile" icon="file">
+    <div className="mt-2">
+      File upload component for single file selection.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li>No specific parameters required</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[File]
+    </div>
+  </Card>
+  <Card title="ConfigFileArray" icon="file-zipper">
+    <div className="mt-2">
+      File upload component for multiple file selection.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li>No specific parameters required</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[File]
+    </div>
+  </Card>
+</CardGroup>
+
+### Cloud Storage Integration
+
+Components for integrating with external cloud storage services.
+
+<CardGroup cols={2}>
+  <Card title="ConfigGdrivePicker" icon="google-drive">
+    <div className="mt-2">
+      Google Drive file picker with filtering options.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>multi_select</strong> <em>(bool)</em> - Whether multiple files can be selected</li>
+        <li><strong>file_type</strong> <em>(str or list[str])</em> - File types to filter by</li>
+        <li><strong>setIncludeFolders</strong> <em>(bool)</em> - Whether folders can be selected</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[GoogleFile]
+    </div>
+  </Card>
+  <Card title="ConfigOneDrivePicker" icon="microsoft">
+    <div className="mt-2">
+      Microsoft OneDrive file picker with filtering options.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>base_url</strong> <em>(str)</em> - Base URL for the OneDrive API</li>
+        <li><strong>multi_select</strong> <em>(bool)</em> - Whether multiple files can be selected</li>
+        <li><strong>file_type</strong> <em>(str or list[str])</em> - File types to filter by</li>
+        <li><strong>set_include_folders</strong> <em>(bool)</em> - Whether folders can be selected</li>
+        <li><strong>name</strong> <em>(str)</em> - Display name for the picker</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[OneDriveFile]
+    </div>
+  </Card>
+</CardGroup>
+
+### UI Components
+
+Components that enhance the visual organization and user experience.
+
+<CardGroup cols={2}>
+  <Card title="ConfigDivider" icon="grip-lines">
+    <div className="mt-2">
+      Simple horizontal divider with optional label for form section separation.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>label</strong> <em>(str)</em> - Text label displayed in the divider</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> None (UI element)
+    </div>
+  </Card>
+  <Card title="ConfigBanner" icon="flag">
+    <div className="mt-2">
+      Styled banner for displaying important messages or information.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>label</strong> <em>(str)</em> - Text content of the banner</li>
+        <li><strong>style</strong> <em>(str)</em> - Visual style ("info" | "warning" | "error")</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> None (UI element)
+    </div>
+  </Card>
+  <Card title="ConfigTextDisplay" icon="eye">
+    <div className="mt-2">
+      Non-editable text display with optional title for showing information.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>label</strong> <em>(str)</em> - Label for the display</li>
+        <li><strong>title</strong> <em>(str)</em> - Title displayed above the text</li>
+        <li><strong>text</strong> <em>(str)</em> - Content text to display</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> None (UI element)
+    </div>
+  </Card>
+</CardGroup>
+
+### Advanced Components
+
+Complex components for specialized use cases and conditional logic.
+
+<CardGroup cols={2}>
+  <Card title="ConfigConditionSelect" icon="code-branch">
+    <div className="mt-2">
+      Selection component that enables conditional rendering based on a
+      connector.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>connector_name</strong> <em>(str)</em> - Name of the connector to use for conditions</li>
+        <li><strong>values</strong> <em>(list[str] or list[dict])</em> - List of options to select from</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[str, None]
+    </div>
+  </Card>
+  <Card title="ConfigComplexCondition" icon="sitemap">
+    <div className="mt-2">
+      Advanced conditional logic component for complex form behaviors.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li>No specific parameters required</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[dict]
+    </div>
+  </Card>
+  <Card title="ConfigTypeDictArray" icon="layer-group">
+    <div className="mt-2">
+      Component for managing typed dictionary arrays with mapping.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>values</strong> <em>(list[str] or list[dict])</em> - List of type options</li>
+        <li><strong>type_map</strong> <em>(dict)</em> - Mapping of types to their configurations</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> list[dict]
+    </div>
+  </Card>
+  <Card title="ConfigVariableInputValue" icon="brackets-curly">
+    <div className="mt-2">
+      Dynamic input that adapts based on specified types.
+      <br />
+      <br />
+      <strong>Parameters:</strong>
+      <ul>
+        <li><strong>types</strong> <em>(list[str])</em> - List of supported input types</li>
+      </ul>
+      <br />
+      <strong>Output:</strong> Any
+    </div>
+  </Card>
+</CardGroup>
+
+## Deprecated Components
+
+<Warning>
+  The following components are deprecated and should not be used in new
+  configurations.
+</Warning>
+
+<CardGroup cols={2}>
+  <Card title="ConfigSearchBar" icon="magnifying-glass">
+    <div className="mt-2 text-red-500">
+      WARNING: This component is not currently used.
+      <br />
+      <br />
+      <strong>Output:</strong> str
+    </div>
+  </Card>
+  <Card title="ConfigDisplayDict" icon="display">
+    <div className="mt-2 text-red-500">
+      WARNING: This component is not currently used.
+      <br />
+      <br />
+      <strong>Output:</strong> dict[str, Any]
+    </div>
+  </Card>
+  <Card title="ConfigTextArray" icon="align-left">
+    <div className="mt-2 text-red-500">
+      WARNING: This component is not currently used.
+      <br />
+      <br />
+      <strong>Output:</strong> list[str]
+    </div>
+  </Card>
+  <Card title="ConfigDynamicSelect" icon="arrow-down-wide-short">
+    <div className="mt-2 text-red-500">
+      WARNING: This component is not currently used.
+      <br />
+      <br />
+      <strong>Output:</strong> Unknown
+    </div>
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+When building configuration interfaces with NCL, consider these best practices:
+
+<CardGroup cols={2}>
+  <Card title="Logical Grouping" icon="object-group">
+    <div className="mt-2">
+      Group related configuration options together to improve usability and user
+      flow.
+    </div>
+  </Card>
+  <Card title="Progressive Disclosure" icon="layer-group">
+    <div className="mt-2">
+      Use toggles or conditional components to hide advanced options until
+      needed.
+    </div>
+  </Card>
+  <Card title="Clear Labeling" icon="tags">
+    <div className="mt-2">
+      Provide clear, descriptive labels and placeholders to guide users.
+    </div>
+  </Card>
+  <Card title="Validation Feedback" icon="circle-check">
+    <div className="mt-2">
+      Leverage built-in validation capabilities to provide immediate feedback on
+      input errors.
+    </div>
+  </Card>
+</CardGroup>
+
+<Tip>
+  For complex forms, consider using ConfigDivider components to create logical
+  sections and improve visual organization.
+</Tip>
+
+## Related Resources
+
+- [Node Plugins](/technical-reference/v0/extending-the-platform/node-plugins)
+- [Trigger Plugins](/technical-reference/v0/extending-the-platform/trigger-plugins)
+- [KB Plugins](/technical-reference/v0/extending-the-platform/kb-plugins)
