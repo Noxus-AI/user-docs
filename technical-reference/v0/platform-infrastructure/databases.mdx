@@ -1,0 +1,21 @@
+---
+title: "Databases"
+description: "Databases are the core building blocks of the Noxus platform. They are used to store data for workflows and runs."
+---
+
+- Databases @Jorge / @Allen
+  - Postgres
+    - Entities @Jorge
+    - KBs @Allen
+  - Redis @Jorge
+
+
+# Postgres
+
+## Knowledge Bases - Pgvector
+
+We use [Pgvector](https://github.com/pgvector/pgvector) to store the embeddings for the knowledge bases, as well as other attributes in the databases that benefit from semantic searching, i.e. searching on past runs.
+Pgvector is a PostgreSQL extension that provides support for vector data types and operations. It allows you to store and query vector embeddings efficiently.
+Furthermore, it is a widely supported extension on cloud providers.
+
+# Redis

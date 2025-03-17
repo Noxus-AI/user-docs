@@ -142,7 +142,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "uuid",
               "title": "Workflow Id"
             }
           }
@@ -190,7 +189,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "uuid",
               "title": "Workflow Id"
             }
           }
@@ -246,7 +244,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "uuid",
               "title": "Workflow Id"
             }
           },
@@ -341,7 +338,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "uuid",
               "title": "Workflow Id"
             }
           },
@@ -351,7 +347,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "uuid",
               "title": "Run Id"
             }
           },
@@ -427,7 +422,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "uuid",
               "title": "Workflow Id"
             }
           },
@@ -650,7 +644,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "uuid",
               "title": "Run Id"
             }
           }
@@ -698,7 +691,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "uuid",
               "title": "Run Id"
             }
           }
@@ -807,11 +799,14 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Add Knowledge Base",
-        "operationId": "public_add_knowledge_base",
+        "summary": "Add Knowledge Base V2",
+        "operationId": "add_knowledge_base_v2",
         "security": [
           {
             "APIKeyHeader": []
+          },
+          {
+            "Auth0HTTPBearer": []
           }
         ],
         "requestBody": {
@@ -851,8 +846,8 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Get Knowledge Bases",
-        "operationId": "public_get_knowledge_bases",
+        "summary": "Get Knowledge Bases V2",
+        "operationId": "get_knowledge_bases_v2",
         "security": [
           {
             "APIKeyHeader": []
@@ -952,8 +947,8 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Get Knowledge Base",
-        "operationId": "public_get_knowledge_base",
+        "summary": "Get Knowledge Base V2",
+        "operationId": "get_knowledge_base_v2",
         "security": [
           {
             "APIKeyHeader": []
@@ -976,7 +971,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/KnowledgeBaseV2"
+                  "$ref": "#/components/schemas/KnowledgeBaseWithDocuments"
                 }
               }
             }
@@ -997,8 +992,8 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Update Knowledge Base",
-        "operationId": "public_update_knowledge_base",
+        "summary": "Update Knowledge Base V2",
+        "operationId": "update_knowledge_base_v2",
         "security": [
           {
             "APIKeyHeader": []
@@ -1052,8 +1047,8 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Delete Knowledge Base V2",
-        "operationId": "public_delete_knowledge_base_v2",
+        "summary": "Delete Knowledge Base V2",
+        "operationId": "delete_knowledge_base_v2",
         "security": [
           {
             "APIKeyHeader": []
@@ -1094,13 +1089,152 @@
         }
       }
     },
+    "/v1/knowledge-bases/{knowledge_base_id}/runs": {
+      "get": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Get Knowledge Base Running Jobs",
+        "operationId": "get_knowledge_base_running_jobs",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "knowledge_base_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Knowledge Base Id"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RunStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "run_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Run"
+                  },
+                  "title": "Response Get Knowledge Base Running Jobs"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/knowledge-bases/{workflow_id}/{node_id}": {
+      "get": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Get Tmp Knowledge Base",
+        "operationId": "get_tmp_knowledge_base",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workflow Id"
+            }
+          },
+          {
+            "name": "node_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Node Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KnowledgeBaseWithDocuments"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/knowledge-bases/{knowledge_base_id}/document": {
       "post": {
         "tags": [
           "V1"
         ],
-        "summary": "Public Add Knowledge Base Document",
-        "operationId": "public_add_knowledge_base_document",
+        "summary": "Add Knowledge Base Document",
+        "operationId": "add_knowledge_base_document",
         "security": [
           {
             "APIKeyHeader": []
@@ -1156,8 +1290,8 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Get Knowledge Base Document",
-        "operationId": "public_get_knowledge_base_document",
+        "summary": "Get Knowledge Base Document",
+        "operationId": "get_knowledge_base_document",
         "security": [
           {
             "APIKeyHeader": []
@@ -1205,6 +1339,124 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Delete Knowledge Base Document",
+        "operationId": "delete_knowledge_base_document",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "knowledge_base_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Knowledge Base Id"
+            }
+          },
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KnowledgeBaseDocument"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Update Knowledge Base Document",
+        "operationId": "update_knowledge_base_document",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "knowledge_base_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Knowledge Base Id"
+            }
+          },
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDocument"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KnowledgeBaseDocument"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v1/knowledge-bases/{knowledge_base_id}/documents/{status}": {
@@ -1212,8 +1464,8 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Get Knowledge Base Documents",
-        "operationId": "public_get_knowledge_base_documents",
+        "summary": "Get Knowledge Base Documents",
+        "operationId": "get_knowledge_base_documents",
         "security": [
           {
             "APIKeyHeader": []
@@ -1290,13 +1542,314 @@
         }
       }
     },
+    "/v1/knowledge-bases/{knowledge_base_id}/tree/": {
+      "get": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Get Knowledge Base Tree",
+        "operationId": "get_knowledge_base_tree",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "knowledge_base_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Knowledge Base Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Page size",
+              "default": 50,
+              "title": "Size"
+            },
+            "description": "Page size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_KnowledgeBaseDocumentTree_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/knowledge-bases/{knowledge_base_id}/retry_all": {
+      "post": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Train Knowledge Base",
+        "operationId": "train_knowledge_base",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "knowledge_base_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Knowledge Base Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "title": "Response Train Knowledge Base"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/knowledge-bases/{knowledge_base_id}/upload_train": {
+      "post": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Upload Train Knowledge Base",
+        "operationId": "upload_train_knowledge_base",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "knowledge_base_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Knowledge Base Id"
+            }
+          },
+          {
+            "name": "prefix",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The path prefix where to upload",
+              "default": "/",
+              "title": "Prefix"
+            },
+            "description": "The path prefix where to upload"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_train_knowledge_base"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "title": "Response Upload Train Knowledge Base"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/knowledge-bases/types": {
+      "get": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Fetch Knowledge Base Custom Types",
+        "operationId": "fetch_knowledge_base_custom_types",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/KnowledgeBaseType"
+                  },
+                  "type": "array",
+                  "title": "Response Fetch Knowledge Base Custom Types"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/knowledge-bases/{knowledge_base_id}/generic_train": {
+      "post": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Generic Train Knowledge Base",
+        "operationId": "generic_train_knowledge_base",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "knowledge_base_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Knowledge Base Id"
+            }
+          },
+          {
+            "name": "prefix",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The path prefix where to upload",
+              "default": "/",
+              "title": "Prefix"
+            },
+            "description": "The path prefix where to upload"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Source"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "title": "Response Generic Train Knowledge Base"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/conversation": {
       "get": {
         "tags": [
           "V1"
         ],
-        "summary": "Public List Conversations",
-        "operationId": "public_list_conversations",
+        "summary": "List Conversations",
+        "operationId": "list_conversations",
         "security": [
           {
             "Auth0HTTPBearer": []
@@ -1324,6 +1877,23 @@
               "type": "string",
               "default": "desc",
               "title": "Sort"
+            }
+          },
+          {
+            "name": "assistant_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assistant Id"
             }
           },
           {
@@ -1381,14 +1951,33 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Create Conversation",
-        "operationId": "public_create_conversation",
+        "summary": "Create Conversation",
+        "operationId": "create_conversation",
         "security": [
           {
             "Auth0HTTPBearer": []
           },
           {
             "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "assistant_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assistant Id"
+            }
           }
         ],
         "requestBody": {
@@ -1430,8 +2019,8 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Get Conversation",
-        "operationId": "public_get_conversation",
+        "summary": "Get Conversation",
+        "operationId": "get_conversation",
         "security": [
           {
             "Auth0HTTPBearer": []
@@ -1449,6 +2038,23 @@
               "type": "string",
               "format": "uuid",
               "title": "Conversation Id"
+            }
+          },
+          {
+            "name": "assistant_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assistant Id"
             }
           }
         ],
@@ -1479,8 +2085,8 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Add Message",
-        "operationId": "public_add_message",
+        "summary": "Add Message",
+        "operationId": "add_message",
         "security": [
           {
             "Auth0HTTPBearer": []
@@ -1498,6 +2104,23 @@
               "type": "string",
               "format": "uuid",
               "title": "Conversation Id"
+            }
+          },
+          {
+            "name": "assistant_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assistant Id"
             }
           },
           {
@@ -1554,8 +2177,8 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Delete Conversation",
-        "operationId": "public_delete_conversation",
+        "summary": "Delete Conversation",
+        "operationId": "delete_conversation",
         "security": [
           {
             "APIKeyHeader": []
@@ -1569,6 +2192,23 @@
             "schema": {
               "type": "string",
               "title": "Conversation Id"
+            }
+          },
+          {
+            "name": "assistant_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assistant Id"
             }
           }
         ],
@@ -1601,8 +2241,8 @@
         "tags": [
           "V1"
         ],
-        "summary": "Public Refresh Message",
-        "operationId": "public_refresh_message",
+        "summary": "Refresh Message",
+        "operationId": "refresh_message",
         "security": [
           {
             "Auth0HTTPBearer": []
@@ -1629,6 +2269,23 @@
             "schema": {
               "type": "string",
               "title": "Message Id"
+            }
+          },
+          {
+            "name": "assistant_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assistant Id"
             }
           }
         ],
@@ -1718,7 +2375,10 @@
           "model_selection": {
             "anyOf": [
               {
-                "type": "string"
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
               },
               {
                 "type": "null"
@@ -1798,6 +2458,23 @@
           "to_timestamp"
         ],
         "title": "AudioReferenceMessage"
+      },
+      "Body_upload_train_knowledge_base": {
+        "properties": {
+          "files": {
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "type": "array",
+            "title": "Files"
+          }
+        },
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "title": "Body_upload_train_knowledge_base"
       },
       "Conversation": {
         "properties": {
@@ -1921,6 +2598,86 @@
       "ConversationSettings": {
         "properties": {
           "model_selection": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Model Selection",
+            "description": "The models to use for the conversation"
+          },
+          "temperature": {
+            "type": "number",
+            "title": "Temperature",
+            "description": "The temperature to use for the conversation",
+            "default": 0.4
+          },
+          "max_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Tokens",
+            "description": "The maximum number of tokens to use for the conversation"
+          },
+          "tools": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/WebResearchSettings"
+                },
+                {
+                  "$ref": "#/components/schemas/NoxusQaSettings"
+                },
+                {
+                  "$ref": "#/components/schemas/KnowledgeBaseSelectorSettings"
+                },
+                {
+                  "$ref": "#/components/schemas/KnowledgeBaseQaSettings"
+                },
+                {
+                  "$ref": "#/components/schemas/WorkflowSettings"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "kb_qa": "#/components/schemas/KnowledgeBaseQaSettings",
+                  "kb_selector": "#/components/schemas/KnowledgeBaseSelectorSettings",
+                  "noxus_qa": "#/components/schemas/NoxusQaSettings",
+                  "web_research": "#/components/schemas/WebResearchSettings",
+                  "workflow": "#/components/schemas/WorkflowSettings"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Tools",
+            "description": "The tools to use for the conversation",
+            "default": [
+              {
+                "name": "Web Research",
+                "description": "Search the web for information",
+                "enabled": true,
+                "type": "web_research"
+              },
+              {
+                "name": "Noxus Q&A",
+                "description": "Answer questions about the Noxus platform",
+                "enabled": true,
+                "type": "noxus_qa"
+              },
+              {
+                "name": "Select Knowledge Base Q&A",
+                "description": "Select a knowledge base to answer questions about",
+                "enabled": true,
+                "type": "kb_selector"
+              }
+            ]
+          },
+          "extra_instructions": {
             "anyOf": [
               {
                 "type": "string"
@@ -1929,13 +2686,8 @@
                 "type": "null"
               }
             ],
-            "title": "Model Selection",
-            "default": "spot-performance"
-          },
-          "web_search": {
-            "type": "boolean",
-            "title": "Web Search",
-            "default": false
+            "title": "Extra Instructions",
+            "description": "Extra instructions to use for the conversation"
           }
         },
         "type": "object",
@@ -2101,6 +2853,127 @@
               }
             ],
             "title": "Node Id"
+          },
+          "settings_": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/KnowledgeBaseSettings-Input"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": {
+              "allowed_sources": [
+                "Document",
+                "Google Drive",
+                "OneDrive",
+                "Website"
+              ],
+              "ingestion": {
+                "batch_size": 8,
+                "default_chunk_overlap": 256,
+                "default_chunk_size": 1024,
+                "enrich_chunks_mode": "inject_summary",
+                "enrich_pre_made_qa": false,
+                "methods": {
+                  "application/pdf": {
+                    "chunk_overlap": 256,
+                    "chunk_size": 1024,
+                    "enrich_chunks_mode": "inject_summary",
+                    "extract_images": true,
+                    "extract_qa_pairs": false,
+                    "supported_mime_types": [
+                      "application/pdf",
+                      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                      "application/msword",
+                      "application/vnd.ms-powerpoint"
+                    ],
+                    "type": "pdf"
+                  },
+                  "default": {
+                    "chunk_size": 1024,
+                    "chunk_overlap": 256,
+                    "enrich_chunks_mode": "inject_summary",
+                    "extract_qa_pairs": false,
+                    "type": "default",
+                    "supported_mime_types": [
+                      "text/plain",
+                      "text/html",
+                      "text/markdown",
+                      "application/json"
+                    ]
+                  },
+                  "image/*": {
+                    "supported_mime_types": [
+                      "image/jpeg",
+                      "image/png",
+                      "image/bmp"
+                    ],
+                    "type": "image"
+                  },
+                  "text/html": {
+                    "chunk_overlap": 256,
+                    "chunk_size": 1024,
+                    "enrich_chunks_mode": "inject_summary",
+                    "extract_qa_pairs": false,
+                    "extract_text_only": true,
+                    "include_images": false,
+                    "include_tables": true,
+                    "supported_mime_types": [
+                      "text/html"
+                    ],
+                    "type": "html"
+                  },
+                  "text/plain": {
+                    "chunk_overlap": 256,
+                    "chunk_size": 1024,
+                    "chunking": true,
+                    "enrich_chunks_mode": "inject_summary",
+                    "extract_qa_pairs": false,
+                    "preserve_formatting": true,
+                    "supported_mime_types": [
+                      "text/plain",
+                      "text/html",
+                      "text/markdown",
+                      "application/json"
+                    ],
+                    "type": "text"
+                  }
+                }
+              },
+              "retrieval": {
+                "hybrid_settings": {
+                  "fts_weight": 0.7,
+                  "full_text_search": {
+                    "type": "full_text_search"
+                  },
+                  "semantic_search": {
+                    "sets_threshold": false,
+                    "threshold": 0,
+                    "top_k": 25,
+                    "type": "semantic"
+                  },
+                  "semantic_weight": 0.3,
+                  "threshold": 0,
+                  "type": "hybrid_relative_score"
+                },
+                "reranker_settings": {
+                  "model_name": "semantic-ranker-512@latest",
+                  "ranking_config": "default_ranking_config",
+                  "sets_threshold": false,
+                  "threshold": 0,
+                  "top_k": 10,
+                  "type": "vertex"
+                },
+                "type": "hybrid_reranking"
+              },
+              "embeddings": {
+                "mm_model": "vertexai/multimodalembedding@001",
+                "text_model": "vertexai/text-multilingual-embedding-002"
+              }
+            }
           }
         },
         "type": "object",
@@ -2147,6 +3020,126 @@
           "input"
         ],
         "title": "CreateRunRequest"
+      },
+      "CustomSource": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "const": "Custom",
+            "title": "Source Type",
+            "default": "Custom"
+          },
+          "subtype": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtype"
+          },
+          "config_cls": {
+            "title": "Config Cls"
+          },
+          "config": {
+            "$ref": "#/components/schemas/CustomSourceConfig"
+          },
+          "integration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Integration"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image",
+            "default": "icon:Globe"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "Custom"
+          },
+          "exposed": {
+            "type": "boolean",
+            "title": "Exposed",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "config"
+        ],
+        "title": "CustomSource"
+      },
+      "CustomSourceConfig": {
+        "properties": {},
+        "additionalProperties": true,
+        "type": "object",
+        "title": "CustomSourceConfig"
+      },
+      "DefaultIngestionMethod": {
+        "properties": {
+          "chunk_size": {
+            "type": "integer",
+            "title": "Chunk Size",
+            "default": 1024
+          },
+          "chunk_overlap": {
+            "type": "integer",
+            "title": "Chunk Overlap",
+            "default": 256
+          },
+          "enrich_chunks_mode": {
+            "type": "string",
+            "enum": [
+              "inject_summary",
+              "contextual"
+            ],
+            "title": "Enrich Chunks Mode",
+            "default": "inject_summary"
+          },
+          "extract_qa_pairs": {
+            "type": "boolean",
+            "title": "Extract Qa Pairs",
+            "default": false
+          },
+          "type": {
+            "type": "string",
+            "const": "default",
+            "title": "Type",
+            "default": "default"
+          },
+          "supported_mime_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supported Mime Types",
+            "default": [
+              "text/plain",
+              "text/html",
+              "text/markdown",
+              "application/json"
+            ]
+          }
+        },
+        "type": "object",
+        "title": "DefaultIngestionMethod"
       },
       "DocumentReferenceMessage": {
         "properties": {
@@ -2228,6 +3221,84 @@
         ],
         "title": "DocumentReferenceMessage"
       },
+      "DocumentSource": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "const": "Document",
+            "title": "Source Type",
+            "default": "Document"
+          },
+          "subtype": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtype"
+          },
+          "config_cls": {
+            "title": "Config Cls"
+          },
+          "config": {
+            "$ref": "#/components/schemas/DocumentSourceConfig"
+          },
+          "integration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Integration"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image",
+            "default": ""
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "File"
+          },
+          "exposed": {
+            "type": "boolean",
+            "title": "Exposed",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "config"
+        ],
+        "title": "DocumentSource"
+      },
+      "DocumentSourceConfig": {
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/File"
+            },
+            "type": "array",
+            "title": "Files",
+            "display": {
+              "col_span": 12,
+              "is_disabled": false,
+              "is_subconfig": false,
+              "label": "Files",
+              "type": "file_array"
+            }
+          }
+        },
+        "type": "object",
+        "title": "DocumentSourceConfig"
+      },
       "DocumentStatus": {
         "type": "string",
         "enum": [
@@ -2258,6 +3329,24 @@
           "completed"
         ],
         "title": "EdgeStatus"
+      },
+      "EmbeddingsSettings": {
+        "properties": {
+          "text_model": {
+            "type": "string",
+            "const": "vertexai/text-multilingual-embedding-002",
+            "title": "Text Model",
+            "default": "vertexai/text-multilingual-embedding-002"
+          },
+          "mm_model": {
+            "type": "string",
+            "const": "vertexai/multimodalembedding@001",
+            "title": "Mm Model",
+            "default": "vertexai/multimodalembedding@001"
+          }
+        },
+        "type": "object",
+        "title": "EmbeddingsSettings"
       },
       "ErrorMessage": {
         "properties": {
@@ -2298,6 +3387,68 @@
         ],
         "title": "ErrorMessage"
       },
+      "File": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "uri": {
+            "type": "string",
+            "title": "Uri"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type",
+            "default": "text/plain"
+          },
+          "source_type": {
+            "$ref": "#/components/schemas/SourceType",
+            "default": "Document"
+          },
+          "source_metadata": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Metadata"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "required": [
+          "uri",
+          "name"
+        ],
+        "title": "File"
+      },
+      "FullTextSearchMethod": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "full_text_search",
+            "title": "Type",
+            "default": "full_text_search"
+          }
+        },
+        "type": "object",
+        "title": "FullTextSearchMethod"
+      },
       "FunctionCallData": {
         "properties": {
           "name": {
@@ -2316,6 +3467,215 @@
         ],
         "title": "FunctionCallData"
       },
+      "GoogleDriveSource": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "const": "Google Drive",
+            "title": "Source Type",
+            "default": "Google Drive"
+          },
+          "subtype": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtype"
+          },
+          "config_cls": {
+            "title": "Config Cls"
+          },
+          "config": {
+            "$ref": "#/components/schemas/GoogleDriveSourceConfig"
+          },
+          "integration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Integration",
+            "default": "gdrive"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image",
+            "default": "https://storage.googleapis.com/image-storage-spot-manual/logos/google-drive.svg"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "Google Drive"
+          },
+          "exposed": {
+            "type": "boolean",
+            "title": "Exposed",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "config"
+        ],
+        "title": "GoogleDriveSource"
+      },
+      "GoogleDriveSourceConfig": {
+        "properties": {
+          "text_display_1": {
+            "type": "string",
+            "title": "Text Display 1",
+            "default": "",
+            "display": {
+              "col_span": 12,
+              "is_disabled": false,
+              "is_subconfig": false,
+              "label": "",
+              "text": "",
+              "title": "Select files to add to knowledge base",
+              "type": "ui_text_display"
+            }
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/GoogleFile"
+            },
+            "type": "array",
+            "title": "Files",
+            "description": "File or folder to read",
+            "display": {
+              "col_span": 12,
+              "file_type": "application/pdf,text/plain,application/vnd.google-apps.document,application/vnd.google-apps.presentation,application/json,application/vnd.google-apps.folder,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation",
+              "is_disabled": false,
+              "is_subconfig": false,
+              "label": "Path(s)",
+              "multi_select": true,
+              "setIncludeFolders": false,
+              "type": "gdrive_picker"
+            },
+            "placeholder": {
+              "id": "123",
+              "name": "123"
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "title": "GoogleDriveSourceConfig"
+      },
+      "GoogleFile": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mime Type"
+          },
+          "image": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "GoogleFile"
+      },
+      "HTMLIngestionMethod": {
+        "properties": {
+          "chunk_size": {
+            "type": "integer",
+            "maximum": 10240,
+            "minimum": 1,
+            "title": "Chunk Size",
+            "default": 1024
+          },
+          "chunk_overlap": {
+            "type": "integer",
+            "maximum": 1024,
+            "minimum": 1,
+            "title": "Chunk Overlap",
+            "default": 256
+          },
+          "enrich_chunks_mode": {
+            "type": "string",
+            "enum": [
+              "inject_summary",
+              "contextual"
+            ],
+            "title": "Enrich Chunks Mode",
+            "default": "inject_summary"
+          },
+          "extract_qa_pairs": {
+            "type": "boolean",
+            "title": "Extract Qa Pairs",
+            "default": false
+          },
+          "type": {
+            "type": "string",
+            "const": "html",
+            "title": "Type",
+            "default": "html"
+          },
+          "supported_mime_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supported Mime Types",
+            "default": [
+              "text/html"
+            ]
+          },
+          "extract_text_only": {
+            "type": "boolean",
+            "title": "Extract Text Only",
+            "default": true
+          },
+          "include_tables": {
+            "type": "boolean",
+            "title": "Include Tables",
+            "default": true
+          },
+          "include_images": {
+            "type": "boolean",
+            "title": "Include Images",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "HTMLIngestionMethod"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -2328,6 +3688,175 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "HybridRerankingSettings-Input": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "hybrid_reranking",
+            "title": "Type",
+            "default": "hybrid_reranking"
+          },
+          "hybrid_settings": {
+            "$ref": "#/components/schemas/HybridSearchMethod",
+            "default": {
+              "type": "hybrid_relative_score",
+              "threshold": 0,
+              "fts_weight": 0.7,
+              "semantic_weight": 0.3,
+              "full_text_search": {
+                "type": "full_text_search"
+              },
+              "semantic_search": {
+                "sets_threshold": false,
+                "threshold": 0,
+                "top_k": 25,
+                "type": "semantic"
+              }
+            }
+          },
+          "reranker_settings": {
+            "$ref": "#/components/schemas/VertexRerankingOpts",
+            "default": {
+              "type": "vertex",
+              "model_name": "semantic-ranker-512@latest",
+              "ranking_config": "default_ranking_config",
+              "top_k": 10,
+              "sets_threshold": false,
+              "threshold": 0
+            }
+          }
+        },
+        "type": "object",
+        "title": "HybridRerankingSettings"
+      },
+      "HybridRerankingSettings-Output": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "hybrid_reranking",
+            "title": "Type",
+            "default": "hybrid_reranking"
+          },
+          "hybrid_settings": {
+            "$ref": "#/components/schemas/HybridSearchMethod",
+            "default": {
+              "type": "hybrid_relative_score",
+              "threshold": 0,
+              "fts_weight": 0.7,
+              "semantic_weight": 0.3,
+              "full_text_search": {
+                "type": "full_text_search"
+              },
+              "semantic_search": {
+                "sets_threshold": false,
+                "threshold": 0,
+                "top_k": 25,
+                "type": "semantic"
+              }
+            }
+          },
+          "reranker_settings": {
+            "$ref": "#/components/schemas/VertexRerankingOpts",
+            "default": {
+              "type": "vertex",
+              "model_name": "semantic-ranker-512@latest",
+              "ranking_config": "default_ranking_config",
+              "top_k": 10,
+              "sets_threshold": false,
+              "threshold": 0
+            }
+          }
+        },
+        "type": "object",
+        "title": "HybridRerankingSettings"
+      },
+      "HybridSearchMethod": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "hybrid_relative_score",
+            "title": "Type",
+            "default": "hybrid_relative_score"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold",
+            "default": 0
+          },
+          "fts_weight": {
+            "type": "number",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Fts Weight",
+            "default": 0.7
+          },
+          "semantic_weight": {
+            "type": "number",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Semantic Weight",
+            "default": 0.3
+          },
+          "full_text_search": {
+            "$ref": "#/components/schemas/FullTextSearchMethod",
+            "default": {
+              "type": "full_text_search"
+            }
+          },
+          "semantic_search": {
+            "$ref": "#/components/schemas/SemanticSearchMethod",
+            "default": {
+              "type": "semantic",
+              "sets_threshold": false,
+              "threshold": 0,
+              "top_k": 25
+            }
+          }
+        },
+        "type": "object",
+        "title": "HybridSearchMethod"
+      },
+      "ImageIngestionMethod": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "image",
+            "title": "Type",
+            "default": "image"
+          },
+          "supported_mime_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supported Mime Types",
+            "default": [
+              "image/jpeg",
+              "image/png",
+              "image/bmp"
+            ]
+          },
+          "ocr_settings": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OCRSettings"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "ImageIngestionMethod"
       },
       "ImageReferenceMessage": {
         "properties": {
@@ -2408,6 +3937,286 @@
           "content"
         ],
         "title": "InfoMessage"
+      },
+      "IngestionSettings-Input": {
+        "properties": {
+          "batch_size": {
+            "type": "integer",
+            "maximum": 128,
+            "minimum": 1,
+            "title": "Batch Size",
+            "default": 8
+          },
+          "default_chunk_size": {
+            "type": "integer",
+            "maximum": 4096,
+            "minimum": 1,
+            "title": "Default Chunk Size",
+            "default": 1024
+          },
+          "default_chunk_overlap": {
+            "type": "integer",
+            "maximum": 1024,
+            "minimum": 1,
+            "title": "Default Chunk Overlap",
+            "default": 256
+          },
+          "enrich_chunks_mode": {
+            "type": "string",
+            "enum": [
+              "inject_summary",
+              "contextual"
+            ],
+            "title": "Enrich Chunks Mode",
+            "default": "inject_summary"
+          },
+          "enrich_pre_made_qa": {
+            "type": "boolean",
+            "title": "Enrich Pre Made Qa",
+            "default": false
+          },
+          "methods": {
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DefaultIngestionMethod"
+                },
+                {
+                  "$ref": "#/components/schemas/PDFIngestionMethod"
+                },
+                {
+                  "$ref": "#/components/schemas/ImageIngestionMethod"
+                },
+                {
+                  "$ref": "#/components/schemas/HTMLIngestionMethod"
+                },
+                {
+                  "$ref": "#/components/schemas/TextIngestionMethod"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "default": "#/components/schemas/DefaultIngestionMethod",
+                  "html": "#/components/schemas/HTMLIngestionMethod",
+                  "image": "#/components/schemas/ImageIngestionMethod",
+                  "pdf": "#/components/schemas/PDFIngestionMethod",
+                  "text": "#/components/schemas/TextIngestionMethod"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Methods",
+            "default": {
+              "application/pdf": {
+                "chunk_overlap": 256,
+                "chunk_size": 1024,
+                "enrich_chunks_mode": "inject_summary",
+                "extract_images": true,
+                "extract_qa_pairs": false,
+                "supported_mime_types": [
+                  "application/pdf",
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                  "application/msword",
+                  "application/vnd.ms-powerpoint"
+                ],
+                "type": "pdf"
+              },
+              "image/*": {
+                "supported_mime_types": [
+                  "image/jpeg",
+                  "image/png",
+                  "image/bmp"
+                ],
+                "type": "image"
+              },
+              "text/html": {
+                "chunk_overlap": 256,
+                "chunk_size": 1024,
+                "enrich_chunks_mode": "inject_summary",
+                "extract_qa_pairs": false,
+                "extract_text_only": true,
+                "include_images": false,
+                "include_tables": true,
+                "supported_mime_types": [
+                  "text/html"
+                ],
+                "type": "html"
+              },
+              "text/plain": {
+                "chunk_overlap": 256,
+                "chunk_size": 1024,
+                "chunking": true,
+                "enrich_chunks_mode": "inject_summary",
+                "extract_qa_pairs": false,
+                "preserve_formatting": true,
+                "supported_mime_types": [
+                  "text/plain",
+                  "text/html",
+                  "text/markdown",
+                  "application/json"
+                ],
+                "type": "text"
+              },
+              "default": {
+                "chunk_size": 1024,
+                "chunk_overlap": 256,
+                "enrich_chunks_mode": "inject_summary",
+                "extract_qa_pairs": false,
+                "type": "default",
+                "supported_mime_types": [
+                  "text/plain",
+                  "text/html",
+                  "text/markdown",
+                  "application/json"
+                ]
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "IngestionSettings"
+      },
+      "IngestionSettings-Output": {
+        "properties": {
+          "batch_size": {
+            "type": "integer",
+            "maximum": 128,
+            "minimum": 1,
+            "title": "Batch Size",
+            "default": 8
+          },
+          "default_chunk_size": {
+            "type": "integer",
+            "maximum": 4096,
+            "minimum": 1,
+            "title": "Default Chunk Size",
+            "default": 1024
+          },
+          "default_chunk_overlap": {
+            "type": "integer",
+            "maximum": 1024,
+            "minimum": 1,
+            "title": "Default Chunk Overlap",
+            "default": 256
+          },
+          "enrich_chunks_mode": {
+            "type": "string",
+            "enum": [
+              "inject_summary",
+              "contextual"
+            ],
+            "title": "Enrich Chunks Mode",
+            "default": "inject_summary"
+          },
+          "enrich_pre_made_qa": {
+            "type": "boolean",
+            "title": "Enrich Pre Made Qa",
+            "default": false
+          },
+          "methods": {
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DefaultIngestionMethod"
+                },
+                {
+                  "$ref": "#/components/schemas/PDFIngestionMethod"
+                },
+                {
+                  "$ref": "#/components/schemas/ImageIngestionMethod"
+                },
+                {
+                  "$ref": "#/components/schemas/HTMLIngestionMethod"
+                },
+                {
+                  "$ref": "#/components/schemas/TextIngestionMethod"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "default": "#/components/schemas/DefaultIngestionMethod",
+                  "html": "#/components/schemas/HTMLIngestionMethod",
+                  "image": "#/components/schemas/ImageIngestionMethod",
+                  "pdf": "#/components/schemas/PDFIngestionMethod",
+                  "text": "#/components/schemas/TextIngestionMethod"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Methods",
+            "default": {
+              "application/pdf": {
+                "chunk_overlap": 256,
+                "chunk_size": 1024,
+                "enrich_chunks_mode": "inject_summary",
+                "extract_images": true,
+                "extract_qa_pairs": false,
+                "supported_mime_types": [
+                  "application/pdf",
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                  "application/msword",
+                  "application/vnd.ms-powerpoint"
+                ],
+                "type": "pdf"
+              },
+              "image/*": {
+                "supported_mime_types": [
+                  "image/jpeg",
+                  "image/png",
+                  "image/bmp"
+                ],
+                "type": "image"
+              },
+              "text/html": {
+                "chunk_overlap": 256,
+                "chunk_size": 1024,
+                "enrich_chunks_mode": "inject_summary",
+                "extract_qa_pairs": false,
+                "extract_text_only": true,
+                "include_images": false,
+                "include_tables": true,
+                "supported_mime_types": [
+                  "text/html"
+                ],
+                "type": "html"
+              },
+              "text/plain": {
+                "chunk_overlap": 256,
+                "chunk_size": 1024,
+                "chunking": true,
+                "enrich_chunks_mode": "inject_summary",
+                "extract_qa_pairs": false,
+                "preserve_formatting": true,
+                "supported_mime_types": [
+                  "text/plain",
+                  "text/html",
+                  "text/markdown",
+                  "application/json"
+                ],
+                "type": "text"
+              },
+              "default": {
+                "chunk_size": 1024,
+                "chunk_overlap": 256,
+                "enrich_chunks_mode": "inject_summary",
+                "extract_qa_pairs": false,
+                "type": "default",
+                "supported_mime_types": [
+                  "text/plain",
+                  "text/html",
+                  "text/markdown",
+                  "application/json"
+                ]
+              }
+            }
+          }
+        },
+        "type": "object",
+        "title": "IngestionSettings"
       },
       "InternalToolResultMessage": {
         "properties": {
@@ -2633,6 +4442,551 @@
         ],
         "title": "KnowledgeBaseDocument"
       },
+      "KnowledgeBaseDocumentTree": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DocumentStatus"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "prefix": {
+            "type": "string",
+            "title": "Prefix"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "name",
+          "prefix"
+        ],
+        "title": "KnowledgeBaseDocumentTree"
+      },
+      "KnowledgeBaseInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "KnowledgeBaseInfo"
+      },
+      "KnowledgeBaseQaSettings": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "Knowledge Base Q&A"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": "Answer questions about the knowledge base"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": true
+          },
+          "extra_instructions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extra Instructions"
+          },
+          "type": {
+            "type": "string",
+            "const": "kb_qa",
+            "title": "Type",
+            "default": "kb_qa"
+          },
+          "knowledge_base": {
+            "$ref": "#/components/schemas/KnowledgeBaseInfo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "knowledge_base"
+        ],
+        "title": "KnowledgeBaseQaSettings",
+        "description": "Tool that allows the user to answer questions about a specific pre-selected knowledge base"
+      },
+      "KnowledgeBaseSelectorSettings": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "Select Knowledge Base Q&A"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": "Select a knowledge base to answer questions about"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": true
+          },
+          "extra_instructions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extra Instructions"
+          },
+          "type": {
+            "type": "string",
+            "const": "kb_selector",
+            "title": "Type",
+            "default": "kb_selector"
+          },
+          "kb_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kb Id",
+            "description": "The ID of the knowledge base to answer questions about. Comes unselected, and should be selected by the user."
+          },
+          "knowledge_base": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/KnowledgeBaseInfo"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The knowledge base to answer questions about. Comes unselected, and should be selected by the user."
+          }
+        },
+        "type": "object",
+        "title": "KnowledgeBaseSelectorSettings",
+        "description": "Tool that allows the user to select a knowledge base to answer questions about"
+      },
+      "KnowledgeBaseSettings-Input": {
+        "properties": {
+          "allowed_sources": {
+            "items": {
+              "$ref": "#/components/schemas/SourceType"
+            },
+            "type": "array",
+            "title": "Allowed Sources",
+            "default": [
+              "Document",
+              "Google Drive",
+              "OneDrive",
+              "Website"
+            ]
+          },
+          "ingestion": {
+            "$ref": "#/components/schemas/IngestionSettings-Input",
+            "default": {
+              "batch_size": 8,
+              "default_chunk_size": 1024,
+              "default_chunk_overlap": 256,
+              "enrich_chunks_mode": "inject_summary",
+              "enrich_pre_made_qa": false,
+              "methods": {
+                "application/pdf": {
+                  "chunk_overlap": 256,
+                  "chunk_size": 1024,
+                  "enrich_chunks_mode": "inject_summary",
+                  "extract_images": true,
+                  "extract_qa_pairs": false,
+                  "supported_mime_types": [
+                    "application/pdf",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    "application/msword",
+                    "application/vnd.ms-powerpoint"
+                  ],
+                  "type": "pdf"
+                },
+                "default": {
+                  "chunk_size": 1024,
+                  "chunk_overlap": 256,
+                  "enrich_chunks_mode": "inject_summary",
+                  "extract_qa_pairs": false,
+                  "type": "default",
+                  "supported_mime_types": [
+                    "text/plain",
+                    "text/html",
+                    "text/markdown",
+                    "application/json"
+                  ]
+                },
+                "image/*": {
+                  "supported_mime_types": [
+                    "image/jpeg",
+                    "image/png",
+                    "image/bmp"
+                  ],
+                  "type": "image"
+                },
+                "text/html": {
+                  "chunk_overlap": 256,
+                  "chunk_size": 1024,
+                  "enrich_chunks_mode": "inject_summary",
+                  "extract_qa_pairs": false,
+                  "extract_text_only": true,
+                  "include_images": false,
+                  "include_tables": true,
+                  "supported_mime_types": [
+                    "text/html"
+                  ],
+                  "type": "html"
+                },
+                "text/plain": {
+                  "chunk_overlap": 256,
+                  "chunk_size": 1024,
+                  "chunking": true,
+                  "enrich_chunks_mode": "inject_summary",
+                  "extract_qa_pairs": false,
+                  "preserve_formatting": true,
+                  "supported_mime_types": [
+                    "text/plain",
+                    "text/html",
+                    "text/markdown",
+                    "application/json"
+                  ],
+                  "type": "text"
+                }
+              }
+            }
+          },
+          "retrieval": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FullTextSearchMethod"
+              },
+              {
+                "$ref": "#/components/schemas/SemanticSearchMethod"
+              },
+              {
+                "$ref": "#/components/schemas/HybridSearchMethod"
+              },
+              {
+                "$ref": "#/components/schemas/HybridRerankingSettings-Input"
+              }
+            ],
+            "title": "Retrieval",
+            "default": {
+              "type": "hybrid_reranking",
+              "hybrid_settings": {
+                "fts_weight": 0.7,
+                "full_text_search": {
+                  "type": "full_text_search"
+                },
+                "semantic_search": {
+                  "sets_threshold": false,
+                  "threshold": 0,
+                  "top_k": 25,
+                  "type": "semantic"
+                },
+                "semantic_weight": 0.3,
+                "threshold": 0,
+                "type": "hybrid_relative_score"
+              },
+              "reranker_settings": {
+                "model_name": "semantic-ranker-512@latest",
+                "ranking_config": "default_ranking_config",
+                "sets_threshold": false,
+                "threshold": 0,
+                "top_k": 10,
+                "type": "vertex"
+              }
+            },
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "full_text_search": "#/components/schemas/FullTextSearchMethod",
+                "hybrid_relative_score": "#/components/schemas/HybridSearchMethod",
+                "hybrid_reranking": "#/components/schemas/HybridRerankingSettings-Input",
+                "semantic": "#/components/schemas/SemanticSearchMethod"
+              }
+            }
+          },
+          "embeddings": {
+            "$ref": "#/components/schemas/EmbeddingsSettings",
+            "default": {
+              "text_model": "vertexai/text-multilingual-embedding-002",
+              "mm_model": "vertexai/multimodalembedding@001"
+            }
+          }
+        },
+        "type": "object",
+        "title": "KnowledgeBaseSettings"
+      },
+      "KnowledgeBaseSettings-Output": {
+        "properties": {
+          "allowed_sources": {
+            "items": {
+              "$ref": "#/components/schemas/SourceType"
+            },
+            "type": "array",
+            "title": "Allowed Sources",
+            "default": [
+              "Document",
+              "Google Drive",
+              "OneDrive",
+              "Website"
+            ]
+          },
+          "ingestion": {
+            "$ref": "#/components/schemas/IngestionSettings-Output",
+            "default": {
+              "batch_size": 8,
+              "default_chunk_size": 1024,
+              "default_chunk_overlap": 256,
+              "enrich_chunks_mode": "inject_summary",
+              "enrich_pre_made_qa": false,
+              "methods": {
+                "application/pdf": {
+                  "chunk_overlap": 256,
+                  "chunk_size": 1024,
+                  "enrich_chunks_mode": "inject_summary",
+                  "extract_images": true,
+                  "extract_qa_pairs": false,
+                  "supported_mime_types": [
+                    "application/pdf",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    "application/msword",
+                    "application/vnd.ms-powerpoint"
+                  ],
+                  "type": "pdf"
+                },
+                "default": {
+                  "chunk_size": 1024,
+                  "chunk_overlap": 256,
+                  "enrich_chunks_mode": "inject_summary",
+                  "extract_qa_pairs": false,
+                  "type": "default",
+                  "supported_mime_types": [
+                    "text/plain",
+                    "text/html",
+                    "text/markdown",
+                    "application/json"
+                  ]
+                },
+                "image/*": {
+                  "supported_mime_types": [
+                    "image/jpeg",
+                    "image/png",
+                    "image/bmp"
+                  ],
+                  "type": "image"
+                },
+                "text/html": {
+                  "chunk_overlap": 256,
+                  "chunk_size": 1024,
+                  "enrich_chunks_mode": "inject_summary",
+                  "extract_qa_pairs": false,
+                  "extract_text_only": true,
+                  "include_images": false,
+                  "include_tables": true,
+                  "supported_mime_types": [
+                    "text/html"
+                  ],
+                  "type": "html"
+                },
+                "text/plain": {
+                  "chunk_overlap": 256,
+                  "chunk_size": 1024,
+                  "chunking": true,
+                  "enrich_chunks_mode": "inject_summary",
+                  "extract_qa_pairs": false,
+                  "preserve_formatting": true,
+                  "supported_mime_types": [
+                    "text/plain",
+                    "text/html",
+                    "text/markdown",
+                    "application/json"
+                  ],
+                  "type": "text"
+                }
+              }
+            }
+          },
+          "retrieval": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FullTextSearchMethod"
+              },
+              {
+                "$ref": "#/components/schemas/SemanticSearchMethod"
+              },
+              {
+                "$ref": "#/components/schemas/HybridSearchMethod"
+              },
+              {
+                "$ref": "#/components/schemas/HybridRerankingSettings-Output"
+              }
+            ],
+            "title": "Retrieval",
+            "default": {
+              "type": "hybrid_reranking",
+              "hybrid_settings": {
+                "fts_weight": 0.7,
+                "full_text_search": {
+                  "type": "full_text_search"
+                },
+                "semantic_search": {
+                  "sets_threshold": false,
+                  "threshold": 0,
+                  "top_k": 25,
+                  "type": "semantic"
+                },
+                "semantic_weight": 0.3,
+                "threshold": 0,
+                "type": "hybrid_relative_score"
+              },
+              "reranker_settings": {
+                "model_name": "semantic-ranker-512@latest",
+                "ranking_config": "default_ranking_config",
+                "sets_threshold": false,
+                "threshold": 0,
+                "top_k": 10,
+                "type": "vertex"
+              }
+            },
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "full_text_search": "#/components/schemas/FullTextSearchMethod",
+                "hybrid_relative_score": "#/components/schemas/HybridSearchMethod",
+                "hybrid_reranking": "#/components/schemas/HybridRerankingSettings-Output",
+                "semantic": "#/components/schemas/SemanticSearchMethod"
+              }
+            }
+          },
+          "embeddings": {
+            "$ref": "#/components/schemas/EmbeddingsSettings",
+            "default": {
+              "text_model": "vertexai/text-multilingual-embedding-002",
+              "mm_model": "vertexai/multimodalembedding@001"
+            }
+          }
+        },
+        "type": "object",
+        "title": "KnowledgeBaseSettings"
+      },
+      "KnowledgeBaseType": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image"
+          },
+          "integration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Integration"
+          },
+          "subtype": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtype"
+          },
+          "config": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config"
+          },
+          "exposed": {
+            "type": "boolean",
+            "title": "Exposed",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "source_type",
+          "name",
+          "image"
+        ],
+        "title": "KnowledgeBaseType"
+      },
       "KnowledgeBaseV2": {
         "properties": {
           "id": {
@@ -2731,6 +5085,16 @@
             },
             "type": "array",
             "title": "Training Source Types"
+          },
+          "settings_": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/KnowledgeBaseSettings-Output"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -2756,6 +5120,148 @@
           "training_source_types"
         ],
         "title": "KnowledgeBaseV2"
+      },
+      "KnowledgeBaseWithDocuments": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "group_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Group Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TrainStatus"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "document_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Document Types"
+          },
+          "kb_type": {
+            "$ref": "#/components/schemas/KBType"
+          },
+          "size": {
+            "type": "number",
+            "title": "Size"
+          },
+          "num_docs": {
+            "type": "integer",
+            "title": "Num Docs"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "total_documents": {
+            "type": "integer",
+            "title": "Total Documents"
+          },
+          "training_documents": {
+            "type": "integer",
+            "title": "Training Documents"
+          },
+          "trained_documents": {
+            "type": "integer",
+            "title": "Trained Documents"
+          },
+          "error_documents": {
+            "type": "integer",
+            "title": "Error Documents"
+          },
+          "uploaded_documents": {
+            "type": "integer",
+            "title": "Uploaded Documents"
+          },
+          "source_types": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/SourceType"
+            },
+            "type": "object",
+            "title": "Source Types"
+          },
+          "training_source_types": {
+            "items": {
+              "$ref": "#/components/schemas/SourceType"
+            },
+            "type": "array",
+            "title": "Training Source Types"
+          },
+          "settings_": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/KnowledgeBaseSettings-Output"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/KnowledgeBaseDocument"
+            },
+            "type": "array",
+            "title": "Documents",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "group_id",
+          "name",
+          "status",
+          "description",
+          "document_types",
+          "kb_type",
+          "size",
+          "num_docs",
+          "created_at",
+          "updated_at",
+          "error",
+          "total_documents",
+          "training_documents",
+          "trained_documents",
+          "error_documents",
+          "uploaded_documents",
+          "source_types",
+          "training_source_types"
+        ],
+        "title": "KnowledgeBaseWithDocuments"
       },
       "MarkdownMessage": {
         "properties": {
@@ -2851,6 +5357,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/InternalToolResultMessage"
+                },
+                {
+                  "$ref": "#/components/schemas/YoutubeReferenceMessage"
                 }
               ],
               "discriminator": {
@@ -2874,7 +5383,8 @@
                   "user": "#/components/schemas/UserMessage",
                   "video": "#/components/schemas/VideoReferenceMessage",
                   "warning": "#/components/schemas/WarningMessage",
-                  "web_reference": "#/components/schemas/WebReferenceMessage"
+                  "web_reference": "#/components/schemas/WebReferenceMessage",
+                  "youtube_reference": "#/components/schemas/YoutubeReferenceMessage"
                 }
               }
             },
@@ -2968,6 +5478,301 @@
         ],
         "title": "NodeStatus"
       },
+      "NoxusQaSettings": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "Noxus Q&A"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": "Answer questions about the Noxus platform"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": true
+          },
+          "extra_instructions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extra Instructions"
+          },
+          "type": {
+            "type": "string",
+            "const": "noxus_qa",
+            "title": "Type",
+            "default": "noxus_qa"
+          }
+        },
+        "type": "object",
+        "title": "NoxusQaSettings"
+      },
+      "OCRSettings": {
+        "properties": {
+          "confidence_threshold": {
+            "type": "number",
+            "title": "Confidence Threshold",
+            "default": 0.7
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          }
+        },
+        "type": "object",
+        "title": "OCRSettings"
+      },
+      "OneDriveFile": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mime Type"
+          },
+          "image": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "drive_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Drive Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "OneDriveFile"
+      },
+      "OneDriveSource": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "const": "OneDrive",
+            "title": "Source Type",
+            "default": "OneDrive"
+          },
+          "subtype": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtype"
+          },
+          "config_cls": {
+            "title": "Config Cls"
+          },
+          "config": {
+            "$ref": "#/components/schemas/OneDriveSourceConfig"
+          },
+          "integration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Integration",
+            "default": "onedrive"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image",
+            "default": "https://storage.googleapis.com/image-storage-spot-manual/logos/onedrive.png"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "OneDrive"
+          },
+          "exposed": {
+            "type": "boolean",
+            "title": "Exposed",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "config"
+        ],
+        "title": "OneDriveSource"
+      },
+      "OneDriveSourceConfig": {
+        "properties": {
+          "text_display_1": {
+            "type": "string",
+            "title": "Text Display 1",
+            "default": "",
+            "display": {
+              "col_span": 12,
+              "is_disabled": false,
+              "is_subconfig": false,
+              "label": "",
+              "text": "",
+              "title": "Select files to add to knowledge base",
+              "type": "ui_text_display"
+            }
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/OneDriveFile"
+            },
+            "type": "array",
+            "title": "Files",
+            "description": "Document to read",
+            "display": {
+              "col_span": 12,
+              "file_type": "folder",
+              "is_disabled": false,
+              "is_subconfig": false,
+              "label": "",
+              "multi_select": true,
+              "name": "OneDrive",
+              "set_include_folders": true,
+              "type": "onedrive_picker"
+            },
+            "placeholder": [
+              {
+                "id": "123",
+                "image": "123",
+                "name": "123"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "title": "OneDriveSourceConfig"
+      },
+      "PDFIngestionMethod": {
+        "properties": {
+          "chunk_size": {
+            "type": "integer",
+            "title": "Chunk Size",
+            "default": 1024
+          },
+          "chunk_overlap": {
+            "type": "integer",
+            "title": "Chunk Overlap",
+            "default": 256
+          },
+          "enrich_chunks_mode": {
+            "type": "string",
+            "enum": [
+              "inject_summary",
+              "contextual"
+            ],
+            "title": "Enrich Chunks Mode",
+            "default": "inject_summary"
+          },
+          "extract_qa_pairs": {
+            "type": "boolean",
+            "title": "Extract Qa Pairs",
+            "default": false
+          },
+          "type": {
+            "type": "string",
+            "const": "pdf",
+            "title": "Type",
+            "default": "pdf"
+          },
+          "supported_mime_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supported Mime Types",
+            "default": [
+              "application/pdf",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+              "application/msword",
+              "application/vnd.ms-powerpoint"
+            ]
+          },
+          "ocr_settings": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OCRSettings"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "extract_images": {
+            "type": "boolean",
+            "title": "Extract Images",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "PDFIngestionMethod"
+      },
       "Page_Conversation_": {
         "properties": {
           "items": {
@@ -3008,6 +5813,73 @@
         ],
         "title": "Page[Conversation]"
       },
+      "Page_KnowledgeBaseDocumentTree_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/KnowledgeBaseDocumentTree"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size"
+          },
+          "pages": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "size"
+        ],
+        "title": "Page[KnowledgeBaseDocumentTree]"
+      },
       "Page_KnowledgeBaseDocument_": {
         "properties": {
           "items": {
@@ -3018,23 +5890,51 @@
             "title": "Items"
           },
           "total": {
-            "type": "integer",
-            "minimum": 0,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Total"
           },
           "page": {
-            "type": "integer",
-            "minimum": 1,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Page"
           },
           "size": {
-            "type": "integer",
-            "minimum": 1,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Size"
           },
           "pages": {
-            "type": "integer",
-            "minimum": 0,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Pages"
           }
         },
@@ -3043,8 +5943,7 @@
           "items",
           "total",
           "page",
-          "size",
-          "pages"
+          "size"
         ],
         "title": "Page[KnowledgeBaseDocument]"
       },
@@ -3058,23 +5957,51 @@
             "title": "Items"
           },
           "total": {
-            "type": "integer",
-            "minimum": 0,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Total"
           },
           "page": {
-            "type": "integer",
-            "minimum": 1,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Page"
           },
           "size": {
-            "type": "integer",
-            "minimum": 1,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Size"
           },
           "pages": {
-            "type": "integer",
-            "minimum": 0,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Pages"
           }
         },
@@ -3083,8 +6010,7 @@
           "items",
           "total",
           "page",
-          "size",
-          "pages"
+          "size"
         ],
         "title": "Page[KnowledgeBaseV2]"
       },
@@ -3329,6 +6255,150 @@
         ],
         "title": "Page[WorkflowWithTriggers]"
       },
+      "Run": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "group_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Group Id"
+          },
+          "workflow_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Workflow Id"
+          },
+          "input": {
+            "type": "object",
+            "title": "Input"
+          },
+          "output": {
+            "type": "object",
+            "title": "Output"
+          },
+          "node_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node Ids"
+          },
+          "workflow_definition": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workflow Definition"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RunStatus"
+          },
+          "progress": {
+            "type": "integer",
+            "title": "Progress",
+            "default": 0
+          },
+          "progress_details": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WorkflowProgress"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "definitions": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Definitions"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "workflow": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Workflow"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "group_id",
+          "workflow_id",
+          "input",
+          "output",
+          "status",
+          "created_at"
+        ],
+        "title": "Run"
+      },
       "RunData": {
         "properties": {
           "created_at": {
@@ -3564,6 +6634,17 @@
             ],
             "title": "Node Ids"
           },
+          "workflow_definition": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workflow Definition"
+          },
           "status": {
             "$ref": "#/components/schemas/RunStatus"
           },
@@ -3657,6 +6738,17 @@
             "type": "number",
             "title": "Similarity",
             "default": 0
+          },
+          "matches": {
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Matches",
+            "default": []
           }
         },
         "type": "object",
@@ -3693,6 +6785,16 @@
             "type": "integer",
             "title": "Offset",
             "default": 0
+          },
+          "context_size": {
+            "type": "integer",
+            "title": "Context Size",
+            "default": 30
+          },
+          "max_matches_per_run": {
+            "type": "integer",
+            "title": "Max Matches Per Run",
+            "default": 5
           }
         },
         "type": "object",
@@ -3700,6 +6802,37 @@
           "query"
         ],
         "title": "SearchRunRequest"
+      },
+      "SemanticSearchMethod": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "semantic",
+            "title": "Type",
+            "default": "semantic"
+          },
+          "sets_threshold": {
+            "type": "boolean",
+            "title": "Sets Threshold",
+            "default": false
+          },
+          "threshold": {
+            "type": "number",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Threshold",
+            "default": 0
+          },
+          "top_k": {
+            "type": "integer",
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Top K",
+            "default": 25
+          }
+        },
+        "type": "object",
+        "title": "SemanticSearchMethod"
       },
       "SetConversationTitle": {
         "properties": {
@@ -3723,6 +6856,114 @@
           "content"
         ],
         "title": "SetConversationTitle"
+      },
+      "SharepointSource": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "const": "Sharepoint",
+            "title": "Source Type",
+            "default": "Sharepoint"
+          },
+          "subtype": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtype"
+          },
+          "config_cls": {
+            "title": "Config Cls"
+          },
+          "config": {
+            "$ref": "#/components/schemas/SharepointSourceConfig"
+          },
+          "integration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Integration",
+            "default": "sharepoint"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image",
+            "default": "https://storage.googleapis.com/image-storage-spot-manual/logos/sharepoint.png"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "Sharepoint"
+          },
+          "exposed": {
+            "type": "boolean",
+            "title": "Exposed",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "config"
+        ],
+        "title": "SharepointSource"
+      },
+      "SharepointSourceConfig": {
+        "properties": {
+          "text_display_1": {
+            "type": "string",
+            "title": "Text Display 1",
+            "default": "",
+            "display": {
+              "col_span": 12,
+              "is_disabled": false,
+              "is_subconfig": false,
+              "label": "",
+              "text": "",
+              "title": "Select files to add to knowledge base",
+              "type": "ui_text_display"
+            }
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/OneDriveFile"
+            },
+            "type": "array",
+            "title": "Files",
+            "description": "Document to read",
+            "display": {
+              "col_span": 12,
+              "file_type": "folder",
+              "is_disabled": false,
+              "is_subconfig": false,
+              "label": "",
+              "multi_select": true,
+              "name": "OneDrive",
+              "set_include_folders": true,
+              "type": "onedrive_picker"
+            },
+            "placeholder": [
+              {
+                "id": "123",
+                "image": "123",
+                "name": "123"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "title": "SharepointSourceConfig"
       },
       "SimplifiedRun": {
         "properties": {
@@ -3766,6 +7007,17 @@
             ],
             "title": "Node Ids"
           },
+          "workflow_definition": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workflow Definition"
+          },
           "status": {
             "$ref": "#/components/schemas/RunStatus"
           },
@@ -3804,6 +7056,49 @@
         ],
         "title": "SimplifiedRun"
       },
+      "Source": {
+        "properties": {
+          "source": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DocumentSource"
+              },
+              {
+                "$ref": "#/components/schemas/GoogleDriveSource"
+              },
+              {
+                "$ref": "#/components/schemas/OneDriveSource"
+              },
+              {
+                "$ref": "#/components/schemas/SharepointSource"
+              },
+              {
+                "$ref": "#/components/schemas/WebsiteSource"
+              },
+              {
+                "$ref": "#/components/schemas/CustomSource"
+              }
+            ],
+            "title": "Source",
+            "discriminator": {
+              "propertyName": "source_type",
+              "mapping": {
+                "Custom": "#/components/schemas/CustomSource",
+                "Document": "#/components/schemas/DocumentSource",
+                "Google Drive": "#/components/schemas/GoogleDriveSource",
+                "OneDrive": "#/components/schemas/OneDriveSource",
+                "Sharepoint": "#/components/schemas/SharepointSource",
+                "Website": "#/components/schemas/WebsiteSource"
+              }
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "source"
+        ],
+        "title": "Source"
+      },
       "SourceReferenceMessage": {
         "properties": {
           "role": {
@@ -3824,6 +7119,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/WebReferenceMessage"
+                },
+                {
+                  "$ref": "#/components/schemas/YoutubeReferenceMessage"
                 }
               ]
             },
@@ -3849,7 +7147,8 @@
           "Linear",
           "Github",
           "Teams",
-          "Sharepoint"
+          "Sharepoint",
+          "Custom"
         ],
         "title": "SourceType"
       },
@@ -3969,6 +7268,72 @@
         },
         "type": "object",
         "title": "SystemMessage"
+      },
+      "TextIngestionMethod": {
+        "properties": {
+          "chunk_size": {
+            "type": "integer",
+            "title": "Chunk Size",
+            "default": 1024
+          },
+          "chunk_overlap": {
+            "type": "integer",
+            "title": "Chunk Overlap",
+            "default": 256
+          },
+          "enrich_chunks_mode": {
+            "type": "string",
+            "enum": [
+              "inject_summary",
+              "contextual"
+            ],
+            "title": "Enrich Chunks Mode",
+            "default": "inject_summary"
+          },
+          "extract_qa_pairs": {
+            "type": "boolean",
+            "title": "Extract Qa Pairs",
+            "default": false
+          },
+          "type": {
+            "type": "string",
+            "const": "text",
+            "title": "Type",
+            "default": "text"
+          },
+          "chunking": {
+            "type": "boolean",
+            "title": "Chunking",
+            "default": true
+          },
+          "preserve_formatting": {
+            "type": "boolean",
+            "title": "Preserve Formatting",
+            "default": true
+          },
+          "supported_mime_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supported Mime Types",
+            "default": [
+              "text/plain",
+              "text/html",
+              "text/markdown",
+              "application/json"
+            ]
+          }
+        },
+        "type": "object",
+        "title": "TextIngestionMethod"
       },
       "ToolCallMessage": {
         "properties": {
@@ -4150,6 +7515,100 @@
         ],
         "title": "Trigger"
       },
+      "UpdateDocument": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "short_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Summary"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DocumentStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "doc_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doc Type"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "prefix": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prefix"
+          },
+          "file_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Id"
+          }
+        },
+        "type": "object",
+        "title": "UpdateDocument"
+      },
       "UpdateKnowledgeBase": {
         "properties": {
           "name": {
@@ -4254,6 +7713,16 @@
               }
             ],
             "title": "Needs Summary Update"
+          },
+          "settings_": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/KnowledgeBaseSettings-Input"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -4323,6 +7792,12 @@
           "model_selection": {
             "anyOf": [
               {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
                 "type": "string"
               },
               {
@@ -4381,6 +7856,56 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "VertexRerankingOpts": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "vertex",
+            "title": "Type",
+            "default": "vertex"
+          },
+          "model_name": {
+            "type": "string",
+            "const": "semantic-ranker-512@latest",
+            "title": "Model Name",
+            "default": "semantic-ranker-512@latest"
+          },
+          "ranking_config": {
+            "type": "string",
+            "const": "default_ranking_config",
+            "title": "Ranking Config",
+            "default": "default_ranking_config"
+          },
+          "top_k": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 25,
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top K",
+            "default": 10
+          },
+          "sets_threshold": {
+            "type": "boolean",
+            "title": "Sets Threshold",
+            "default": false
+          },
+          "threshold": {
+            "type": "number",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Threshold",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "VertexRerankingOpts"
       },
       "VideoReferenceMessage": {
         "properties": {
@@ -4556,6 +8081,158 @@
         ],
         "title": "WebReferenceMessage"
       },
+      "WebResearchSettings": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "Web Research"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": "Search the web for information"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": true
+          },
+          "extra_instructions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extra Instructions"
+          },
+          "type": {
+            "type": "string",
+            "const": "web_research",
+            "title": "Type",
+            "default": "web_research"
+          }
+        },
+        "type": "object",
+        "title": "WebResearchSettings"
+      },
+      "WebsiteSource": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "const": "Website",
+            "title": "Source Type",
+            "default": "Website"
+          },
+          "subtype": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtype"
+          },
+          "config_cls": {
+            "title": "Config Cls"
+          },
+          "config": {
+            "$ref": "#/components/schemas/WebsiteSourceConfig"
+          },
+          "integration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Integration"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image",
+            "default": "icon:Globe"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "Website"
+          },
+          "exposed": {
+            "type": "boolean",
+            "title": "Exposed",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "config"
+        ],
+        "title": "WebsiteSource"
+      },
+      "WebsiteSourceConfig": {
+        "properties": {
+          "text_display_1": {
+            "type": "string",
+            "title": "Text Display 1",
+            "default": "",
+            "display": {
+              "col_span": 12,
+              "is_disabled": false,
+              "is_subconfig": false,
+              "label": "",
+              "text": "",
+              "title": "Select urls to add to knowledge base",
+              "type": "ui_text_display"
+            }
+          },
+          "urls": {
+            "items": {
+              "$ref": "#/components/schemas/WebsiteWithDepth"
+            },
+            "type": "array",
+            "title": "Urls",
+            "description": "URL to read",
+            "display": {
+              "col_span": 12,
+              "is_disabled": false,
+              "is_subconfig": false,
+              "label": "URL",
+              "type": "config_scrape_website_list"
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "urls"
+        ],
+        "title": "WebsiteSourceConfig"
+      },
+      "WebsiteWithDepth": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "depth": {
+            "type": "integer",
+            "title": "Depth"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "depth"
+        ],
+        "title": "WebsiteWithDepth"
+      },
       "Workflow": {
         "properties": {
           "id": {
@@ -4578,6 +8255,27 @@
           "definition": {
             "type": "object",
             "title": "Definition"
+          },
+          "workflow_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workflow Hash"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WorkflowMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "last_updated_at": {
             "anyOf": [
@@ -4694,6 +8392,61 @@
         ],
         "title": "Workflow"
       },
+      "WorkflowInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "WorkflowInfo"
+      },
+      "WorkflowMeta": {
+        "properties": {
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/WorkflowTag"
+            },
+            "type": "array",
+            "title": "Tags",
+            "default": []
+          },
+          "icon": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icon"
+          }
+        },
+        "type": "object",
+        "title": "WorkflowMeta"
+      },
       "WorkflowProgress": {
         "properties": {
           "executed_nodes": {
@@ -4770,6 +8523,73 @@
         ],
         "title": "WorkflowProgress"
       },
+      "WorkflowSettings": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "Workflow Runner"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": "Run a workflow"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": true
+          },
+          "extra_instructions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extra Instructions"
+          },
+          "type": {
+            "type": "string",
+            "const": "workflow",
+            "title": "Type",
+            "default": "workflow"
+          },
+          "requires_llm_followup": {
+            "type": "boolean",
+            "title": "Requires Llm Followup",
+            "default": false
+          },
+          "workflow": {
+            "$ref": "#/components/schemas/WorkflowInfo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "workflow"
+        ],
+        "title": "WorkflowSettings"
+      },
+      "WorkflowTag": {
+        "properties": {
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "color": {
+            "type": "string",
+            "title": "Color"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value",
+          "color"
+        ],
+        "title": "WorkflowTag"
+      },
       "WorkflowType": {
         "type": "string",
         "enum": [
@@ -4801,6 +8621,27 @@
           "definition": {
             "type": "object",
             "title": "Definition"
+          },
+          "workflow_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workflow Hash"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WorkflowMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "last_updated_at": {
             "anyOf": [
@@ -4924,6 +8765,29 @@
           "definition"
         ],
         "title": "WorkflowWithTriggers"
+      },
+      "YoutubeReferenceMessage": {
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/MessageRole",
+            "default": "noxus"
+          },
+          "type": {
+            "type": "string",
+            "const": "youtube_reference",
+            "title": "Type",
+            "default": "youtube_reference"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "YoutubeReferenceMessage"
       }
     },
     "securitySchemes": {

@@ -87,15 +87,11 @@
               },
               {
                 "group": "Calendly",
-                "pages": [
-                  "Documentation/Integration Modules/CReadEvents"
-                ]
+                "pages": ["Documentation/Integration Modules/CReadEvents"]
               },
               {
                 "group": "Github",
-                "pages": [
-                  "Documentation/Integration Modules/GReadProfile"
-                ]
+                "pages": ["Documentation/Integration Modules/GReadProfile"]
               },
               {
                 "group": "Google",
@@ -144,15 +140,11 @@
               },
               {
                 "group": "Telegram",
-                "pages": [
-                  "Documentation/Integration Modules/TelegramW"
-                ]
+                "pages": ["Documentation/Integration Modules/TelegramW"]
               },
               {
                 "group": "Typeform",
-                "pages": [
-                  "Documentation/Integration Modules/ReadTypeform"
-                ]
+                "pages": ["Documentation/Integration Modules/ReadTypeform"]
               },
               {
                 "group": "Youtube",
@@ -178,52 +170,79 @@
         "groups": [
           {
             "group": "API Reference",
-            "pages": [
-              "api-reference/introduction"
-            ]
+            "pages": ["api-reference/introduction"]
           },
           {
             "group": "Workflows",
             "pages": [
-              "api-reference/v1/get-workflow-public",
-              "api-reference/v1/get-workflows-public"
+              "api-reference/v1/workflows/get-workflow-public",
+              "api-reference/v1/workflows/get-workflows-public"
             ]
           },
           {
             "group": "Runs",
             "pages": [
-              "api-reference/v1/create-run-with-api-key",
-              "api-reference/v1/create-sync-run",
-              "api-reference/v1/get-runs-public",
-              "api-reference/v1/public-get-paginated-runs",
-              "api-reference/v1/public-get-run-by-id-and-workflow",
-              "api-reference/v1/public-get-run-by-id",
-              "api-reference/v1/public-get-run-data-by-id",
-              "api-reference/v1/search-runs-public"
+              "api-reference/v1/runs/create-run-with-api-key",
+              "api-reference/v1/runs/create-sync-run",
+              "api-reference/v1/runs/get-runs-public",
+              "api-reference/v1/runs/public-get-paginated-runs",
+              "api-reference/v1/runs/public-get-run-by-id-and-workflow",
+              "api-reference/v1/runs/public-get-run-by-id",
+              "api-reference/v1/runs/public-get-run-data-by-id",
+              "api-reference/v1/runs/search-runs-public"
             ]
           },
           {
             "group": "Knowledge Bases",
             "pages": [
-              "api-reference/v1/public-get-knowledge-base",
-              "api-reference/v1/public-add-knowledge-base",
-              "api-reference/v1/public-get-knowledge-bases",
-              "api-reference/v1/public-delete-knowledge-base-v2",
-              "api-reference/v1/public-update-knowledge-base",
-              "api-reference/v1/public-add-knowledge-base-document",
-              "api-reference/v1/public-get-knowledge-base-document",
-              "api-reference/v1/public-get-knowledge-base-documents"
+              "api-reference/v1/knowledge-base/public-get-knowledge-base",
+              "api-reference/v1/knowledge-base/public-add-knowledge-base",
+              "api-reference/v1/knowledge-base/public-get-knowledge-bases",
+              "api-reference/v1/knowledge-base/public-delete-knowledge-base-v2",
+              "api-reference/v1/knowledge-base/public-update-knowledge-base",
+              "api-reference/v1/knowledge-base/public-add-knowledge-base-document",
+              "api-reference/v1/knowledge-base/public-get-knowledge-base-document",
+              "api-reference/v1/knowledge-base/public-get-knowledge-base-documents",
+              "api-reference/v1/knowledge-base/update-document",
+              "api-reference/v1/knowledge-base/delete-document",
+              "api-reference/v1/knowledge-base/upload-train",
+              "api-reference/v1/knowledge-base/generic-train",
+              "api-reference/v1/knowledge-base/retry-all-errors",
+              "api-reference/v1/knowledge-base/running-jobs"
             ]
           },
           {
             "group": "Conversations",
             "pages": [
-              "api-reference/v1/public-list-conversations",
-              "api-reference/v1/public-create-conversation",
-              "api-reference/v1/public-get-conversation",
-              "api-reference/v1/public-delete-conversation",
-              "api-reference/v1/public-add-message",
-              "api-reference/v1/public-refresh-message"
+              "api-reference/v1/conversations/public-list-conversations",
+              "api-reference/v1/conversations/public-create-conversation",
+              "api-reference/v1/conversations/public-get-conversation",
+              "api-reference/v1/conversations/public-delete-conversation",
+              "api-reference/v1/conversations/public-add-message",
+              "api-reference/v1/conversations/public-refresh-message"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Technical Reference",
+        "groups": [
+          {
+            "group": "Concepts",
+            "pages": [
+              "technical-reference/v0/concepts/knowledge-base",
+              "technical-reference/v0/concepts/assistant"
+            ]
+          },
+          {
+            "group": "Extending the platform",
+            "pages": [
+              "technical-reference/v0/extending-the-platform/plugins",
+              "technical-reference/v0/extending-the-platform/noxus-configuration-language",
+              "technical-reference/v0/extending-the-platform/node-plugins",
+              "technical-reference/v0/extending-the-platform/trigger-plugins",
+              "technical-reference/v0/extending-the-platform/plugins-integrations",
+              "technical-reference/v0/extending-the-platform/kb-plugins"
             ]
           }
         ]

@@ -1,0 +1,55 @@
+---
+title: "Plugins"
+description: "Plugins are a way to extend the platform."
+---
+
+
+# Writing a plugin
+
+Plugins are installable pip packages, they should have a `noxus.Plugin` class that calls `noxus.register_plugin`.
+
+```python
+from typing import Type
+from noxus import Plugin, PluginOptions, register_plugin
+from noxus_next.sources import SQLConfigSource, SQLSource
+from noxus.datahub import CustomSource
+
+
+class MyPluginOptions(PluginOptions):
+    uppercaser: bool = False
+    openweathermap: bool = False
+
+
+class MyPlugin(Plugin[MyPluginOptions]):
+    def nodes(self):
+        n = []
+        if self.options.uppercaser:
+            n.append(StringUpperCaserNode)
+        if self.options.openweathermap:
+            n.append(OpenWeatherMapNode)
+        return n
+
+    def integrations(self):
+        n = []
+        if self.options.openweathermap:
+            n.append(OpenWeatherMapIntegration)
+        return n
+
+    def triggers(self):
+        n = [(periodic.PeriodicTriggerDefinition, periodic.PeriodicEvent)]
+        return n
+
+    def datahub_sources(self) -> list[CustomSource]:
+        return [SQLSource(config=SQLConfigSource())]
+
+    def init_triggers(self):
+        periodic.install_trigger()
+
+# this must occur during plugin import, so do not wrap it in if __name__ == '__main__'
+register_plugin(NoxusNext)
+```
+
+Each of these methods returns a customizable type which we will explain further down. The plugin will use the default implementation if you do not override it.
+
+After you have published this plugin, you can install it in the Spot platform by going to the /admin/home/plugins page and filling in the necessary details to make it fetchable and importable. Note: this is only available in on-premise installations.
+

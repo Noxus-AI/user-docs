@@ -1,0 +1,320 @@
+---
+title: "Assistant"
+description: "AI-powered assistants that help users accomplish tasks through natural language"
+---
+
+Assistants are AI-powered entities that help users accomplish tasks through natural language conversations. They combine language understanding, knowledge retrieval, and reasoning capabilities to provide helpful responses.
+
+<Info>
+  Assistants serve as the primary interface between users and the AI capabilities of the platform, making complex functionality accessible through simple conversations.
+</Info>
+
+## Key Capabilities
+
+<CardGroup cols={2}>
+  <Card title="Natural Language Understanding" icon="comments">
+    Assistants comprehend user queries in natural language, understanding intent, context, and nuance.
+  </Card>
+  <Card title="Knowledge Integration" icon="database">
+    Connect assistants to Knowledge Bases to provide them with domain-specific information and context.
+  </Card>
+  <Card title="Contextual Memory" icon="brain">
+    Assistants maintain conversation history to provide coherent, contextually relevant responses across multiple turns.
+  </Card>
+  <Card title="Workflow Execution" icon="gears">
+    Trigger and execute workflows based on user requests, enabling complex automation through simple instructions.
+  </Card>
+</CardGroup>
+
+## Conversing with Assistants
+
+Interacting with assistants through the API follows a structured flow that enables natural, contextual conversations. Understanding this flow helps you build effective assistant integrations.
+
+### Conversation Flow
+
+<Steps>
+  <Step title="Create a Conversation">
+    Start by creating a new conversation with the assistant using the [Create Conversation](/api-reference/v1/conversations/public-create-conversation) endpoint.
+    
+    This establishes a conversation context that will maintain history and state throughout the interaction.
+  </Step>
+  
+  <Step title="Send User Message">
+    Add the user's initial message to the conversation using the [Add Message](/api-reference/v1/conversations/public-add-message) endpoint.
+    
+    The message should contain a clear request or question to get the most helpful response.
+  </Step>
+  
+  <Step title="Receive Assistant Response">
+    The assistant processes the message and generates a response, which is automatically added to the conversation.
+    
+    Retrieve the updated conversation with the [Get Conversation](/api-reference/v1/conversations/public-get-conversation) endpoint to see the assistant's response.
+  </Step>
+  
+  <Step title="Continue the Conversation">
+    Add follow-up messages using the [Add Message](/api-reference/v1/conversations/public-add-message) endpoint.
+    
+    The assistant maintains context from previous messages, enabling natural back-and-forth dialogue.
+  </Step>
+</Steps>
+
+### Managing Conversations
+
+Effective conversation management involves several key operations:
+
+- **Listing Conversations**: View all conversations using the [List Conversations](/api-reference/v1/conversations/public-list-conversations) endpoint
+- **Retrieving History**: Get complete conversation history with the [Get Conversation](/api-reference/v1/conversations/public-get-conversation) endpoint
+- **Refreshing Responses**: Generate updated responses to previous messages with the [Refresh Message](/api-reference/v1/conversations/public-refresh-message) endpoint
+- **Ending Conversations**: Remove conversations when no longer needed using the [Delete Conversation](/api-reference/v1/conversations/public-delete-conversation) endpoint
+
+<Warning>
+  Rate limits may apply to conversation API endpoints. Implement appropriate retry logic and respect rate limit headers in responses.
+</Warning>
+
+## Available Tools
+
+Assistants can be equipped with specialized tools that extend their capabilities beyond basic conversation. Each tool enables specific functionality that can be activated during conversations.
+
+<CardGroup cols={2}>
+  <Card title="Web Research" icon="globe">
+    <div className="mt-2">
+      Enables the assistant to search the web in real-time to find current information, answer factual questions, and provide up-to-date insights on topics outside its training data.
+    </div>
+  </Card>
+  <Card title="Noxus Q&A" icon="circle-question">
+    <div className="mt-2">
+      Provides specialized knowledge about the Noxus platform, helping users understand features, workflows, and best practices for using the system effectively.
+    </div>
+  </Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+  <Card title="Knowledge Base Q&A" icon="database">
+    <div className="mt-2">
+      Connects the assistant to a specific pre-selected Knowledge Base, allowing it to answer questions using your organization's proprietary information and documents.
+    </div>
+  </Card>
+  <Card title="Knowledge Base Selector" icon="hand-pointer">
+    <div className="mt-2">
+      Gives users the flexibility to choose which Knowledge Base the assistant should reference during the conversation, ideal for organizations with multiple knowledge domains.
+    </div>
+  </Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+  <Card title="Workflow Runner" icon="play">
+    <div className="mt-2">
+      Allows the assistant to execute predefined workflows, collecting necessary parameters through natural conversation and returning results directly in the chat.
+    </div>
+  </Card>
+  <Card title="Coming Soon" icon="clock-rotate-left">
+    <div className="mt-2">
+      Additional toolsets and Model Context Protocol (MCPs) integration coming soon to further extend assistant capabilities.
+    </div>
+  </Card>
+</CardGroup>
+
+## Tool Capabilities
+
+### Web Research Tool
+
+The Web Research tool transforms assistants into real-time information gatherers by:
+
+- **Live Web Searches**: Performing searches across the internet to find current information
+- **Content Extraction**: Analyzing web pages to extract relevant information
+- **Source Verification**: Evaluating the reliability of sources before presenting information
+- **Citation Provision**: Including links to original sources for verification
+- **Summarization**: Condensing lengthy web content into concise, relevant answers
+
+This tool is particularly valuable for questions about current events, recent developments, or topics that may have changed since the assistant's knowledge cutoff.
+
+<Warning>
+  Web research capabilities may be limited by your subscription tier and organization settings. The tool respects website terms of service and may not be able to access content behind paywalls or login screens.
+</Warning>
+
+### Noxus Q&A Tool
+
+The Noxus Q&A tool provides specialized knowledge about the Noxus platform itself:
+
+- **Platform Documentation**: Answers questions using the official Noxus documentation
+- **Workflow Guidance**: Explains how to build workflows and use different nodes
+- **Feature Explanations**: Provides details on platform capabilities like image generation or web searching
+- **Contextual Help**: Maintains conversation history to provide consistent, relevant assistance
+
+This tool is ideal for questions like "How can I build a workflow?", "What node can I use to read from a PDF?", or "How can I generate an image?" It helps users understand and navigate the Noxus platform without needing to consult external documentation.
+
+### Knowledge Base Tools
+
+The platform offers powerful Knowledge Base integration through specialized tools:
+
+#### Knowledge Base Q&A Tool
+
+This tool connects to your organization's Knowledge Bases to answer questions using your proprietary information:
+
+- **Document-Based Answers**: Generates responses based on content from your Knowledge Base documents
+- **Multi-Format Support**: Works with various document types including PDFs, text files, and images
+- **Source Citations**: Provides document references with specific page numbers when available
+- **Visual Content Analysis**: Can process and reference images contained in documents
+- **Confidence Indicators**: Includes warnings when information might not be sufficient
+
+The tool uses advanced retrieval techniques to find the most relevant information across your documents, then synthesizes clear, focused answers to your questions with proper attribution to sources.
+
+#### Knowledge Base Selector Tool
+
+This tool allows users to dynamically choose which Knowledge Base to query during a conversation:
+
+- **Flexible Selection**: Choose the most appropriate Knowledge Base for each question
+- **Domain Switching**: Easily move between different knowledge domains as conversation topics change
+- **Contextual Awareness**: Maintains conversation flow while switching knowledge sources
+- **Transparent Operation**: Clearly indicates which Knowledge Base is being used for each answer
+
+This flexibility is particularly valuable for organizations with multiple Knowledge Bases covering different subject areas or departments.
+
+### Workflow Runner Tool
+
+The Workflow Runner tool bridges conversation and automation:
+
+- **Natural Language Triggering**: Executes workflows based on conversational requests
+- **Parameter Collection**: Gathers required inputs through intuitive dialogue
+- **Execution Monitoring**: Tracks workflow progress and reports status
+- **Result Presentation**: Formats workflow outputs in a conversational context
+- **Error Handling**: Explains issues and suggests corrections when workflows fail
+
+This tool enables users to initiate complex automated processes through simple conversation, without needing to understand the technical details of workflow implementation.
+
+## Best Practices
+
+### Assistant Configuration
+
+For optimal assistant performance:
+
+- **Clear Purpose**: Define a specific purpose for each assistant
+- **Tool Selection**: Enable only the tools that are relevant to the assistant's purpose
+- **Knowledge Selection**: Connect relevant Knowledge Bases that match the assistant's domain
+- **Custom Instructions**: Provide detailed instructions about how the assistant should behave
+- **Regular Updates**: Keep Knowledge Bases current to ensure accurate information
+
+## Assistant Configuration
+
+Assistants can be configured with various settings to customize their behavior and capabilities. Understanding these configuration options helps you create assistants that are tailored to specific use cases.
+
+### Core Settings
+
+When configuring an assistant, you can adjust several fundamental parameters:
+
+<CardGroup cols={2}>
+  <Card title="Model Selection" icon="microchip">
+    <div className="mt-2">
+      Choose which AI models power your assistant. You can select from performance-optimized or cost-optimized model configurations.
+    </div>
+  </Card>
+  <Card title="Temperature" icon="temperature-half">
+    <div className="mt-2">
+      Control the creativity and randomness of responses. Lower values (0.0-0.4) produce more consistent, focused answers, while higher values encourage more creative responses.
+    </div>
+  </Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+  <Card title="Custom Instructions" icon="file-signature">
+    <div className="mt-2">
+      Provide specific guidance on how the assistant should behave, what tone to use, and any particular response patterns to follow.
+    </div>
+  </Card>
+  <Card title="Tool Selection" icon="toolbox">
+    <div className="mt-2">
+      Enable or disable specific tools based on the assistant's intended purpose and the capabilities it needs.
+    </div>
+  </Card>
+</CardGroup>
+
+### Tool Configuration
+
+Each tool can be individually configured with specific settings to customize its behavior:
+
+<Tip>
+  The name and description of each tool are included in the assistant's instructions and play a crucial role in tool selection. Clear, descriptive names and detailed descriptions help the assistant understand when and how to use each tool appropriately during conversations.
+</Tip>
+
+#### Web Research Tool
+
+<div align="center">
+
+| Parameter | Description |
+|:----------|:------------|
+| **Enabled/Disabled** | Turn the web research capability on or off |
+| **Custom Instructions** | Provide specific guidance for how web research should be conducted |
+| **Name** | Customize the display name of the tool (affects when the assistant chooses to use this tool) |
+| **Description** | Modify the tool's description (helps the assistant understand the tool's purpose and capabilities) |
+
+</div>
+
+#### Noxus Q&A Tool
+
+<div align="center">
+
+| Parameter | Description |
+|:----------|:------------|
+| **Enabled/Disabled** | Turn the platform documentation capability on or off |
+| **Custom Instructions** | Provide specific guidance for how platform questions should be answered |
+| **Name** | Customize the display name of the tool |
+| **Description** | Modify the tool's description for users |
+
+</div>
+
+#### Knowledge Base Q&A Tool
+
+<div align="center">
+
+| Parameter | Description |
+|:----------|:------------|
+| **Knowledge Base Selection** | Connect to a specific pre-selected Knowledge Base |
+| **Enabled/Disabled** | Turn the Knowledge Base Q&A capability on or off |
+| **Custom Instructions** | Provide specific guidance for how KB questions should be answered |
+| **Name** | Customize the display name of the tool |
+| **Description** | Modify the tool's description for users |
+
+</div>
+
+#### Knowledge Base Selector Tool
+
+<div align="center">
+
+| Parameter | Description |
+|:----------|:------------|
+| **Initial Selection** | Optionally pre-select a Knowledge Base or leave unselected |
+| **Enabled/Disabled** | Turn the Knowledge Base selection capability on or off |
+| **Custom Instructions** | Provide specific guidance for KB selection and question answering |
+| **Name** | Customize the display name of the tool |
+| **Description** | Modify the tool's description for users |
+
+</div>
+
+#### Workflow Runner Tool
+
+<div align="center">
+
+| Parameter | Description |
+|:----------|:------------|
+| **Workflow Selection** | Connect to specific workflows that the assistant can execute |
+| **LLM Follow-up** | Configure whether the assistant should provide additional context after workflow execution |
+| **Enabled/Disabled** | Turn the workflow execution capability on or off |
+| **Custom Instructions** | Provide specific guidance for workflow execution |
+| **Name** | Customize the display name of the tool |
+| **Description** | Modify the tool's description for users |
+
+</div>
+
+### Configuration Best Practices
+
+For optimal assistant performance:
+
+- **Focused Tool Selection**: Only enable tools that are relevant to the assistant's purpose
+- **Clear Instructions**: Provide detailed custom instructions for both the assistant and individual tools
+- **Appropriate Temperature**: Use lower temperature (0.1-0.3) for factual assistants and higher (0.4-0.7) for creative ones
+- **Knowledge Base Alignment**: Connect Knowledge Bases that contain information relevant to the assistant's domain
+- **Regular Updates**: Review and update assistant configurations as your needs evolve
+
+<Warning>
+  Enabling too many tools can make an assistant less focused. Consider creating multiple specialized assistants rather than a single assistant with all possible tools.
+</Warning>

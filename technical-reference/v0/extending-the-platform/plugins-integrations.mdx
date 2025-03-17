@@ -1,0 +1,75 @@
+---
+title: "Plugins & Integrations"
+description: "Plugins and integrations enable secure connections to external services and APIs, allowing users to authenticate and interact with third-party platforms."
+---
+
+# Adding an integration
+
+Integrations are the building blocks behind interacting with external services. They allow users to add API keys or configure oauth2.0 flows to external services.
+
+Imagine you are trying to interact with openweathermap.org in one of your nodes. You would have to add an integration to your node, and configure it with your API key.
+
+Let's start by adding a way for the user to define their API key:
+
+```python
+from noxus.integrations import (
+    register_integration,
+    Integration,
+    AuthType,
+    OauthConfig,
+    NestedOauthConfig,
+    register_custom_integration,
+    disconnect_custom_integration,
+    has_custom_integration,
+)
+
+async def complete_integration(db: AsyncSession, group: UserGroup, request: Request):
+    data = await request.json()
+    return await register_custom_integration(
+        db,
+        group,
+        "openweathermap",
+        {
+            "api_key": data["api_key"],
+        },
+    )
+
+
+OpenWeatherMapIntegration = Integration(
+    name="OpenWeatherMap",
+    authorized=True,
+    image="/api/backend/logo/example.com",
+    integration=OauthConfig(
+        type=AuthType.apikey,
+        config=NestedOauthConfig(
+            width=660,
+            height=660,
+            name="OpenWeatherMap",
+            delete=f"/groups/group_id/integrations/custom/openweathermap/disconnect",
+            trigger=f"/groups/group_id/integrations/custom/openweathermap",
+        ),
+    ),
+    get_status=lambda db, group: has_custom_integration(db, group, "openweathermap"),
+    complete_integration=complete_integration,
+    delete_integration=lambda db, group, _: disconnect_custom_integration(
+        db, group, "openweathermap"
+    ),
+)
+```
+
+Then you return the integration in the `integrations` method of your plugin.
+
+If we now wanted to use the integration in a node, we would have to define a node class that would fetch the integration value:
+
+```python
+from noxus.nodes import ExecutionContext, BaseNode
+
+class OpenWeatherMapNode(BaseNode[OpenWeatherMapNodeConfig])
+    ...
+    # adding this tells the frontend that the integration must be configured to use the node
+    integrations = ["openweathermap"]
+
+    def call(self, ctx: ExecutionContext, ...):
+        api_key = (await ctx.custom_integration("openweathermap"))["api_key"]
+        ...
+```

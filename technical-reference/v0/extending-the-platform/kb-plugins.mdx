@@ -1,0 +1,61 @@
+---
+title: "KB Plugins"
+description: "Knowledge Base plugins allow you to create custom data source types for importing and processing information from external systems into your knowledge base."
+---
+
+# Adding a datahub source type
+
+A datahub source is any custom file source that can be imported into a datahub. A datahub source converts your source into files. An example source is reading from a SQL database and writing the data as text to a file.
+
+First we define a config class, this contains the configuration for the source. The config class must inherit from `CustomSourceConfig`, and must implement the `to_files` method.
+
+```python
+from noxus.datahub import CustomSourceConfig
+
+
+class SQLConfigSource(CustomSourceConfig):
+    url: str = Parameter(
+        default="",
+        display=ConfigDynamicText(
+            label="SQL URL: e.g. postgresql://username:password@hostname:5432/database"
+        ),
+    )
+    table: str = Parameter(
+        default="",
+        display=ConfigDynamicText(label="Name of the table to ingest"),
+    )
+
+    async def to_files(
+        self,
+        ctx: ExecutionContext,
+        subtype: str,
+    ) -> list[File]:
+        text_content = ... # snipped for brevity
+        file_name = f"{self.table}.txt" # we can read configuration values
+        async with ctx.db() as db:
+            return [
+                await File.from_bytes_spot_uri( # write the output to a file.
+                    db,
+                    ctx.storage,
+                    data=text_content.encode(),
+                    name=file_name,
+                    group=ctx.group,
+                    content_type="text/plain",
+                )
+            ]
+```
+
+Next we define a source class, this contains the subtype, name, image, and config class. The subtype must be unique across all sources. These values will be visible in our UI when selecting a source.
+
+```python
+class SQLSource(CustomSource[SQLConfigSource]):
+    source_type: SourceType = SourceType.Custom
+    subtype: str | None = "sql"
+
+    config_cls: Type[SQLConfigSource] = SQLConfigSource
+    config: SQLConfigSource
+    image: str = "https://cdn-icons-png.flaticon.com/128/2906/2906274.png"
+    name: str = "SQL"
+```
+
+The final step is to return the source in the `datahub_sources` method of your plugin.
