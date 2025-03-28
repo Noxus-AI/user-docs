@@ -3,9 +3,16 @@ title: "Node Plugins"
 description: "Node plugins let you create custom workflow components that process data, integrate with external services, and extend the platform's capabilities."
 ---
 
-# Adding a node
+# Creating a custom node
 
-What are nodes?
+<Frame>
+  ![Upper-case everything!](/images/technical-reference/node_plugin.png)
+</Frame>
+
+In this guide, we'll explore how to create a node like the one shown above. This node takes an input string, processes it to remove numbers if desired, and converts it to uppercase. By the end of this page, you'll have a clear understanding of how to build such a node and integrate it into your workflows.
+
+## What are nodes?
+
 Nodes are the building blocks of workflows, the squares you see in the flow builder.
 
 Nodes are comprised of three main components, the connectors (inputs and outputs of the node), their config (the settings you see when you click on a node), and their logic (the code that runs when the node is triggered).
@@ -36,7 +43,6 @@ class StringUpperCaserNode(BaseNode[StringUpperCaserNodeConfig]):
     description = "This module enables you to upper-case an input."
     small_description = "Upper-case an input."
     visible = True
-
 
     config_class = StringUpperCaserNodeConfig
     inputs = [

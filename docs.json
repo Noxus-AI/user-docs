@@ -225,10 +225,10 @@
         ]
       },
       {
-        "tab": "Plugins",
+        "tab": "Noxus SDK",
         "groups": [
           {
-            "group": "Plugins and Noxus SDK",
+            "group": "Noxus SDK",
             "pages": ["technical-reference/introduction"]
           },
 
