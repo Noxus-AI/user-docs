@@ -225,15 +225,13 @@
         ]
       },
       {
-        "tab": "Technical Reference",
+        "tab": "Noxus SDK",
         "groups": [
           {
-            "group": "Concepts",
-            "pages": [
-              "technical-reference/v0/concepts/knowledge-base",
-              "technical-reference/v0/concepts/assistant"
-            ]
+            "group": "Noxus SDK",
+            "pages": ["technical-reference/introduction"]
           },
+
           {
             "group": "Extending the platform",
             "pages": [
@@ -241,8 +239,15 @@
               "technical-reference/v0/extending-the-platform/noxus-configuration-language",
               "technical-reference/v0/extending-the-platform/node-plugins",
               "technical-reference/v0/extending-the-platform/trigger-plugins",
-              "technical-reference/v0/extending-the-platform/plugins-integrations",
-              "technical-reference/v0/extending-the-platform/kb-plugins"
+              "technical-reference/v0/extending-the-platform/kb-plugins",
+              "technical-reference/v0/extending-the-platform/plugins-integrations"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "technical-reference/v0/concepts/knowledge-base",
+              "technical-reference/v0/concepts/assistant"
             ]
           }
         ]
