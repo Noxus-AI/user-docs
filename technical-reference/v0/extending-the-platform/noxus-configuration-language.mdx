@@ -43,33 +43,43 @@ from spotflow.config import Parameter, NodeConfiguration, ConfigText, ConfigType
 ...
 
 class InputNodeConfiguration(NodeConfiguration):
-    label: str = Parameter(
+    prompt: RichTextValue = Parameter(
         default="",
-        display=ConfigText(
-            label="Input name",
-            tooltip="Name displayed in the input interface",
+        display=ConfigRichTextVariables(
+            label="Prompt",
+            connector_name="input",
         ),
     )
-    type: str = Parameter(
+    context: str = Parameter(
         default="str",
-        display=ConfigTypeSelect(
-            label="Input Type", values=["str", "Image", "Audio", "File"]
+        display=ConfigText(
+            label="Context",
+            tooltip="Context for the prompt",
+            placeholder="You are a specialist in sales...",
         ),
     )
-    fixed_value: bool = Parameter(
-        default=False,
-        description="Assign a constant value to the input that the users are unable to modify",
+    read_image_urls: bool = Parameter(
+        default=True,
+        description="Whether the LLM should attempt to read the images when presented with an image URL",
         display=ConfigToggle(
-            label="Fixed Value", tooltip="Input with a constant value"
+            label="Read image URLs", tooltip=""
+        ),
+    )
+    model: list[str] = Parameter(
+        default=["gpt-4o-mini"],
+        display=ConfigModelSelect(
+            label="Model",
         ),
     )
 ```
+
 <Frame caption="The configuration above will produce the following interface:">
   <img
-    src="https://storage.googleapis.com/image-storage-spot-manual/docs/ExampleConfig.png"
+    src="/images/technical-reference/config.png"
     alt="Example Configuration"
 
-  />
+/>
+
 </Frame>
 
 ## Component Categories
@@ -86,10 +96,22 @@ Components for capturing and displaying text input in various formats.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>placeholder</strong> <em>(str)</em> - Default text shown when the field is empty</li>
-        <li><strong>number_of_lines</strong> <em>(int)</em> - Number of visible text lines, defaults to 1</li>
-        <li><strong>show_refresh</strong> <em>(bool)</em> - Whether to show a refresh button</li>
-        <li><strong>is_code</strong> <em>(bool)</em> - Whether to use monospace font and code styling</li>
+        <li>
+          <strong>placeholder</strong> <em>(str)</em> - Default text shown when
+          the field is empty
+        </li>
+        <li>
+          <strong>number_of_lines</strong> <em>(int)</em> - Number of visible
+          text lines, defaults to 1
+        </li>
+        <li>
+          <strong>show_refresh</strong> <em>(bool)</em> - Whether to show a
+          refresh button
+        </li>
+        <li>
+          <strong>is_code</strong> <em>(bool)</em> - Whether to use monospace
+          font and code styling
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> str
@@ -102,8 +124,14 @@ Components for capturing and displaying text input in various formats.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>placeholder</strong> <em>(str)</em> - Default text shown when the field is empty</li>
-        <li><strong>number_of_lines</strong> <em>(int)</em> - Number of visible text lines, defaults to 5</li>
+        <li>
+          <strong>placeholder</strong> <em>(str)</em> - Default text shown when
+          the field is empty
+        </li>
+        <li>
+          <strong>number_of_lines</strong> <em>(int)</em> - Number of visible
+          text lines, defaults to 5
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> str
@@ -116,12 +144,21 @@ Components for capturing and displaying text input in various formats.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>placeholder</strong> <em>(str)</em> - Default text shown when the field is empty</li>
-        <li><strong>number_of_lines</strong> <em>(int)</em> - Number of visible text lines</li>
-        <li><strong>connector_name</strong> <em>(str)</em> - Name of the connector providing variables</li>
+        <li>
+          <strong>placeholder</strong> <em>(str)</em> - Default text shown when
+          the field is empty
+        </li>
+        <li>
+          <strong>number_of_lines</strong> <em>(int)</em> - Number of visible
+          text lines
+        </li>
+        <li>
+          <strong>connector_name</strong> <em>(str)</em> - Name of the connector
+          providing variables
+        </li>
       </ul>
       <br />
-      <strong>Output:</strong> str
+      <strong>Output:</strong> \{text: str, definition: dict\}
       <br />
       <br />
       <img
@@ -145,8 +182,14 @@ Components for choosing from predefined options or sets of values.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>values</strong> <em>(list[str] or list[dict])</em> - List of options to select from</li>
-        <li><strong>placeholder</strong> <em>(str)</em> - Text displayed when no option is selected</li>
+        <li>
+          <strong>values</strong> <em>(list[str] or list[dict])</em> - List of
+          options to select from
+        </li>
+        <li>
+          <strong>placeholder</strong> <em>(str)</em> - Text displayed when no
+          option is selected
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> str
@@ -166,9 +209,18 @@ Components for choosing from predefined options or sets of values.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>values</strong> <em>(list[str] or list[dict])</em> - List of options to select from</li>
-        <li><strong>placeholder</strong> <em>(str)</em> - Text displayed when no options are selected</li>
-        <li><strong>max_options</strong> <em>(int)</em> - Maximum number of options that can be selected</li>
+        <li>
+          <strong>values</strong> <em>(list[str] or list[dict])</em> - List of
+          options to select from
+        </li>
+        <li>
+          <strong>placeholder</strong> <em>(str)</em> - Text displayed when no
+          options are selected
+        </li>
+        <li>
+          <strong>max_options</strong> <em>(int)</em> - Maximum number of
+          options that can be selected
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> list[dict[str, str]]
@@ -188,7 +240,10 @@ Components for choosing from predefined options or sets of values.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>values</strong> <em>(list[str])</em> - List of data type options to select from</li>
+        <li>
+          <strong>values</strong> <em>(list[str])</em> - List of data type
+          options to select from
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> str
@@ -208,9 +263,18 @@ Components for choosing from predefined options or sets of values.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>values</strong> <em>(list[str] or list[dict])</em> - List of options to display as chips</li>
-        <li><strong>can_wrap</strong> <em>(bool)</em> - Whether chips can wrap to multiple lines</li>
-        <li><strong>label</strong> <em>(str)</em> - Label text displayed above the chips</li>
+        <li>
+          <strong>values</strong> <em>(list[str] or list[dict])</em> - List of
+          options to display as chips
+        </li>
+        <li>
+          <strong>can_wrap</strong> <em>(bool)</em> - Whether chips can wrap to
+          multiple lines
+        </li>
+        <li>
+          <strong>label</strong> <em>(str)</em> - Label text displayed above the
+          chips
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> str
@@ -250,9 +314,16 @@ Components specialized for numeric input and ranges.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>min</strong> <em>(float)</em> - Minimum value of the slider</li>
-        <li><strong>max</strong> <em>(float)</em> - Maximum value of the slider</li>
-        <li><strong>step</strong> <em>(float)</em> - Increment step size for the slider</li>
+        <li>
+          <strong>min</strong> <em>(float)</em> - Minimum value of the slider
+        </li>
+        <li>
+          <strong>max</strong> <em>(float)</em> - Maximum value of the slider
+        </li>
+        <li>
+          <strong>step</strong> <em>(float)</em> - Increment step size for the
+          slider
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> float
@@ -267,13 +338,18 @@ Components specialized for numeric input and ranges.
   </Card>
   <Card title="ConfigNumberRange" icon="arrows-left-right">
     <div className="mt-2">
-      Numeric input field with up/down arrows that enforces minimum and maximum value constraints.
+      Numeric input field with up/down arrows that enforces minimum and maximum
+      value constraints.
       <br />
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>min</strong> <em>(float)</em> - Minimum value of the range</li>
-        <li><strong>max</strong> <em>(float)</em> - Maximum value of the range</li>
+        <li>
+          <strong>min</strong> <em>(float)</em> - Minimum value of the range
+        </li>
+        <li>
+          <strong>max</strong> <em>(float)</em> - Maximum value of the range
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> float
@@ -320,10 +396,22 @@ Components for managing collections of items or structured data.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>placeholder</strong> <em>(str)</em> - Text displayed in the input field</li>
-        <li><strong>max_values</strong> <em>(int)</em> - Maximum number of chips that can be added</li>
-        <li><strong>bottom_text</strong> <em>(str)</em> - Helper text displayed below the component</li>
-        <li><strong>chips_are_closable</strong> <em>(bool)</em> - Whether chips can be removed by clicking an X</li>
+        <li>
+          <strong>placeholder</strong> <em>(str)</em> - Text displayed in the
+          input field
+        </li>
+        <li>
+          <strong>max_values</strong> <em>(int)</em> - Maximum number of chips
+          that can be added
+        </li>
+        <li>
+          <strong>bottom_text</strong> <em>(str)</em> - Helper text displayed
+          below the component
+        </li>
+        <li>
+          <strong>chips_are_closable</strong> <em>(bool)</em> - Whether chips
+          can be removed by clicking an X
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> list[str]
@@ -343,7 +431,10 @@ Components for managing collections of items or structured data.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>keys</strong> <em>(list[str])</em> - List of keys for each dictionary entry</li>
+        <li>
+          <strong>keys</strong> <em>(list[str])</em> - List of keys for each
+          dictionary entry
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> list[dict[str, Any]]
@@ -370,8 +461,14 @@ Components designed for specific platform integrations and use cases.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>endpoint</strong> <em>(str)</em> - API endpoint to fetch available models</li>
-        <li><strong>model_type</strong> <em>(str)</em> - Type of model to filter by</li>
+        <li>
+          <strong>endpoint</strong> <em>(str)</em> - API endpoint to fetch
+          available models
+        </li>
+        <li>
+          <strong>model_type</strong> <em>(str)</em> - Type of model to filter
+          by
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> list[str]
@@ -437,9 +534,18 @@ Components for integrating with external cloud storage services.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>multi_select</strong> <em>(bool)</em> - Whether multiple files can be selected</li>
-        <li><strong>file_type</strong> <em>(str or list[str])</em> - File types to filter by</li>
-        <li><strong>setIncludeFolders</strong> <em>(bool)</em> - Whether folders can be selected</li>
+        <li>
+          <strong>multi_select</strong> <em>(bool)</em> - Whether multiple files
+          can be selected
+        </li>
+        <li>
+          <strong>file_type</strong> <em>(str or list[str])</em> - File types to
+          filter by
+        </li>
+        <li>
+          <strong>setIncludeFolders</strong> <em>(bool)</em> - Whether folders
+          can be selected
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> list[GoogleFile]
@@ -452,11 +558,25 @@ Components for integrating with external cloud storage services.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>base_url</strong> <em>(str)</em> - Base URL for the OneDrive API</li>
-        <li><strong>multi_select</strong> <em>(bool)</em> - Whether multiple files can be selected</li>
-        <li><strong>file_type</strong> <em>(str or list[str])</em> - File types to filter by</li>
-        <li><strong>set_include_folders</strong> <em>(bool)</em> - Whether folders can be selected</li>
-        <li><strong>name</strong> <em>(str)</em> - Display name for the picker</li>
+        <li>
+          <strong>base_url</strong> <em>(str)</em> - Base URL for the OneDrive
+          API
+        </li>
+        <li>
+          <strong>multi_select</strong> <em>(bool)</em> - Whether multiple files
+          can be selected
+        </li>
+        <li>
+          <strong>file_type</strong> <em>(str or list[str])</em> - File types to
+          filter by
+        </li>
+        <li>
+          <strong>set_include_folders</strong> <em>(bool)</em> - Whether folders
+          can be selected
+        </li>
+        <li>
+          <strong>name</strong> <em>(str)</em> - Display name for the picker
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> list[OneDriveFile]
@@ -476,7 +596,10 @@ Components that enhance the visual organization and user experience.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>label</strong> <em>(str)</em> - Text label displayed in the divider</li>
+        <li>
+          <strong>label</strong> <em>(str)</em> - Text label displayed in the
+          divider
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> None (UI element)
@@ -489,8 +612,13 @@ Components that enhance the visual organization and user experience.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>label</strong> <em>(str)</em> - Text content of the banner</li>
-        <li><strong>style</strong> <em>(str)</em> - Visual style ("info" | "warning" | "error")</li>
+        <li>
+          <strong>label</strong> <em>(str)</em> - Text content of the banner
+        </li>
+        <li>
+          <strong>style</strong> <em>(str)</em> - Visual style ("info" |
+          "warning" | "error")
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> None (UI element)
@@ -503,9 +631,15 @@ Components that enhance the visual organization and user experience.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>label</strong> <em>(str)</em> - Label for the display</li>
-        <li><strong>title</strong> <em>(str)</em> - Title displayed above the text</li>
-        <li><strong>text</strong> <em>(str)</em> - Content text to display</li>
+        <li>
+          <strong>label</strong> <em>(str)</em> - Label for the display
+        </li>
+        <li>
+          <strong>title</strong> <em>(str)</em> - Title displayed above the text
+        </li>
+        <li>
+          <strong>text</strong> <em>(str)</em> - Content text to display
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> None (UI element)
@@ -526,8 +660,14 @@ Complex components for specialized use cases and conditional logic.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>connector_name</strong> <em>(str)</em> - Name of the connector to use for conditions</li>
-        <li><strong>values</strong> <em>(list[str] or list[dict])</em> - List of options to select from</li>
+        <li>
+          <strong>connector_name</strong> <em>(str)</em> - Name of the connector
+          to use for conditions
+        </li>
+        <li>
+          <strong>values</strong> <em>(list[str] or list[dict])</em> - List of
+          options to select from
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> list[str, None]
@@ -553,8 +693,14 @@ Complex components for specialized use cases and conditional logic.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>values</strong> <em>(list[str] or list[dict])</em> - List of type options</li>
-        <li><strong>type_map</strong> <em>(dict)</em> - Mapping of types to their configurations</li>
+        <li>
+          <strong>values</strong> <em>(list[str] or list[dict])</em> - List of
+          type options
+        </li>
+        <li>
+          <strong>type_map</strong> <em>(dict)</em> - Mapping of types to their
+          configurations
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> list[dict]
@@ -567,52 +713,13 @@ Complex components for specialized use cases and conditional logic.
       <br />
       <strong>Parameters:</strong>
       <ul>
-        <li><strong>types</strong> <em>(list[str])</em> - List of supported input types</li>
+        <li>
+          <strong>types</strong> <em>(list[str])</em> - List of supported input
+          types
+        </li>
       </ul>
       <br />
       <strong>Output:</strong> Any
-    </div>
-  </Card>
-</CardGroup>
-
-## Deprecated Components
-
-<Warning>
-  The following components are deprecated and should not be used in new
-  configurations.
-</Warning>
-
-<CardGroup cols={2}>
-  <Card title="ConfigSearchBar" icon="magnifying-glass">
-    <div className="mt-2 text-red-500">
-      WARNING: This component is not currently used.
-      <br />
-      <br />
-      <strong>Output:</strong> str
-    </div>
-  </Card>
-  <Card title="ConfigDisplayDict" icon="display">
-    <div className="mt-2 text-red-500">
-      WARNING: This component is not currently used.
-      <br />
-      <br />
-      <strong>Output:</strong> dict[str, Any]
-    </div>
-  </Card>
-  <Card title="ConfigTextArray" icon="align-left">
-    <div className="mt-2 text-red-500">
-      WARNING: This component is not currently used.
-      <br />
-      <br />
-      <strong>Output:</strong> list[str]
-    </div>
-  </Card>
-  <Card title="ConfigDynamicSelect" icon="arrow-down-wide-short">
-    <div className="mt-2 text-red-500">
-      WARNING: This component is not currently used.
-      <br />
-      <br />
-      <strong>Output:</strong> Unknown
     </div>
   </Card>
 </CardGroup>
