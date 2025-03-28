@@ -5,7 +5,7 @@ description: "Knowledge Base plugins allow you to create custom data source type
 
 # Adding a datahub source type
 
-A datahub source is any custom file source that can be imported into a datahub. A datahub source converts your source into files. An example source is reading from a SQL database and writing the data as text to a file.
+A datahub source is any custom file source that can be imported into a [Knowledge Base](/technical-reference/v0/concepts/knowledge-base). A datahub source converts your source into files. An example source is reading from a SQL database and writing the data as text to a file.
 
 First we define a config class, this contains the configuration for the source. The config class must inherit from `CustomSourceConfig`, and must implement the `to_files` method.
 
