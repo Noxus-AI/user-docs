@@ -1210,7 +1210,7 @@ description: "Use this node after a conditional node to allow you to merge diffe
 ---
 
 
-Merges different execution paths after a conditional node and uutputs the first complete value that it receives.
+Merges different execution paths after a conditional node and outputs the first complete value that it receives.
 
 The `Join Paths` module has **variable inputs** and **one output**:
 
