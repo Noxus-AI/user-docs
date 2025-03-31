@@ -221,6 +221,18 @@
               "api-reference/v1/conversations/public-add-message",
               "api-reference/v1/conversations/public-refresh-message"
             ]
+          },
+          {
+            "group": "Agents",
+            "pages": [
+              "api-reference/v1/agents/add-agent",
+              "api-reference/v1/agents/update-agent",
+              "api-reference/v1/agents/duplicate-agent",
+              "api-reference/v1/agents/get-agents",
+              "api-reference/v1/agents/get-agent",
+              "api-reference/v1/agents/delete-agent",
+              "api-reference/v1/agents/restore-agent"
+            ]
           }
         ]
       },
