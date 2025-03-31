@@ -121,118 +121,9 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "V1"
-        ],
-        "summary": "Create Workflow Public",
-        "operationId": "create_workflow_public",
-        "security": [
-          {
-            "APIKeyHeader": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateWorkflowRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Workflow"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/v1/workflows/{workflow_id}": {
-      "patch": {
-        "tags": [
-          "V1"
-        ],
-        "summary": "Update Workflow Public",
-        "operationId": "update_workflow_public",
-        "security": [
-          {
-            "APIKeyHeader": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "workflow_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Workflow Id"
-            }
-          },
-          {
-            "name": "force",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false,
-              "title": "Force"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateWorkflowRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Workflow"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
       "get": {
         "tags": [
           "V1"
@@ -1281,6 +1172,62 @@
         }
       }
     },
+    "/v1/knowledge-bases/{workflow_id}/{node_id}": {
+      "get": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Get Tmp Knowledge Base",
+        "operationId": "get_tmp_knowledge_base",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workflow Id"
+            }
+          },
+          {
+            "name": "node_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Node Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KnowledgeBaseWithDocuments"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/knowledge-bases/{knowledge_base_id}/document": {
       "post": {
         "tags": [
@@ -1595,6 +1542,80 @@
         }
       }
     },
+    "/v1/knowledge-bases/{knowledge_base_id}/tree/": {
+      "get": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Get Knowledge Base Tree",
+        "operationId": "get_knowledge_base_tree",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "knowledge_base_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Knowledge Base Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Page size",
+              "default": 50,
+              "title": "Size"
+            },
+            "description": "Page size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_KnowledgeBaseDocumentTree_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/knowledge-bases/{knowledge_base_id}/retry_all": {
       "post": {
         "tags": [
@@ -1822,7 +1843,7 @@
         }
       }
     },
-    "/v1/conversations": {
+    "/v1/conversation": {
       "get": {
         "tags": [
           "V1"
@@ -1993,7 +2014,7 @@
         }
       }
     },
-    "/v1/conversations/{conversation_id}": {
+    "/v1/conversation/{conversation_id}": {
       "get": {
         "tags": [
           "V1"
@@ -2215,7 +2236,7 @@
         }
       }
     },
-    "/v1/conversations/{conversation_id}/messages/{message_id}/refresh": {
+    "/v1/conversation/{conversation_id}/messages/{message_id}/refresh": {
       "post": {
         "tags": [
           "V1"
@@ -2930,19 +2951,19 @@
                   },
                   "semantic_search": {
                     "sets_threshold": false,
-                    "threshold": 0.0,
+                    "threshold": 0,
                     "top_k": 25,
                     "type": "semantic"
                   },
                   "semantic_weight": 0.3,
-                  "threshold": 0.0,
+                  "threshold": 0,
                   "type": "hybrid_relative_score"
                 },
                 "reranker_settings": {
                   "model_name": "semantic-ranker-512@latest",
                   "ranking_config": "default_ranking_config",
                   "sets_threshold": false,
-                  "threshold": 0.0,
+                  "threshold": 0,
                   "top_k": 10,
                   "type": "vertex"
                 },
@@ -2999,50 +3020,6 @@
           "input"
         ],
         "title": "CreateRunRequest"
-      },
-      "CreateWorkflowRequest": {
-        "properties": {
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "type": {
-            "$ref": "#/components/schemas/WorkflowType"
-          },
-          "definition": {
-            "type": "object",
-            "title": "Definition"
-          },
-          "error_handler": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Error Handler"
-          },
-          "meta": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/WorkflowMeta"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "name",
-          "type",
-          "definition"
-        ],
-        "title": "CreateWorkflowRequest"
       },
       "CustomSource": {
         "properties": {
@@ -3638,15 +3615,15 @@
         "properties": {
           "chunk_size": {
             "type": "integer",
-            "maximum": 10240.0,
-            "minimum": 1.0,
+            "maximum": 10240,
+            "minimum": 1,
             "title": "Chunk Size",
             "default": 1024
           },
           "chunk_overlap": {
             "type": "integer",
-            "maximum": 1024.0,
-            "minimum": 1.0,
+            "maximum": 1024,
+            "minimum": 1,
             "title": "Chunk Overlap",
             "default": 256
           },
@@ -3724,7 +3701,7 @@
             "$ref": "#/components/schemas/HybridSearchMethod",
             "default": {
               "type": "hybrid_relative_score",
-              "threshold": 0.0,
+              "threshold": 0,
               "fts_weight": 0.7,
               "semantic_weight": 0.3,
               "full_text_search": {
@@ -3732,7 +3709,7 @@
               },
               "semantic_search": {
                 "sets_threshold": false,
-                "threshold": 0.0,
+                "threshold": 0,
                 "top_k": 25,
                 "type": "semantic"
               }
@@ -3746,7 +3723,7 @@
               "ranking_config": "default_ranking_config",
               "top_k": 10,
               "sets_threshold": false,
-              "threshold": 0.0
+              "threshold": 0
             }
           }
         },
@@ -3765,7 +3742,7 @@
             "$ref": "#/components/schemas/HybridSearchMethod",
             "default": {
               "type": "hybrid_relative_score",
-              "threshold": 0.0,
+              "threshold": 0,
               "fts_weight": 0.7,
               "semantic_weight": 0.3,
               "full_text_search": {
@@ -3773,7 +3750,7 @@
               },
               "semantic_search": {
                 "sets_threshold": false,
-                "threshold": 0.0,
+                "threshold": 0,
                 "top_k": 25,
                 "type": "semantic"
               }
@@ -3787,7 +3764,7 @@
               "ranking_config": "default_ranking_config",
               "top_k": 10,
               "sets_threshold": false,
-              "threshold": 0.0
+              "threshold": 0
             }
           }
         },
@@ -3812,19 +3789,19 @@
               }
             ],
             "title": "Threshold",
-            "default": 0.0
+            "default": 0
           },
           "fts_weight": {
             "type": "number",
-            "maximum": 1.0,
-            "minimum": 0.0,
+            "maximum": 1,
+            "minimum": 0,
             "title": "Fts Weight",
             "default": 0.7
           },
           "semantic_weight": {
             "type": "number",
-            "maximum": 1.0,
-            "minimum": 0.0,
+            "maximum": 1,
+            "minimum": 0,
             "title": "Semantic Weight",
             "default": 0.3
           },
@@ -3839,7 +3816,7 @@
             "default": {
               "type": "semantic",
               "sets_threshold": false,
-              "threshold": 0.0,
+              "threshold": 0,
               "top_k": 25
             }
           }
@@ -3965,22 +3942,22 @@
         "properties": {
           "batch_size": {
             "type": "integer",
-            "maximum": 128.0,
-            "minimum": 1.0,
+            "maximum": 128,
+            "minimum": 1,
             "title": "Batch Size",
             "default": 8
           },
           "default_chunk_size": {
             "type": "integer",
-            "maximum": 4096.0,
-            "minimum": 1.0,
+            "maximum": 4096,
+            "minimum": 1,
             "title": "Default Chunk Size",
             "default": 1024
           },
           "default_chunk_overlap": {
             "type": "integer",
-            "maximum": 1024.0,
-            "minimum": 1.0,
+            "maximum": 1024,
+            "minimum": 1,
             "title": "Default Chunk Overlap",
             "default": 256
           },
@@ -4105,22 +4082,22 @@
         "properties": {
           "batch_size": {
             "type": "integer",
-            "maximum": 128.0,
-            "minimum": 1.0,
+            "maximum": 128,
+            "minimum": 1,
             "title": "Batch Size",
             "default": 8
           },
           "default_chunk_size": {
             "type": "integer",
-            "maximum": 4096.0,
-            "minimum": 1.0,
+            "maximum": 4096,
+            "minimum": 1,
             "title": "Default Chunk Size",
             "default": 1024
           },
           "default_chunk_overlap": {
             "type": "integer",
-            "maximum": 1024.0,
-            "minimum": 1.0,
+            "maximum": 1024,
+            "minimum": 1,
             "title": "Default Chunk Overlap",
             "default": 256
           },
@@ -4465,6 +4442,34 @@
         ],
         "title": "KnowledgeBaseDocument"
       },
+      "KnowledgeBaseDocumentTree": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DocumentStatus"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "prefix": {
+            "type": "string",
+            "title": "Prefix"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "name",
+          "prefix"
+        ],
+        "title": "KnowledgeBaseDocumentTree"
+      },
       "KnowledgeBaseInfo": {
         "properties": {
           "id": {
@@ -4729,19 +4734,19 @@
                 },
                 "semantic_search": {
                   "sets_threshold": false,
-                  "threshold": 0.0,
+                  "threshold": 0,
                   "top_k": 25,
                   "type": "semantic"
                 },
                 "semantic_weight": 0.3,
-                "threshold": 0.0,
+                "threshold": 0,
                 "type": "hybrid_relative_score"
               },
               "reranker_settings": {
                 "model_name": "semantic-ranker-512@latest",
                 "ranking_config": "default_ranking_config",
                 "sets_threshold": false,
-                "threshold": 0.0,
+                "threshold": 0,
                 "top_k": 10,
                 "type": "vertex"
               }
@@ -4883,19 +4888,19 @@
                 },
                 "semantic_search": {
                   "sets_threshold": false,
-                  "threshold": 0.0,
+                  "threshold": 0,
                   "top_k": 25,
                   "type": "semantic"
                 },
                 "semantic_weight": 0.3,
-                "threshold": 0.0,
+                "threshold": 0,
                 "type": "hybrid_relative_score"
               },
               "reranker_settings": {
                 "model_name": "semantic-ranker-512@latest",
                 "ranking_config": "default_ranking_config",
                 "sets_threshold": false,
-                "threshold": 0.0,
+                "threshold": 0,
                 "top_k": 10,
                 "type": "vertex"
               }
@@ -5779,22 +5784,22 @@
           },
           "total": {
             "type": "integer",
-            "minimum": 0.0,
+            "minimum": 0,
             "title": "Total"
           },
           "page": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Page"
           },
           "size": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Size"
           },
           "pages": {
             "type": "integer",
-            "minimum": 0.0,
+            "minimum": 0,
             "title": "Pages"
           }
         },
@@ -5807,6 +5812,73 @@
           "pages"
         ],
         "title": "Page[Conversation]"
+      },
+      "Page_KnowledgeBaseDocumentTree_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/KnowledgeBaseDocumentTree"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size"
+          },
+          "pages": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "size"
+        ],
+        "title": "Page[KnowledgeBaseDocumentTree]"
       },
       "Page_KnowledgeBaseDocument_": {
         "properties": {
@@ -5821,7 +5893,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -5833,7 +5905,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1.0
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -5845,7 +5917,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1.0
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -5857,7 +5929,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -5888,7 +5960,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -5900,7 +5972,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1.0
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -5912,7 +5984,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1.0
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -5924,7 +5996,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -5955,7 +6027,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -5967,7 +6039,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1.0
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -5979,7 +6051,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1.0
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -5991,7 +6063,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -6022,7 +6094,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -6034,7 +6106,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1.0
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -6046,7 +6118,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1.0
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -6058,7 +6130,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -6089,7 +6161,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -6101,7 +6173,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1.0
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -6113,7 +6185,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1.0
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -6125,7 +6197,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -6154,22 +6226,22 @@
           },
           "total": {
             "type": "integer",
-            "minimum": 0.0,
+            "minimum": 0,
             "title": "Total"
           },
           "page": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Page"
           },
           "size": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Size"
           },
           "pages": {
             "type": "integer",
-            "minimum": 0.0,
+            "minimum": 0,
             "title": "Pages"
           }
         },
@@ -6665,7 +6737,7 @@
           "similarity": {
             "type": "number",
             "title": "Similarity",
-            "default": 0.0
+            "default": 0
           },
           "matches": {
             "items": {
@@ -6700,12 +6772,12 @@
           "similarity_threshold": {
             "type": "number",
             "title": "Similarity Threshold",
-            "default": 0.0
+            "default": 0
           },
           "limit": {
             "type": "integer",
-            "maximum": 100.0,
-            "minimum": 1.0,
+            "maximum": 100,
+            "minimum": 1,
             "title": "Limit",
             "default": 10
           },
@@ -6746,15 +6818,15 @@
           },
           "threshold": {
             "type": "number",
-            "maximum": 1.0,
-            "minimum": 0.0,
+            "maximum": 1,
+            "minimum": 0,
             "title": "Threshold",
-            "default": 0.0
+            "default": 0
           },
           "top_k": {
             "type": "integer",
-            "maximum": 100.0,
-            "minimum": 1.0,
+            "maximum": 100,
+            "minimum": 1,
             "title": "Top K",
             "default": 25
           }
@@ -6874,7 +6946,7 @@
               "is_subconfig": false,
               "label": "",
               "multi_select": true,
-              "name": "Sharepoint",
+              "name": "OneDrive",
               "set_include_folders": true,
               "type": "onedrive_picker"
             },
@@ -7443,11 +7515,6 @@
         ],
         "title": "Trigger"
       },
-      "Unset": {
-        "properties": {},
-        "type": "object",
-        "title": "Unset"
-      },
       "UpdateDocument": {
         "properties": {
           "name": {
@@ -7661,103 +7728,6 @@
         "type": "object",
         "title": "UpdateKnowledgeBase"
       },
-      "UpdateWorkflowRequest": {
-        "properties": {
-          "name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "type": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/WorkflowType"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "saved": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Saved"
-          },
-          "definition": {
-            "anyOf": [
-              {
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Definition"
-          },
-          "error_handler": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "$ref": "#/components/schemas/Unset"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Error Handler",
-            "default": {}
-          },
-          "meta": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/WorkflowMeta"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "workflow_hash": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Workflow Hash"
-          }
-        },
-        "type": "object",
-        "title": "UpdateWorkflowRequest"
-      },
       "UserMessage": {
         "properties": {
           "role": {
@@ -7911,8 +7881,8 @@
             "anyOf": [
               {
                 "type": "integer",
-                "maximum": 25.0,
-                "minimum": 1.0
+                "maximum": 25,
+                "minimum": 1
               },
               {
                 "type": "null"
@@ -7928,10 +7898,10 @@
           },
           "threshold": {
             "type": "number",
-            "maximum": 1.0,
-            "minimum": 0.0,
+            "maximum": 1,
+            "minimum": 0,
             "title": "Threshold",
-            "default": 0.0
+            "default": 0
           }
         },
         "type": "object",
