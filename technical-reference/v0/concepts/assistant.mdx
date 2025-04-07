@@ -1,40 +1,45 @@
 ---
-title: "Assistant"
-description: "AI-powered assistants that help users accomplish tasks through natural language"
+title: "Co-worker"
+description: "AI-powered co-workers that help users accomplish tasks through natural language"
 ---
 
-Assistants are AI-powered entities that help users accomplish tasks through natural language conversations. They combine language understanding, knowledge retrieval, and reasoning capabilities to provide helpful responses.
+<Info>
+  Co-workers are referred to as agents in the API/SDK
+</Info>
+
+
+Co-workers are AI-powered entities that help users accomplish tasks through natural language conversations. They combine language understanding, knowledge retrieval, and reasoning capabilities to provide helpful responses.
 
 <Info>
-  Assistants serve as the primary interface between users and the AI capabilities of the platform, making complex functionality accessible through simple conversations.
+  Co-workers serve as the primary interface between users and the AI capabilities of the platform, making complex functionality accessible through simple conversations.
 </Info>
 
 ## Key Capabilities
 
 <CardGroup cols={2}>
   <Card title="Natural Language Understanding" icon="comments">
-    Assistants comprehend user queries in natural language, understanding intent, context, and nuance.
+    Co-workers comprehend user queries in natural language, understanding intent, context, and nuance.
   </Card>
   <Card title="Knowledge Integration" icon="database">
-    Connect assistants to Knowledge Bases to provide them with domain-specific information and context.
+    Connect co-workers to Knowledge Bases to provide them with domain-specific information and context.
   </Card>
   <Card title="Contextual Memory" icon="brain">
-    Assistants maintain conversation history to provide coherent, contextually relevant responses across multiple turns.
+    Co-workers maintain conversation history to provide coherent, contextually relevant responses across multiple turns.
   </Card>
   <Card title="Workflow Execution" icon="gears">
     Trigger and execute workflows based on user requests, enabling complex automation through simple instructions.
   </Card>
 </CardGroup>
 
-## Conversing with Assistants
+## Conversing with Co-workers
 
-Interacting with assistants through the API follows a structured flow that enables natural, contextual conversations. Understanding this flow helps you build effective assistant integrations.
+Interacting with co-workers through the API follows a structured flow that enables natural, contextual conversations. Understanding this flow helps you build effective co-worker integrations.
 
 ### Conversation Flow
 
 <Steps>
   <Step title="Create a Conversation">
-    Start by creating a new conversation with the assistant using the [Create Conversation](/api-reference/v1/conversations/public-create-conversation) endpoint.
+    Start by creating a new conversation with the co-worker using the [Create Conversation](/api-reference/v1/conversations/public-create-conversation) endpoint.
     
     This establishes a conversation context that will maintain history and state throughout the interaction.
   </Step>
@@ -45,16 +50,16 @@ Interacting with assistants through the API follows a structured flow that enabl
     The message should contain a clear request or question to get the most helpful response.
   </Step>
   
-  <Step title="Receive Assistant Response">
-    The assistant processes the message and generates a response, which is automatically added to the conversation.
+  <Step title="Receive Co-worker Response">
+    The co-worker processes the message and generates a response, which is automatically added to the conversation.
     
-    Retrieve the updated conversation with the [Get Conversation](/api-reference/v1/conversations/public-get-conversation) endpoint to see the assistant's response.
+    Retrieve the updated conversation with the [Get Conversation](/api-reference/v1/conversations/public-get-conversation) endpoint to see the co-worker's response.
   </Step>
   
   <Step title="Continue the Conversation">
     Add follow-up messages using the [Add Message](/api-reference/v1/conversations/public-add-message) endpoint.
     
-    The assistant maintains context from previous messages, enabling natural back-and-forth dialogue.
+    The co-worker maintains context from previous messages, enabling natural back-and-forth dialogue.
   </Step>
 </Steps>
 
@@ -73,12 +78,12 @@ Effective conversation management involves several key operations:
 
 ## Available Tools
 
-Assistants can be equipped with specialized tools that extend their capabilities beyond basic conversation. Each tool enables specific functionality that can be activated during conversations.
+Co-workers can be equipped with specialized tools that extend their capabilities beyond basic conversation. Each tool enables specific functionality that can be activated during conversations.
 
 <CardGroup cols={2}>
   <Card title="Web Research" icon="globe">
     <div className="mt-2">
-      Enables the assistant to search the web in real-time to find current information, answer factual questions, and provide up-to-date insights on topics outside its training data.
+      Enables the co-worker to search the web in real-time to find current information, answer factual questions, and provide up-to-date insights on topics outside its training data.
     </div>
   </Card>
   <Card title="Noxus Q&A" icon="circle-question">
@@ -91,12 +96,12 @@ Assistants can be equipped with specialized tools that extend their capabilities
 <CardGroup cols={2}>
   <Card title="Knowledge Base Q&A" icon="database">
     <div className="mt-2">
-      Connects the assistant to a specific pre-selected Knowledge Base, allowing it to answer questions using your organization's proprietary information and documents.
+      Connects the co-worker to a specific pre-selected Knowledge Base, allowing it to answer questions using your organization's proprietary information and documents.
     </div>
   </Card>
   <Card title="Knowledge Base Selector" icon="hand-pointer">
     <div className="mt-2">
-      Gives users the flexibility to choose which Knowledge Base the assistant should reference during the conversation, ideal for organizations with multiple knowledge domains.
+      Gives users the flexibility to choose which Knowledge Base the co-worker should reference during the conversation, ideal for organizations with multiple knowledge domains.
     </div>
   </Card>
 </CardGroup>
@@ -104,12 +109,12 @@ Assistants can be equipped with specialized tools that extend their capabilities
 <CardGroup cols={2}>
   <Card title="Workflow Runner" icon="play">
     <div className="mt-2">
-      Allows the assistant to execute predefined workflows, collecting necessary parameters through natural conversation and returning results directly in the chat.
+      Allows the co-worker to execute predefined workflows, collecting necessary parameters through natural conversation and returning results directly in the chat.
     </div>
   </Card>
   <Card title="Coming Soon" icon="clock-rotate-left">
     <div className="mt-2">
-      Additional toolsets and Model Context Protocol (MCPs) integration coming soon to further extend assistant capabilities.
+      Additional toolsets and Model Context Protocol (MCPs) integration coming soon to further extend co-worker capabilities.
     </div>
   </Card>
 </CardGroup>
@@ -118,7 +123,7 @@ Assistants can be equipped with specialized tools that extend their capabilities
 
 ### Web Research Tool
 
-The Web Research tool transforms assistants into real-time information gatherers by:
+The Web Research tool transforms co-workers into real-time information gatherers by:
 
 - **Live Web Searches**: Performing searches across the internet to find current information
 - **Content Extraction**: Analyzing web pages to extract relevant information
@@ -126,7 +131,7 @@ The Web Research tool transforms assistants into real-time information gatherers
 - **Citation Provision**: Including links to original sources for verification
 - **Summarization**: Condensing lengthy web content into concise, relevant answers
 
-This tool is particularly valuable for questions about current events, recent developments, or topics that may have changed since the assistant's knowledge cutoff.
+This tool is particularly valuable for questions about current events, recent developments, or topics that may have changed since the co-worker's knowledge cutoff.
 
 <Warning>
   Web research capabilities may be limited by your subscription tier and organization settings. The tool respects website terms of service and may not be able to access content behind paywalls or login screens.
@@ -184,28 +189,28 @@ This tool enables users to initiate complex automated processes through simple c
 
 ## Best Practices
 
-### Assistant Configuration
+### Co-worker Configuration
 
-For optimal assistant performance:
+For optimal co-worker performance:
 
-- **Clear Purpose**: Define a specific purpose for each assistant
-- **Tool Selection**: Enable only the tools that are relevant to the assistant's purpose
-- **Knowledge Selection**: Connect relevant Knowledge Bases that match the assistant's domain
-- **Custom Instructions**: Provide detailed instructions about how the assistant should behave
+- **Clear Purpose**: Define a specific purpose for each co-worker
+- **Tool Selection**: Enable only the tools that are relevant to the co-worker's purpose
+- **Knowledge Selection**: Connect relevant Knowledge Bases that match the co-worker's domain
+- **Custom Instructions**: Provide detailed instructions about how the co-worker should behave
 - **Regular Updates**: Keep Knowledge Bases current to ensure accurate information
 
-## Assistant Configuration
+## Co-worker Configuration
 
-Assistants can be configured with various settings to customize their behavior and capabilities. Understanding these configuration options helps you create assistants that are tailored to specific use cases.
+Co-workers can be configured with various settings to customize their behavior and capabilities. Understanding these configuration options helps you create co-workers that are tailored to specific use cases.
 
 ### Core Settings
 
-When configuring an assistant, you can adjust several fundamental parameters:
+When configuring an Co-worker, you can adjust several fundamental parameters:
 
 <CardGroup cols={2}>
   <Card title="Model Selection" icon="microchip">
     <div className="mt-2">
-      Choose which AI models power your assistant. You can select from performance-optimized or cost-optimized model configurations.
+      Choose which AI models power your co-worker. You can select from performance-optimized or cost-optimized model configurations.
     </div>
   </Card>
   <Card title="Temperature" icon="temperature-half">
@@ -218,12 +223,12 @@ When configuring an assistant, you can adjust several fundamental parameters:
 <CardGroup cols={2}>
   <Card title="Custom Instructions" icon="file-signature">
     <div className="mt-2">
-      Provide specific guidance on how the assistant should behave, what tone to use, and any particular response patterns to follow.
+      Provide specific guidance on how the co-worker should behave, what tone to use, and any particular response patterns to follow.
     </div>
   </Card>
   <Card title="Tool Selection" icon="toolbox">
     <div className="mt-2">
-      Enable or disable specific tools based on the assistant's intended purpose and the capabilities it needs.
+      Enable or disable specific tools based on the co-worker's intended purpose and the capabilities it needs.
     </div>
   </Card>
 </CardGroup>
@@ -233,7 +238,7 @@ When configuring an assistant, you can adjust several fundamental parameters:
 Each tool can be individually configured with specific settings to customize its behavior:
 
 <Tip>
-  The name and description of each tool are included in the assistant's instructions and play a crucial role in tool selection. Clear, descriptive names and detailed descriptions help the assistant understand when and how to use each tool appropriately during conversations.
+  The name and description of each tool are included in the co-worker's instructions and play a crucial role in tool selection. Clear, descriptive names and detailed descriptions help the co-worker understand when and how to use each tool appropriately during conversations.
 </Tip>
 
 #### Web Research Tool
@@ -244,8 +249,8 @@ Each tool can be individually configured with specific settings to customize its
 |:----------|:------------|
 | **Enabled/Disabled** | Turn the web research capability on or off |
 | **Custom Instructions** | Provide specific guidance for how web research should be conducted |
-| **Name** | Customize the display name of the tool (affects when the assistant chooses to use this tool) |
-| **Description** | Modify the tool's description (helps the assistant understand the tool's purpose and capabilities) |
+| **Name** | Customize the display name of the tool (affects when the co-worker chooses to use this tool) |
+| **Description** | Modify the tool's description (helps the co-worker understand the tool's purpose and capabilities) |
 
 </div>
 
@@ -296,8 +301,8 @@ Each tool can be individually configured with specific settings to customize its
 
 | Parameter | Description |
 |:----------|:------------|
-| **Workflow Selection** | Connect to specific workflows that the assistant can execute |
-| **LLM Follow-up** | Configure whether the assistant should provide additional context after workflow execution |
+| **Workflow Selection** | Connect to specific workflows that the co-worker can execute |
+| **LLM Follow-up** | Configure whether the co-worker should provide additional context after workflow execution |
 | **Enabled/Disabled** | Turn the workflow execution capability on or off |
 | **Custom Instructions** | Provide specific guidance for workflow execution |
 | **Name** | Customize the display name of the tool |
@@ -307,14 +312,14 @@ Each tool can be individually configured with specific settings to customize its
 
 ### Configuration Best Practices
 
-For optimal assistant performance:
+For optimal co-worker performance:
 
-- **Focused Tool Selection**: Only enable tools that are relevant to the assistant's purpose
-- **Clear Instructions**: Provide detailed custom instructions for both the assistant and individual tools
-- **Appropriate Temperature**: Use lower temperature (0.1-0.3) for factual assistants and higher (0.4-0.7) for creative ones
-- **Knowledge Base Alignment**: Connect Knowledge Bases that contain information relevant to the assistant's domain
-- **Regular Updates**: Review and update assistant configurations as your needs evolve
+- **Focused Tool Selection**: Only enable tools that are relevant to the co-worker's purpose
+- **Clear Instructions**: Provide detailed custom instructions for both the co-worker and individual tools
+- **Appropriate Temperature**: Use lower temperature (0.1-0.3) for factual co-workers and higher (0.4-0.7) for creative ones
+- **Knowledge Base Alignment**: Connect Knowledge Bases that contain information relevant to the co-worker's domain
+- **Regular Updates**: Review and update co-worker configurations as your needs evolve
 
 <Warning>
-  Enabling too many tools can make an assistant less focused. Consider creating multiple specialized assistants rather than a single assistant with all possible tools.
+  Enabling too many tools can make an co-worker less focused. Consider creating multiple specialized co-workers rather than a single co-worker with all possible tools.
 </Warning>
