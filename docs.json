@@ -223,7 +223,7 @@
             ]
           },
           {
-            "group": "Agents",
+            "group": "Agents (Co-workers)",
             "pages": [
               "api-reference/v1/agents/add-agent",
               "api-reference/v1/agents/update-agent",
