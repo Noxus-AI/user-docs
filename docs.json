@@ -59,6 +59,7 @@
             "group": "AI Modules 🧠",
             "pages": [
               "Documentation/AI/AI Text Creation",
+              "Documentation/AI/WebResearch",
               "Documentation/AI/Summarizer",
               "Documentation/AI/EnrichCompany",
               "Documentation/AI/AI Image Generation",
@@ -68,6 +69,7 @@
               "Documentation/AI/AI Image Transformation",
               "Documentation/AI/Scorer",
               "Documentation/AI//Knowledge Base QA",
+              "Documentation/AI//DocumentQA",
               "Documentation/AI//Categorizer",
               "Documentation/AI//SmartRouter",
               "Documentation/AI//FindDocuments",
