@@ -35,6 +35,7 @@
           {
             "group": "Data Modules 🗂️",
             "pages": [
+              "Documentation/Data Modules/DownloadFile",
               "Documentation/Data Modules/File to Text",
               "Documentation/Data Modules/List Website Entries",
               "Documentation/Data Modules/Scrape Web Page",
