@@ -17,8 +17,9 @@ description: "How we measure usage in Noxus"
 
 The way AI Operations are counted depends on the type of action:
 
-- **Lists**:
-  - Each item processed in a list counts as **1 AI Operation**. _(For example, a list with 20 items equals 20 AI Operations.)_
+- **Workflow Run**
+- **Workflow Lists**:
+  - Each item processed in a list counts as **1 AI Operation**. _(For example, if a workflow separates into 20 items, it will count as 20 AI Operations)_
 - **Chats**:
   - Every **10 sent messages** in a chat count as **1 AI Operation**.
 
