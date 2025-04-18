@@ -37,6 +37,7 @@
             "pages": [
               "Documentation/Data Modules/DownloadFile",
               "Documentation/Data Modules/File to Text",
+              "Documentation/Data Modules/MakeAPIRequest",
               "Documentation/Data Modules/List Website Entries",
               "Documentation/Data Modules/Scrape Web Page",
               "Documentation/Data Modules/Run Code",
