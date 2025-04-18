@@ -18,7 +18,8 @@
             "pages": [
               "Documentation/introduction",
               "Documentation/Workflow Builder",
-              "Documentation/YFT"
+              "Documentation/YFT",
+              "Documentation/AIOperations",
             ]
           },
           {
