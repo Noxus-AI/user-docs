@@ -16,141 +16,145 @@
           {
             "group": "Get Started with Noxus 🔰",
             "pages": [
-              "Documentation/introduction",
-              "Documentation/Workflow Builder",
-              "Documentation/YFT"
+              "documentation/introduction",
+              "documentation/workflow-builder",
+              "documentation/yft"
             ]
           },
           {
             "group": "Prompt Writing 📝",
             "pages": [
-              "Documentation/Prompt/Overview",
-              "Documentation/Prompt/CCT",
-              "Documentation/Prompt/Multishot",
-              "Documentation/Prompt/let-the-ai-think",
-              "Documentation/Prompt/assign-role-to-ai",
-              "Documentation/Prompt/Select-model"
+              "documentation/prompt/overview",
+              "documentation/prompt/cct",
+              "documentation/prompt/multishot",
+              "documentation/prompt/let-the-ai-think",
+              "documentation/prompt/assign-role-to-ai",
+              "documentation/prompt/select-model"
             ]
           },
           {
             "group": "Data Modules 🗂️",
             "pages": [
-              "Documentation/Data Modules/File to Text",
-              "Documentation/Data Modules/List Website Entries",
-              "Documentation/Data Modules/Scrape Web Page",
-              "Documentation/Data Modules/Run Code",
-              "Documentation/Data Modules/Generate File",
-              "Documentation/Data Modules/Use Search Engine"
+              "documentation/data-modules/file-to-text",
+              "documentation/data-modules/list-website-entries",
+              "documentation/data-modules/scrape-web-page",
+              "documentation/data-modules/run-code",
+              "documentation/data-modules/generate-file",
+              "documentation/data-modules/use-search-engine"
             ]
           },
           {
             "group": "Logic Modules 🧩",
             "pages": [
-              "Documentation/Logic Modules/Combine Text",
-              "Documentation/Logic Modules/Extract Fields",
-              "Documentation/Logic Modules/Condition",
-              "Documentation/Logic Modules/Filterlist",
-              "Documentation/Logic Modules/List2value",
-              "Documentation/Logic Modules/Single2list",
-              "Documentation/Logic Modules/JoinPaths"
+              "documentation/logic-modules/combine-text",
+              "documentation/logic-modules/extract-fields",
+              "documentation/logic-modules/condition",
+              "documentation/logic-modules/filter-list",
+              "documentation/logic-modules/list-to-value",
+              "documentation/logic-modules/single-to-list",
+              "documentation/logic-modules/join-paths"
             ]
           },
           {
             "group": "AI Modules 🧠",
             "pages": [
-              "Documentation/AI/AI Text Creation",
-              "Documentation/AI/Summarizer",
-              "Documentation/AI/EnrichCompany",
-              "Documentation/AI/AI Image Generation",
-              "Documentation/AI/AIVision",
-              "Documentation/AI/Translate Text",
-              "Documentation/AI/Form",
-              "Documentation/AI/AI Image Transformation",
-              "Documentation/AI/Scorer",
-              "Documentation/AI//Knowledge Base QA",
-              "Documentation/AI//Categorizer",
-              "Documentation/AI//SmartRouter",
-              "Documentation/AI//FindDocuments",
-              "Documentation/AI//GenerateFields"
+              "documentation/ai/ai-text-creation",
+              "documentation/ai/summarizer",
+              "documentation/ai/enrich-company",
+              "documentation/ai/ai-image-generation",
+              "documentation/ai/ai-vision",
+              "documentation/ai/translate-text",
+              "documentation/ai/form",
+              "documentation/ai/ai-image-transformation",
+              "documentation/ai/scorer",
+              "documentation/ai/knowledge-base-qa",
+              "documentation/ai/categorizer",
+              "documentation/ai/smart-router",
+              "documentation/ai/find-documents",
+              "documentation/ai/generate-fields"
             ]
           },
           {
             "group": "Integration Modules 🔗",
             "pages": [
-              "Documentation/Integration Modules/Linked",
+              "documentation/integration-modules/linked",
               {
                 "group": "Airtable",
                 "pages": [
-                  "Documentation/Integration Modules/ReadR",
-                  "Documentation/Integration Modules/WriteR"
+                  "documentation/integration-modules/airtable-read",
+                  "documentation/integration-modules/airtable-write"
                 ]
               },
               {
                 "group": "Calendly",
-                "pages": ["Documentation/Integration Modules/CReadEvents"]
+                "pages": [
+                  "documentation/integration-modules/calendly-read-events"
+                ]
               },
               {
                 "group": "Github",
-                "pages": ["Documentation/Integration Modules/GReadProfile"]
+                "pages": [
+                  "documentation/integration-modules/github-read-profile"
+                ]
               },
               {
                 "group": "Google",
                 "pages": [
-                  "Documentation/Integration Modules/GmailW",
-                  "Documentation/Integration Modules/GmailR",
-                  "Documentation/Integration Modules/Google sheets reader",
-                  "Documentation/Integration Modules/Google sheets writer",
-                  "Documentation/Integration Modules/GDrive Reader",
-                  "Documentation/Integration Modules/GDrive writer",
-                  "Documentation/Integration Modules/Google Docs Reader",
-                  "Documentation/Integration Modules/Google Docs Writer",
-                  "Documentation/Integration Modules/Read Events",
-                  "Documentation/Integration Modules/Create Event"
+                  "documentation/integration-modules/gmail-writer",
+                  "documentation/integration-modules/gmail-reader",
+                  "documentation/integration-modules/google-sheets-reader",
+                  "documentation/integration-modules/google-sheets-writer",
+                  "documentation/integration-modules/gdrive-reader",
+                  "documentation/integration-modules/gdrive-writer",
+                  "documentation/integration-modules/google-docs-reader",
+                  "documentation/integration-modules/google-docs-writer",
+                  "documentation/integration-modules/gcalendar-read-events",
+                  "documentation/integration-modules/gcalendar-create-event"
                 ]
               },
               {
                 "group": "Instagram",
                 "pages": [
-                  "Documentation/Integration Modules/IReadProfile",
-                  "Documentation/Integration Modules/IReadComments"
+                  "documentation/integration-modules/instagram-read-profile",
+                  "documentation/integration-modules/instagram-read-comments"
                 ]
               },
               {
                 "group": "Linkedin",
                 "pages": [
-                  "Documentation/Integration Modules/ReadProfile",
-                  "Documentation/Integration Modules/CompanySearch"
+                  "documentation/integration-modules/linkedin-read-profile",
+                  "documentation/integration-modules/linkedin-company-search"
                 ]
               },
               {
                 "group": "Notion",
                 "pages": [
-                  "Documentation/Integration Modules/NReadPage",
-                  "Documentation/Integration Modules/NWritePage",
-                  "Documentation/Integration Modules/NReadDatabase",
-                  "Documentation/Integration Modules/NWriteDatabase"
+                  "documentation/integration-modules/notion-read-page",
+                  "documentation/integration-modules/notion-write-page",
+                  "documentation/integration-modules/notion-read-database",
+                  "documentation/integration-modules/notion-write-database"
                 ]
               },
               {
                 "group": "Slack",
                 "pages": [
-                  "Documentation/Integration Modules/SlackReader",
-                  "Documentation/Integration Modules/SlackWriter"
+                  "documentation/integration-modules/slack-reader",
+                  "documentation/integration-modules/slack-writer"
                 ]
               },
               {
                 "group": "Telegram",
-                "pages": ["Documentation/Integration Modules/TelegramW"]
+                "pages": ["documentation/integration-modules/telegram-writer"]
               },
               {
                 "group": "Typeform",
-                "pages": ["Documentation/Integration Modules/ReadTypeform"]
+                "pages": ["documentation/integration-modules/typeform-read"]
               },
               {
                 "group": "Youtube",
                 "pages": [
-                  "Documentation/Integration Modules/ReadChannel",
-                  "Documentation/Integration Modules/TranscribeVideo"
+                  "documentation/integration-modules/youtube-read-channel",
+                  "documentation/integration-modules/youtube-transcribe-video"
                 ]
               }
             ]
@@ -158,9 +162,9 @@
           {
             "group": "Triggers⚡",
             "pages": [
-              "Documentation/Triggers/ST",
-              "Documentation/Triggers/Gmail",
-              "Documentation/Triggers/Clock"
+              "documentation/triggers/slack",
+              "documentation/triggers/gmail",
+              "documentation/triggers/clock"
             ]
           }
         ]

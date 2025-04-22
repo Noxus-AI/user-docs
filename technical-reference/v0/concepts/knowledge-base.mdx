@@ -1,7 +1,7 @@
 ---
-title: "Data Hub"
-description: "Data Hub is where you manage your Knowledge Bases."
-# todo: 
+title: "Knowledge Bases"
+description: "Here you can manage your Knowledge Bases."
+# todo:
 # - [ ] Document & File System
 # - [ ] New Documentation group for KB
 #   - [ ] Configuration
@@ -11,10 +11,12 @@ description: "Data Hub is where you manage your Knowledge Bases."
 #   - [ ] Best Practices
 ---
 
-
 Knowledge Bases (KBs) are collections of documents and data that provide context and information to AI agents. They serve as the foundation for enabling AI to access, understand, and utilize both structured and unstructured information.
 
-<Info>A Knowledge Base acts as a centralized repository that organizes information in a way that's optimized for AI consumption and retrieval.</Info>
+<Info>
+  A Knowledge Base acts as a centralized repository that organizes information
+  in a way that's optimized for AI consumption and retrieval.
+</Info>
 
 ### Key Features
 
@@ -22,8 +24,6 @@ Knowledge Bases (KBs) are collections of documents and data that provide context
 - **Intelligent Processing**: Content optimized for AI consumption
 - **Efficient Retrieval**: Quick access to relevant information
 - **Flexible Sources**: Support for multiple data formats and origins
-
-
 
 ## Common Operations
 
@@ -38,11 +38,13 @@ The platform provides several ways to add documents to a Knowledge Base:
 - Upload files directly using the [Upload Train](/api-reference/v1/knowledge-base/upload-train) endpoint
 - Import from external sources like Google Drive, OneDrive, or SharePoint using the [Generic Train](/api-reference/v1/knowledge-base/generic-train) endpoint
 - Add documents with custom metadata using the [Add Knowledge Base Document](/api-reference/v1/knowledge-base/public-add-knowledge-base-document) endpoint
-<Note> Adding a document will NOT automatically trigger the ingestion process.</Note>
-
-
+  <Note>
+    {" "}
+    Adding a document will NOT automatically trigger the ingestion process.
+  </Note>
 
 These operations support:
+
 - Multiple file uploads
 - Custom path prefixes for organization
 - Automatic processing and indexing
@@ -59,17 +61,16 @@ Document management is handled through various endpoints that allow you to:
 
 Knowledge Base details, including document status, can be retrieved through the [Get Knowledge Base](/api-reference/v1/knowledge-base/public-get-knowledge-base) endpoint. You can also update KB properties using the update knowledge base endpoint.
 
-
 ### Monitoring Processing
 
 You can monitor processing through the [Running Jobs](/api-reference/v1/knowledge-base/running-jobs) endpoint that provides detailed information about ongoing and completed operations.
-
 
 ## Supported Sources
 
 <CardGroup cols={2}>
   <Card title="Document Upload" icon="file-arrow-up">
-    Direct file uploads (PDFs, text files, images) with support for batch uploading
+    Direct file uploads (PDFs, text files, images) with support for batch
+    uploading
   </Card>
   <Card title="Google Drive" icon="google-drive">
     Import documents and files directly from your Google Drive
@@ -88,7 +89,10 @@ You can monitor processing through the [Running Jobs](/api-reference/v1/knowledg
   </Card>
 </CardGroup>
 
-<Warning>Even though there are more integrations available, the above are currently supported for Knowledge Bases.</Warning>
+<Warning>
+  Even though there are more integrations available, the above are currently
+  supported for Knowledge Bases.
+</Warning>
 
 ## Knowledge Base Types
 
@@ -96,17 +100,20 @@ Knowledge Bases come in two primary types:
 
 <CardGroup cols={2}>
   <Card title="Entity Knowledge Bases" icon="database">
-    Permanent Knowledge Bases that are managed through the Data Hub and can be referenced by multiple agents or workflows.
+    Permanent Knowledge Bases that are managed in the Knowledge Bases section
+    and can be referenced by multiple agents or workflows.
   </Card>
   <Card title="Temporary Knowledge Bases" icon="clock">
-    Created within the Workflow Editor for specific workflow use cases, with the option to promote them to Entity KBs.
+    Created within the Workflow Editor for specific workflow use cases, with the
+    option to promote them to Entity KBs.
   </Card>
 </CardGroup>
 
 ### Entity Knowledge Bases
 
 Entity Knowledge Bases are permanent repositories that:
-- Are created and managed through the Data Hub
+
+- Are created and managed through the Knowledge Bases section
 - Can be shared across multiple agents and workflows
 - Persist until explicitly deleted
 - Support all document sources and management operations
@@ -117,6 +124,7 @@ These are the standard Knowledge Bases that most users will interact with for lo
 ### Temporary Knowledge Bases
 
 Temporary Knowledge Bases are workflow-specific repositories that:
+
 - Are created directly within the Workflow Editor
 - Are initially only available within the workflow where they were created
 - Can be used for processing intermediate data or testing document structures
@@ -131,12 +139,12 @@ Temporary KBs are ideal for workflow-specific data that may not need to be part 
 
 Knowledge Bases have the following status values that indicate their overall state:
 
-| Status | Description |
-|--------|-------------|
-| `created` | KB has been created but no documents have been added yet |
-| `training` | KB has documents that are currently being processed |
-| `trained` | All documents in the KB have been successfully processed |
-| `error` | All documents in the KB have failed processing |
+| Status     | Description                                              |
+| ---------- | -------------------------------------------------------- |
+| `created`  | KB has been created but no documents have been added yet |
+| `training` | KB has documents that are currently being processed      |
+| `trained`  | All documents in the KB have been successfully processed |
+| `error`    | All documents in the KB have failed processing           |
 
 The KB status is automatically updated based on the status of its documents.
 
@@ -144,12 +152,12 @@ The KB status is automatically updated based on the status of its documents.
 
 Individual documents within a Knowledge Base have their own status values:
 
-| Status | Description |
-|--------|-------------|
-| `uploaded` | Document has been uploaded but processing hasn't started |
-| `training` | Document is currently being processed (chunked, embedded, etc.) |
-| `trained` | Document has been successfully processed and is available for queries |
-| `error` | Document processing failed |
+| Status     | Description                                                           |
+| ---------- | --------------------------------------------------------------------- |
+| `uploaded` | Document has been uploaded but processing hasn't started              |
+| `training` | Document is currently being processed (chunked, embedded, etc.)       |
+| `trained`  | Document has been successfully processed and is available for queries |
+| `error`    | Document processing failed                                            |
 
 You can filter documents by status using the [Get Documents by Status](/api-reference/v1/knowledge-base/public-get-knowledge-base-documents) endpoint.
 
@@ -163,19 +171,23 @@ When you add documents to a Knowledge Base, they go through the following proces
 
 <Steps>
   <Step title="Document Upload">
-    Documents are uploaded to secure storage and registered in the Knowledge Base with 'uploaded' status
+    Documents are uploaded to secure storage and registered in the Knowledge
+    Base with 'uploaded' status
   </Step>
   <Step title="Text Extraction">
-    Text is extracted from various file formats (PDF, DOCX, images, etc.) using specialized parsers
+    Text is extracted from various file formats (PDF, DOCX, images, etc.) using
+    specialized parsers
   </Step>
   <Step title="Chunking">
-    Documents are split into smaller, semantically meaningful chunks for better retrieval
+    Documents are split into smaller, semantically meaningful chunks for better
+    retrieval
   </Step>
   <Step title="Embedding Generation">
     Vector embeddings are created for each chunk to enable semantic search
   </Step>
   <Step title="Indexing">
-    Chunks and their embeddings are stored in a vector database for efficient retrieval
+    Chunks and their embeddings are stored in a vector database for efficient
+    retrieval
   </Step>
 </Steps>
 
@@ -236,33 +248,37 @@ Knowledge Bases can process a wide variety of file formats to accommodate differ
 
 <div align="center">
 
-| Category | Supported Formats |
-|:--------:|:------------------:|
-| **Documents** | PDF, DOCX, DOC, PPTX, PPT |
-| **Text Files** | TXT, HTML, MD, JSON |
-| **Images** | JPG/JPEG, PNG |
-| **Archives** | ZIP |
+|       Category       |     Supported Formats      |
+| :------------------: | :------------------------: |
+|    **Documents**     | PDF, DOCX, DOC, PPTX, PPT  |
+|    **Text Files**    |    TXT, HTML, MD, JSON     |
+|      **Images**      |       JPG/JPEG, PNG        |
+|     **Archives**     |            ZIP             |
 | **Google Workspace** | Google Docs, Google Slides |
 
 </div>
 
 <CardGroup cols={2}>
   <Card title="Office Documents" icon="file-lines">
-    Our platform supports all major document formats including PDF, Microsoft Word (DOCX, DOC), and PowerPoint (PPTX, PPT) files.
+    Our platform supports all major document formats including PDF, Microsoft
+    Word (DOCX, DOC), and PowerPoint (PPTX, PPT) files.
   </Card>
-  
+
   <Card title="Web & Code Content" icon="code">
-    Process plain text (TXT), web pages (HTML), documentation (MD), and structured data (JSON) with full text extraction.
+    Process plain text (TXT), web pages (HTML), documentation (MD), and
+    structured data (JSON) with full text extraction.
   </Card>
 </CardGroup>
 
 <CardGroup cols={2}>
   <Card title="Visual Content" icon="image">
-    Extract text from images (JPG/JPEG, PNG) using advanced OCR technology to make visual content searchable.
+    Extract text from images (JPG/JPEG, PNG) using advanced OCR technology to
+    make visual content searchable.
   </Card>
-  
+
   <Card title="Packaged Content" icon="box-archive">
-    Upload ZIP archives containing multiple documents for batch processing, with automatic extraction and organization.
+    Upload ZIP archives containing multiple documents for batch processing, with
+    automatic extraction and organization.
   </Card>
 </CardGroup>
 
@@ -270,16 +286,18 @@ Knowledge Bases can process a wide variety of file formats to accommodate differ
 
 <div align="center">
 
-| File Type | Maximum Size | Notes |
-|:---------:|:------------:|:-----:|
-| Documents | 50 MB | Includes PDF, DOCX, DOC, etc. |
-| Images | 20 MB | Text will be extracted using OCR |
-| Archives | 100 MB | Contents will be extracted and processed individually |
+| File Type | Maximum Size |                         Notes                         |
+| :-------: | :----------: | :---------------------------------------------------: |
+| Documents |    50 MB     |             Includes PDF, DOCX, DOC, etc.             |
+|  Images   |    20 MB     |           Text will be extracted using OCR            |
+| Archives  |    100 MB    | Contents will be extracted and processed individually |
 
 </div>
 
 <Warning>
-  Very large files may take longer to process and could impact system performance. Consider splitting large documents into smaller, more focused files for optimal results.
+  Very large files may take longer to process and could impact system
+  performance. Consider splitting large documents into smaller, more focused
+  files for optimal results.
 </Warning>
 
 ### Text Extraction
