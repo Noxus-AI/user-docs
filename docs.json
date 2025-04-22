@@ -18,7 +18,8 @@
             "pages": [
               "documentation/introduction",
               "documentation/workflow-builder",
-              "documentation/yft"
+              "documentation/yft",
+              "documentation/ai-operations"
             ]
           },
           {
@@ -35,7 +36,9 @@
           {
             "group": "Data Modules 🗂️",
             "pages": [
+              "documentation/data-modules/download-file",
               "documentation/data-modules/file-to-text",
+              "documentation/data-modules/make-api-request",
               "documentation/data-modules/list-website-entries",
               "documentation/data-modules/scrape-web-page",
               "documentation/data-modules/run-code",
@@ -59,6 +62,7 @@
             "group": "AI Modules 🧠",
             "pages": [
               "documentation/ai/ai-text-creation",
+              "documentation/ai/web-research",
               "documentation/ai/summarizer",
               "documentation/ai/enrich-company",
               "documentation/ai/ai-image-generation",
@@ -68,6 +72,7 @@
               "documentation/ai/ai-image-transformation",
               "documentation/ai/scorer",
               "documentation/ai/knowledge-base-qa",
+              "documentation/ai/document-qa",
               "documentation/ai/categorizer",
               "documentation/ai/smart-router",
               "documentation/ai/find-documents",
@@ -227,7 +232,7 @@
             ]
           },
           {
-            "group": "Agents",
+            "group": "Agents (Co-workers)",
             "pages": [
               "api-reference/v1/agents/add-agent",
               "api-reference/v1/agents/update-agent",
