@@ -42,7 +42,7 @@
               "documentation/data-modules/list-website-entries",
               "documentation/data-modules/scrape-web-page",
               "documentation/data-modules/run-code",
-              "documentation/data-modules/generate-file",
+              "documentation/data-modules/text-to-file",
               "documentation/data-modules/use-search-engine"
             ]
           },
