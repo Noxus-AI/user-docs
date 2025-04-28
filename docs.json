@@ -1,0 +1,309 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Noxus Documentation",
+  "colors": {
+    "primary": "#8DB5D4",
+    "light": "#8DB5D4",
+    "dark": "#8DB5D4"
+  },
+  "favicon": "/images/Favicon.png",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started with Noxus 🔰",
+            "pages": [
+              "documentation/introduction",
+              "documentation/workflow-builder",
+              "documentation/yft",
+              "documentation/ai-operations"
+            ]
+          },
+          {
+            "group": "Prompt Writing 📝",
+            "pages": [
+              "documentation/prompt/overview",
+              "documentation/prompt/cct",
+              "documentation/prompt/multishot",
+              "documentation/prompt/let-the-ai-think",
+              "documentation/prompt/assign-role-to-ai",
+              "documentation/prompt/select-model"
+            ]
+          },
+          {
+            "group": "Data Modules 🗂️",
+            "pages": [
+              "documentation/data-modules/download-file",
+              "documentation/data-modules/file-to-text",
+              "documentation/data-modules/make-api-request",
+              "documentation/data-modules/list-website-entries",
+              "documentation/data-modules/scrape-web-page",
+              "documentation/data-modules/run-code",
+              "documentation/data-modules/text-to-file",
+              "documentation/data-modules/use-search-engine"
+            ]
+          },
+          {
+            "group": "Logic Modules 🧩",
+            "pages": [
+              "documentation/logic-modules/combine-text",
+              "documentation/logic-modules/extract-fields",
+              "documentation/logic-modules/condition",
+              "documentation/logic-modules/filter-list",
+              "documentation/logic-modules/list-to-value",
+              "documentation/logic-modules/single-to-list",
+              "documentation/logic-modules/join-paths"
+            ]
+          },
+          {
+            "group": "AI Modules 🧠",
+            "pages": [
+              "documentation/ai/ai-text-creation",
+              "documentation/ai/web-research",
+              "documentation/ai/summarizer",
+              "documentation/ai/enrich-company",
+              "documentation/ai/ai-image-generation",
+              "documentation/ai/ai-vision",
+              "documentation/ai/translate-text",
+              "documentation/ai/form",
+              "documentation/ai/ai-image-transformation",
+              "documentation/ai/scorer",
+              "documentation/ai/knowledge-base-qa",
+              "documentation/ai/document-qa",
+              "documentation/ai/categorizer",
+              "documentation/ai/smart-router",
+              "documentation/ai/find-documents",
+              "documentation/ai/generate-fields"
+            ]
+          },
+          {
+            "group": "Integration Modules 🔗",
+            "pages": [
+              "documentation/integration-modules/linked",
+              {
+                "group": "Airtable",
+                "pages": [
+                  "documentation/integration-modules/airtable-read",
+                  "documentation/integration-modules/airtable-write"
+                ]
+              },
+              {
+                "group": "Calendly",
+                "pages": [
+                  "documentation/integration-modules/calendly-read-events"
+                ]
+              },
+              {
+                "group": "Github",
+                "pages": [
+                  "documentation/integration-modules/github-read-profile"
+                ]
+              },
+              {
+                "group": "Google",
+                "pages": [
+                  "documentation/integration-modules/gmail-writer",
+                  "documentation/integration-modules/gmail-reader",
+                  "documentation/integration-modules/google-sheets-reader",
+                  "documentation/integration-modules/google-sheets-writer",
+                  "documentation/integration-modules/gdrive-reader",
+                  "documentation/integration-modules/gdrive-writer",
+                  "documentation/integration-modules/google-docs-reader",
+                  "documentation/integration-modules/google-docs-writer",
+                  "documentation/integration-modules/gcalendar-read-events",
+                  "documentation/integration-modules/gcalendar-create-event"
+                ]
+              },
+              {
+                "group": "Instagram",
+                "pages": [
+                  "documentation/integration-modules/instagram-read-profile",
+                  "documentation/integration-modules/instagram-read-comments"
+                ]
+              },
+              {
+                "group": "Linkedin",
+                "pages": [
+                  "documentation/integration-modules/linkedin-read-profile",
+                  "documentation/integration-modules/linkedin-company-search"
+                ]
+              },
+              {
+                "group": "Notion",
+                "pages": [
+                  "documentation/integration-modules/notion-read-page",
+                  "documentation/integration-modules/notion-write-page",
+                  "documentation/integration-modules/notion-read-database",
+                  "documentation/integration-modules/notion-write-database"
+                ]
+              },
+              {
+                "group": "Slack",
+                "pages": [
+                  "documentation/integration-modules/slack-reader",
+                  "documentation/integration-modules/slack-writer"
+                ]
+              },
+              {
+                "group": "Telegram",
+                "pages": ["documentation/integration-modules/telegram-writer"]
+              },
+              {
+                "group": "Typeform",
+                "pages": ["documentation/integration-modules/typeform-read"]
+              },
+              {
+                "group": "Youtube",
+                "pages": [
+                  "documentation/integration-modules/youtube-read-channel",
+                  "documentation/integration-modules/youtube-transcribe-video"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Triggers⚡",
+            "pages": [
+              "documentation/triggers/slack",
+              "documentation/triggers/gmail",
+              "documentation/triggers/clock"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Reference",
+            "pages": ["api-reference/introduction"]
+          },
+          {
+            "group": "Workflows",
+            "pages": [
+              "api-reference/v1/workflows/get-workflow-public",
+              "api-reference/v1/workflows/get-workflows-public"
+            ]
+          },
+          {
+            "group": "Runs",
+            "pages": [
+              "api-reference/v1/runs/create-run-with-api-key",
+              "api-reference/v1/runs/create-sync-run",
+              "api-reference/v1/runs/get-runs-public",
+              "api-reference/v1/runs/public-get-paginated-runs",
+              "api-reference/v1/runs/public-get-run-by-id-and-workflow",
+              "api-reference/v1/runs/public-get-run-by-id",
+              "api-reference/v1/runs/public-get-run-data-by-id",
+              "api-reference/v1/runs/search-runs-public"
+            ]
+          },
+          {
+            "group": "Knowledge Bases",
+            "pages": [
+              "api-reference/v1/knowledge-base/public-get-knowledge-base",
+              "api-reference/v1/knowledge-base/public-add-knowledge-base",
+              "api-reference/v1/knowledge-base/public-get-knowledge-bases",
+              "api-reference/v1/knowledge-base/public-delete-knowledge-base-v2",
+              "api-reference/v1/knowledge-base/public-update-knowledge-base",
+              "api-reference/v1/knowledge-base/public-add-knowledge-base-document",
+              "api-reference/v1/knowledge-base/public-get-knowledge-base-document",
+              "api-reference/v1/knowledge-base/public-get-knowledge-base-documents",
+              "api-reference/v1/knowledge-base/update-document",
+              "api-reference/v1/knowledge-base/delete-document",
+              "api-reference/v1/knowledge-base/upload-train",
+              "api-reference/v1/knowledge-base/generic-train",
+              "api-reference/v1/knowledge-base/retry-all-errors",
+              "api-reference/v1/knowledge-base/running-jobs"
+            ]
+          },
+          {
+            "group": "Conversations",
+            "pages": [
+              "api-reference/v1/conversations/public-list-conversations",
+              "api-reference/v1/conversations/public-create-conversation",
+              "api-reference/v1/conversations/public-get-conversation",
+              "api-reference/v1/conversations/public-delete-conversation",
+              "api-reference/v1/conversations/public-add-message",
+              "api-reference/v1/conversations/public-refresh-message"
+            ]
+          },
+          {
+            "group": "Agents (Co-workers)",
+            "pages": [
+              "api-reference/v1/agents/add-agent",
+              "api-reference/v1/agents/update-agent",
+              "api-reference/v1/agents/duplicate-agent",
+              "api-reference/v1/agents/get-agents",
+              "api-reference/v1/agents/get-agent",
+              "api-reference/v1/agents/delete-agent",
+              "api-reference/v1/agents/restore-agent"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Noxus SDK",
+        "groups": [
+          {
+            "group": "Noxus SDK",
+            "pages": ["technical-reference/introduction"]
+          },
+
+          {
+            "group": "Extending the platform",
+            "pages": [
+              "technical-reference/v0/extending-the-platform/plugins",
+              "technical-reference/v0/extending-the-platform/noxus-configuration-language",
+              "technical-reference/v0/extending-the-platform/node-plugins",
+              "technical-reference/v0/extending-the-platform/trigger-plugins",
+              "technical-reference/v0/extending-the-platform/kb-plugins",
+              "technical-reference/v0/extending-the-platform/plugins-integrations"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "technical-reference/v0/concepts/knowledge-base",
+              "technical-reference/v0/concepts/assistant"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Blog",
+        "href": "https://www.noxus.ai/blog"
+      }
+    ]
+  },
+  "logo": {
+    "light": "/images/Frame 1597881332 (1).svg",
+    "dark": "/images/Frame 1597881332 (1).svg"
+  },
+  "appearance": {
+    "default": "light",
+    "strict": true
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:help@noxus.ai"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.noxus.ai"
+    }
+  },
+  "footer": {
+    "socials": {
+      "linkedin": "https://www.linkedin.com/company/noxus-ai",
+      "youtube": "https://www.youtube.com/channel/UCUEYyBLmATYFegUxAdBKEaA"
+    }
+  }
+}
