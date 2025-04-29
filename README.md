@@ -1,6 +1,5 @@
 # Mintlify Starter Kit
 
-
 Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
 
 - Guide pages
@@ -8,7 +7,6 @@ Click on `Use this template` to copy the Mintlify starter kit. The starter kit c
 - Customizations
 - API Reference pages
 - Use of popular components
-
 
 ### Development
 
@@ -31,9 +29,4 @@ Install our Github App to autopropagate changes from youre repo to your deployme
 #### Troubleshooting
 
 - Mintlify dev isn't running - Run `mintlify install` it'll re-install dependencies.
-- Page loads as a 404 - Make sure you are running in a folder with `mint.json` 
-
-
-
-
-
+- Page loads as a 404 - Make sure you are running in a folder with `mint.json`
