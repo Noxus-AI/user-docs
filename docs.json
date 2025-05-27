@@ -141,6 +141,10 @@
                 ]
               },
               {
+                "group": "Outlook",
+                "pages": ["documentation/integration-modules/outlook-writer"]
+              },
+              {
                 "group": "Slack",
                 "pages": [
                   "documentation/integration-modules/slack-reader",
