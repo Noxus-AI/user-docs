@@ -250,10 +250,60 @@
         ]
       },
       {
-        "tab": "Noxus SDK",
+        "tab": "SDK",
         "groups": [
           {
-            "group": "Noxus SDK",
+            "group": "Get Started",
+            "pages": [
+              "sdk/introduction",
+              "sdk/quickstart",
+              "sdk/installation"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "sdk/concepts/client",
+              "sdk/concepts/authentication",
+              "sdk/concepts/async-operations"
+            ]
+          },
+          {
+            "group": "Workflows",
+            "pages": [
+              "sdk/workflows/overview",
+              "sdk/workflows/building-workflows",
+              "sdk/workflows/running-workflows",
+              "sdk/workflows/node-types",
+              "sdk/workflows/examples"
+            ]
+          },
+          {
+            "group": "Conversations",
+            "pages": [
+              "sdk/conversations/overview",
+              "sdk/conversations/creating-conversations"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "sdk/guides/troubleshooting"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              "sdk/api-reference/introduction"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Plugins",
+        "groups": [
+          {
+            "group": "Plugins",
             "pages": ["technical-reference/introduction"]
           },
 

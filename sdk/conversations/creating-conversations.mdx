@@ -1,0 +1,606 @@
+---
+title: Creating Conversations
+description: 'Learn how to create and configure conversations with different settings and tools'
+---
+
+## Basic Conversation Creation
+
+Creating a conversation is the first step to building any conversational AI application. Every conversation requires settings that define its behavior and capabilities.
+
+```python
+from noxus_sdk.client import Client
+from noxus_sdk.resources.conversations import ConversationSettings
+
+client = Client(api_key="your_api_key_here")
+
+# Basic conversation settings
+settings = ConversationSettings(
+    model=["gpt-4o-mini"],
+    temperature=0.7,
+    max_tokens=300,
+    extra_instructions="You are a helpful assistant."
+)
+
+# Create the conversation
+conversation = client.conversations.create(
+    name="My First Conversation",
+    settings=settings
+)
+
+print(f"Created conversation: {conversation.id}")
+```
+
+## Configuration Options
+
+### Model Selection
+
+Choose the appropriate AI model for your use case:
+
+```python
+# Single model
+settings = ConversationSettings(
+    model=["gpt-4o-mini"]  # Fast and cost-effective
+)
+
+# Multiple models (fallback order)
+settings = ConversationSettings(
+    model=["gpt-4o", "gpt-4o-mini"]  # Try GPT-4o first, fallback to mini
+)
+
+# Different models for different purposes
+creative_settings = ConversationSettings(
+    model=["gpt-4o"],  # More creative and capable
+    temperature=0.8
+)
+
+factual_settings = ConversationSettings(
+    model=["gpt-4o-mini"],  # Fast for factual queries
+    temperature=0.2
+)
+```
+
+### Temperature and Creativity
+
+Control the randomness and creativity of responses:
+
+```python
+# Very deterministic (good for factual content)
+factual_settings = ConversationSettings(
+    model=["gpt-4o-mini"],
+    temperature=0.0,  # Most deterministic
+    extra_instructions="Provide factual, consistent answers."
+)
+
+# Balanced (good for general conversation)
+balanced_settings = ConversationSettings(
+    model=["gpt-4o-mini"],
+    temperature=0.7,  # Balanced creativity
+    extra_instructions="Be helpful and engaging."
+)
+
+# Creative (good for content generation)
+creative_settings = ConversationSettings(
+    model=["gpt-4o"],
+    temperature=0.9,  # Most creative
+    extra_instructions="Be creative and think outside the box."
+)
+```
+
+### Token Limits
+
+Control response length and cost:
+
+```python
+# Short responses
+concise_settings = ConversationSettings(
+    model=["gpt-4o-mini"],
+    max_tokens=100,  # Brief responses
+    extra_instructions="Keep responses under 50 words."
+)
+
+# Medium responses
+standard_settings = ConversationSettings(
+    model=["gpt-4o-mini"],
+    max_tokens=500,  # Standard length
+    extra_instructions="Provide comprehensive but concise answers."
+)
+
+# Long responses
+detailed_settings = ConversationSettings(
+    model=["gpt-4o"],
+    max_tokens=1500,  # Detailed responses
+    extra_instructions="Provide thorough, detailed explanations."
+)
+```
+
+## Adding Tools
+
+Tools extend conversation capabilities beyond basic text generation:
+
+### Web Research Tool
+
+```python
+from noxus_sdk.resources.conversations import WebResearchTool
+
+web_tool = WebResearchTool(
+    enabled=True,
+    extra_instructions="Focus on recent, reliable sources. Always cite sources."
+)
+
+research_settings = ConversationSettings(
+    model=["gpt-4o-mini"],
+    temperature=0.4,
+    max_tokens=600,
+    tools=[web_tool],
+    extra_instructions="Use web research when you need current information."
+)
+
+research_bot = client.conversations.create(
+    name="Research Assistant",
+    settings=research_settings
+)
+```
+
+### Knowledge Base Integration
+
+```python
+from noxus_sdk.resources.conversations import KnowledgeBaseQaTool
+
+# Single knowledge base
+kb_tool = KnowledgeBaseQaTool(
+    enabled=True,
+    kb_id="your_knowledge_base_id",
+    extra_instructions="Provide detailed answers with specific references."
+)
+
+# Multiple knowledge bases with selector
+from noxus_sdk.resources.conversations import KnowledgeBaseSelectorTool
+
+kb_selector = KnowledgeBaseSelectorTool(
+    enabled=True,
+    extra_instructions="Choose the most relevant knowledge base for each query."
+)
+
+kb_settings = ConversationSettings(
+    model=["gpt-4o-mini"],
+    temperature=0.3,
+    tools=[kb_tool, kb_selector],
+    extra_instructions="Always check knowledge bases first for company-specific information."
+)
+
+support_bot = client.conversations.create(
+    name="Support Bot",
+    settings=kb_settings
+)
+```
+
+### Workflow Integration
+
+```python
+from noxus_sdk.resources.conversations import WorkflowTool
+
+workflow_tool = WorkflowTool(
+    enabled=True,
+    workflow={
+        "id": "data_analysis_workflow_id",
+        "name": "Data Analyzer",
+        "description": "Analyze datasets and generate insights"
+    },
+    name="Data Analysis",
+    description="Run data analysis on uploaded files"
+)
+
+analyst_settings = ConversationSettings(
+    model=["gpt-4o"],
+    temperature=0.4,
+    tools=[workflow_tool],
+    extra_instructions="Use the data analysis workflow for any data-related requests."
+)
+
+data_analyst = client.conversations.create(
+    name="Data Analyst Bot",
+    settings=analyst_settings
+)
+```
+
+## Specialized Conversation Types
+
+### Customer Support Bot
+
+```python
+from noxus_sdk.resources.conversations import (
+    ConversationSettings,
+    KnowledgeBaseQaTool,
+    WebResearchTool
+)
+
+# Support bot with knowledge base and escalation
+support_kb_tool = KnowledgeBaseQaTool(
+    enabled=True,
+    kb_id="support_kb_id",
+    extra_instructions="Check for existing solutions and troubleshooting steps."
+)
+
+support_settings = ConversationSettings(
+    model=["gpt-4o-mini"],
+    temperature=0.3,  # Consistent, helpful responses
+    max_tokens=400,
+    tools=[support_kb_tool],
+    extra_instructions="""You are a customer support assistant. 
+    - Always be empathetic and helpful
+    - Check the knowledge base for solutions first
+    - If you can't solve the issue, suggest contacting human support
+    - Ask clarifying questions when needed"""
+)
+
+support_bot = client.conversations.create(
+    name="Customer Support Bot",
+    settings=support_settings
+)
+```
+
+### Content Creation Assistant
+
+```python
+content_settings = ConversationSettings(
+    model=["gpt-4o"],
+    temperature=0.7,  # Creative but controlled
+    max_tokens=800,
+    tools=[WebResearchTool(
+        enabled=True,
+        extra_instructions="Research current trends and examples"
+    )],
+    extra_instructions="""You are a content creation assistant.
+    - Help with blog posts, social media, and marketing copy
+    - Research current trends when relevant
+    - Ask about target audience and goals
+    - Provide multiple options when possible"""
+)
+
+content_assistant = client.conversations.create(
+    name="Content Creator",
+    settings=content_settings
+)
+```
+
+### Technical Documentation Bot
+
+```python
+from noxus_sdk.resources.conversations import NoxusQaTool
+
+tech_doc_settings = ConversationSettings(
+    model=["gpt-4o"],
+    temperature=0.2,  # Precise, technical responses
+    max_tokens=1000,
+    tools=[
+        KnowledgeBaseQaTool(
+            enabled=True,
+            kb_id="technical_docs_kb_id",
+            extra_instructions="Reference official documentation and code examples"
+        ),
+        NoxusQaTool(
+            enabled=True,
+            extra_instructions="Help with Noxus platform questions"
+        )
+    ],
+    extra_instructions="""You are a technical documentation assistant.
+    - Provide accurate, detailed technical information
+    - Include code examples when relevant
+    - Reference official documentation
+    - Ask for clarification on technical requirements"""
+)
+
+tech_bot = client.conversations.create(
+    name="Technical Assistant",
+    settings=tech_doc_settings
+)
+```
+
+## Advanced Configuration
+
+### Multi-Tool Conversations
+
+```python
+from noxus_sdk.resources.conversations import (
+    WebResearchTool,
+    KnowledgeBaseQaTool,
+    WorkflowTool,
+    NoxusQaTool
+)
+
+# Comprehensive assistant with multiple capabilities
+multi_tool_settings = ConversationSettings(
+    model=["gpt-4o"],
+    temperature=0.6,
+    max_tokens=600,
+    tools=[
+        WebResearchTool(
+            enabled=True,
+            extra_instructions="Use for current events and recent information"
+        ),
+        KnowledgeBaseQaTool(
+            enabled=True,
+            kb_id="company_kb_id",
+            extra_instructions="Use for company policies and procedures"
+        ),
+        WorkflowTool(
+            enabled=True,
+            workflow={
+                "id": "report_generator_id",
+                "name": "Report Generator",
+                "description": "Generate formatted reports"
+            }
+        ),
+        NoxusQaTool(
+            enabled=True,
+            extra_instructions="Help with Noxus platform questions"
+        )
+    ],
+    extra_instructions="""You are a versatile AI assistant with multiple tools:
+    - Use web research for current information
+    - Check company knowledge base for internal information
+    - Use workflows for complex data processing
+    - Help with Noxus platform questions
+    - Choose the most appropriate tool for each request"""
+)
+
+versatile_assistant = client.conversations.create(
+    name="Versatile Assistant",
+    settings=multi_tool_settings
+)
+```
+
+### Conversation with Agent
+
+Create conversations that use pre-configured agents:
+
+```python
+# First, get an existing agent
+agent = client.agents.get("agent_id_here")
+
+# Create conversation using the agent's settings
+agent_conversation = client.conversations.create(
+    name="Chat with Agent",
+    agent_id=agent.id  # Uses agent's settings automatically
+)
+
+# No need to specify settings - they come from the agent
+print(f"Created conversation with agent: {agent.name}")
+```
+
+## Asynchronous Creation
+
+For high-performance applications:
+
+```python
+import asyncio
+
+async def create_multiple_conversations():
+    client = Client(api_key="your_api_key_here")
+    
+    # Define different conversation types
+    conversation_configs = [
+        {
+            "name": "Support Bot",
+            "settings": ConversationSettings(
+                model=["gpt-4o-mini"],
+                temperature=0.3,
+                tools=[KnowledgeBaseQaTool(enabled=True, kb_id="support_kb")]
+            )
+        },
+        {
+            "name": "Content Creator",
+            "settings": ConversationSettings(
+                model=["gpt-4o"],
+                temperature=0.7,
+                tools=[WebResearchTool(enabled=True)]
+            )
+        },
+        {
+            "name": "Data Analyst",
+            "settings": ConversationSettings(
+                model=["gpt-4o"],
+                temperature=0.4,
+                tools=[WorkflowTool(
+                    enabled=True,
+                    workflow={"id": "analysis_workflow", "name": "Analyzer"}
+                )]
+            )
+        }
+    ]
+    
+    # Create all conversations concurrently
+    tasks = [
+        client.conversations.acreate(
+            name=config["name"],
+            settings=config["settings"]
+        )
+        for config in conversation_configs
+    ]
+    
+    conversations = await asyncio.gather(*tasks)
+    
+    return conversations
+
+# Create conversations asynchronously
+conversations = asyncio.run(create_multiple_conversations())
+for conv in conversations:
+    print(f"Created: {conv.name} (ID: {conv.id})")
+```
+
+## Validation and Testing
+
+### Validate Settings
+
+```python
+def validate_conversation_settings(settings):
+    """Validate conversation settings before creation"""
+    
+    # Check required fields
+    if not settings.model:
+        raise ValueError("Model is required")
+    
+    # Validate temperature range
+    if not 0.0 <= settings.temperature <= 1.0:
+        raise ValueError("Temperature must be between 0.0 and 1.0")
+    
+    # Validate max_tokens
+    if settings.max_tokens <= 0:
+        raise ValueError("max_tokens must be positive")
+    
+    # Check tool configuration
+    for tool in settings.tools:
+        if hasattr(tool, 'kb_id') and not tool.kb_id:
+            raise ValueError("Knowledge base tool requires kb_id")
+    
+    return True
+
+# Use validation
+try:
+    validate_conversation_settings(settings)
+    conversation = client.conversations.create(name="Test", settings=settings)
+except ValueError as e:
+    print(f"Invalid settings: {e}")
+```
+
+### Test Conversation
+
+```python
+def test_conversation(conversation, test_messages):
+    """Test a conversation with sample messages"""
+    
+    results = []
+    
+    for message_text in test_messages:
+        try:
+            message = MessageRequest(content=message_text)
+            response = conversation.add_message(message)
+            
+            results.append({
+                "input": message_text,
+                "output": response.message_parts,
+                "success": True
+            })
+            
+        except Exception as e:
+            results.append({
+                "input": message_text,
+                "output": str(e),
+                "success": False
+            })
+    
+    return results
+
+# Test the conversation
+test_messages = [
+    "Hello, how can you help me?",
+    "What's the weather like today?",
+    "Can you help me write a blog post?"
+]
+
+test_results = test_conversation(support_bot, test_messages)
+for result in test_results:
+    status = "✅" if result["success"] else "❌"
+    print(f"{status} {result['input'][:30]}... -> {result['output'][:50]}...")
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Naming Conventions" icon="tag">
+    Use descriptive names for conversations:
+    
+    ```python
+    # ✅ Good - descriptive and purposeful
+    conversation = client.conversations.create(
+        name="Customer Support - Product Questions",
+        settings=settings
+    )
+    
+    # ❌ Bad - generic and unclear
+    conversation = client.conversations.create(
+        name="Bot 1",
+        settings=settings
+    )
+    ```
+  </Accordion>
+
+  <Accordion title="Settings Organization" icon="gear">
+    Create reusable settings configurations:
+    
+    ```python
+    # Define common settings
+    SUPPORT_SETTINGS = ConversationSettings(
+        model=["gpt-4o-mini"],
+        temperature=0.3,
+        max_tokens=400,
+        extra_instructions="Be helpful and empathetic"
+    )
+    
+    CREATIVE_SETTINGS = ConversationSettings(
+        model=["gpt-4o"],
+        temperature=0.8,
+        max_tokens=800,
+        extra_instructions="Be creative and engaging"
+    )
+    
+    # Use predefined settings
+    support_bot = client.conversations.create(
+        name="Support Bot",
+        settings=SUPPORT_SETTINGS
+    )
+    ```
+  </Accordion>
+
+  <Accordion title="Tool Selection" icon="wrench">
+    Only enable tools that are needed:
+    
+    ```python
+    # ✅ Good - specific tools for specific purposes
+    support_tools = [
+        KnowledgeBaseQaTool(enabled=True, kb_id="support_kb")
+    ]
+    
+    research_tools = [
+        WebResearchTool(enabled=True),
+        KnowledgeBaseQaTool(enabled=True, kb_id="research_kb")
+    ]
+    
+    # ❌ Bad - too many tools without clear purpose
+    all_tools = [web_tool, kb_tool1, kb_tool2, workflow_tool, noxus_tool]
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Messaging"
+    icon="message"
+    href="/conversations/messaging"
+  >
+    Learn how to send messages and handle responses
+  </Card>
+  <Card
+    title="Tools"
+    icon="wrench"
+    href="/conversations/tools"
+  >
+    Explore all available conversation tools in detail
+  </Card>
+  <Card
+    title="Examples"
+    icon="code"
+    href="/conversations/examples"
+  >
+    See complete conversation implementations
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/conversations/conversation-settings"
+  >
+    Detailed API reference for conversation settings
+  </Card>
+</CardGroup>

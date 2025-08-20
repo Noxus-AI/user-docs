@@ -1,0 +1,179 @@
+---
+title: Introduction
+description: 'Welcome to the Noxus Client SDK - your gateway to building powerful AI applications'
+---
+
+<img
+  className="block dark:hidden"
+  src="/images/hero-light.svg"
+  alt="Hero Light"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/hero-dark.svg"
+  alt="Hero Dark"
+/>
+
+## What is the Noxus Client SDK?
+
+The **Noxus Client SDK** is a comprehensive Python library designed to interact seamlessly with the Noxus AI backend. It provides a convenient, high-level interface for managing workflows, conversations, knowledge bases, agents, and more.
+
+<CardGroup cols={2}>
+  <Card
+    title="Simplified Integration"
+    icon="plug"
+    href="/quickstart"
+  >
+    Abstract away complex API calls and focus on building applications
+  </Card>
+  <Card
+    title="Comprehensive Features"
+    icon="stars"
+    href="/concepts/client"
+  >
+    Access all Noxus platform capabilities through a unified interface
+  </Card>
+  <Card
+    title="Async Support"
+    icon="bolt"
+    href="/advanced/async-operations"
+  >
+    Built-in support for asynchronous operations for better performance
+  </Card>
+  <Card
+    title="Type Safety"
+    icon="shield-check"
+    href="/api-reference/introduction"
+  >
+    Full type hints and Pydantic models for better development experience
+  </Card>
+</CardGroup>
+
+## Key Features
+
+<AccordionGroup>
+  <Accordion title="Workflow Management" icon="diagram-project">
+    Create, manage, and execute complex AI workflows with visual node-based programming. Connect different AI models, data sources, and logic components to build sophisticated automation.
+  </Accordion>
+
+  <Accordion title="Conversational AI" icon="messages">
+    Build intelligent chatbots and conversational interfaces with support for multiple AI models, custom tools, and context management.
+  </Accordion>
+
+  <Accordion title="Knowledge Bases" icon="database">
+    Create and manage knowledge repositories with advanced retrieval capabilities, document processing, and semantic search.
+  </Accordion>
+
+  <Accordion title="AI Agents" icon="robot">
+    Deploy autonomous AI agents (co-workers) that can perform tasks, use tools, and interact with users on your behalf.
+  </Accordion>
+</AccordionGroup>
+
+## Who Should Use This SDK?
+
+<CardGroup cols={3}>
+  <Card title="Developers" icon="code">
+    Build AI-powered applications with minimal boilerplate code
+  </Card>
+  <Card title="Data Scientists" icon="chart-line">
+    Create and deploy ML workflows and knowledge systems
+  </Card>
+  <Card title="Product Teams" icon="users">
+    Integrate AI capabilities into existing products and services
+  </Card>
+</CardGroup>
+
+## Quick Example
+
+Here's a taste of what you can do with the Noxus Client SDK:
+
+```python
+from noxus_sdk.client import Client
+from noxus_sdk.resources.conversations import ConversationSettings
+
+# Initialize the client
+client = Client(api_key="your_api_key_here")
+
+# Create a conversation with AI
+settings = ConversationSettings(
+    model=["gpt-4o-mini"],
+    temperature=0.7,
+    max_tokens=150,
+    extra_instructions="Be helpful and concise."
+)
+
+conversation = client.conversations.create(
+    name="My First Conversation", 
+    settings=settings
+)
+
+# Send a message and get a response
+from noxus_sdk.resources.conversations import MessageRequest
+
+message = MessageRequest(content="Hello! How can AI help my business?")
+response = conversation.add_message(message)
+print(response.message_parts)
+```
+
+## Getting Started
+
+Ready to dive in? Here's how to get started:
+
+<Steps>
+  <Step title="Install the SDK">
+    Install the Noxus Client SDK using pip
+    ```bash
+    pip install noxus-sdk
+    ```
+  </Step>
+  <Step title="Get Your API Key">
+    Create an API key from your Noxus workspace settings
+  </Step>
+  <Step title="Initialize the Client">
+    Set up your client and start building
+  </Step>
+  <Step title="Explore the Features">
+    Try workflows, conversations, knowledge bases, and agents
+  </Step>
+</Steps>
+
+<Card
+  title="Ready to Start Building?"
+  icon="rocket"
+  href="/quickstart"
+>
+  Follow our quickstart guide to build your first AI application in minutes
+</Card>
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card
+    title="Documentation"
+    icon="book-open"
+    href="https://docs.noxus.ai"
+  >
+    Comprehensive guides and API reference
+  </Card>
+  <Card
+    title="Community Support"
+    icon="users"
+    href="https://noxus.ai/community"
+  >
+    Join our community for help and discussions
+  </Card>
+  <Card
+    title="Contact Support"
+    icon="envelope"
+    href="mailto:support@noxus.ai"
+  >
+    Get direct help from our support team
+  </Card>
+  <Card
+    title="GitHub Issues"
+    icon="github"
+    href="https://github.com/noxus-ai/noxus-client-sdk/issues"
+  >
+    Report bugs and request features
+  </Card>
+</CardGroup>

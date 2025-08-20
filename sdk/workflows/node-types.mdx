@@ -1,0 +1,629 @@
+---
+title: Node Types
+description: 'Complete reference for all available workflow node types and their configurations'
+---
+
+## Overview
+
+Noxus workflows are built using various node types, each designed for specific tasks. This reference covers all available node types, their configurations, and usage examples.
+
+<Note>
+  You can get the most up-to-date list of available node types by calling `client.get_nodes()` in your code.
+</Note>
+
+## Input/Output Nodes
+
+### InputNode
+
+The basic input node for accepting data into your workflow.
+
+```python
+input_node = workflow_def.node("InputNode").config(
+    label="User Input",           # Display name for the input
+    type="str",                   # Data type: "str", "int", "float", "bool"
+    fixed_value=False,            # Whether value is set at design time
+    value="default value",        # Default/fixed value (if fixed_value=True)
+    required=True,                # Whether input is required
+    description="Enter your text" # Help text for users
+)
+```
+
+<ParamField path="label" type="string" required>
+  Display name for the input field
+</ParamField>
+<ParamField path="type" type="string" default="str">
+  Data type: `str`, `int`, `float`, `bool`, `list`, `dict`
+</ParamField>
+<ParamField path="fixed_value" type="boolean" default="false">
+  If true, uses the `value` parameter instead of runtime input
+</ParamField>
+<ParamField path="value" type="any">
+  Default value or fixed value (when `fixed_value=true`)
+</ParamField>
+<ParamField path="required" type="boolean" default="true">
+  Whether this input is required for workflow execution
+</ParamField>
+
+### FileInputNode
+
+Accepts file uploads as workflow input.
+
+```python
+file_input = workflow_def.node("FileInputNode").config(
+    label="Document Upload",
+    accepted_types=["pdf", "txt", "docx", "xlsx"],
+    max_size_mb=10,
+    multiple=False,
+    extract_text=True
+)
+```
+
+<ParamField path="accepted_types" type="array">
+  List of allowed file extensions
+</ParamField>
+<ParamField path="max_size_mb" type="number" default="10">
+  Maximum file size in megabytes
+</ParamField>
+<ParamField path="multiple" type="boolean" default="false">
+  Whether to accept multiple files
+</ParamField>
+<ParamField path="extract_text" type="boolean" default="true">
+  Automatically extract text content from supported file types
+</ParamField>
+
+### OutputNode
+
+Defines the final output of your workflow.
+
+```python
+output_node = workflow_def.node("OutputNode").config(
+    label="Final Result",
+    format="text",                # "text", "json", "file"
+    include_metadata=False        # Include execution metadata
+)
+```
+
+## AI & Language Model Nodes
+
+### TextGenerationNode
+
+Generate text using various AI models.
+
+```python
+text_gen = workflow_def.node("TextGenerationNode").config(
+    template="Answer this question: ((Question))\n\nContext: ((Context))",
+    model=["gpt-4o-mini"],
+    temperature=0.7,
+    max_tokens=500,
+    top_p=0.9,
+    frequency_penalty=0.0,
+    presence_penalty=0.0,
+    stop_sequences=["END", "STOP"],
+    system_prompt="You are a helpful assistant."
+)
+```
+
+<ParamField path="template" type="string" required>
+  Text template with variable placeholders in format `((Variable Name))`
+</ParamField>
+<ParamField path="model" type="array" required>
+  List of model names to use (first available will be selected)
+</ParamField>
+<ParamField path="temperature" type="number" default="0.7">
+  Creativity level (0.0 = deterministic, 1.0 = very creative)
+</ParamField>
+<ParamField path="max_tokens" type="number" default="500">
+  Maximum number of tokens to generate
+</ParamField>
+<ParamField path="top_p" type="number" default="1.0">
+  Nucleus sampling parameter
+</ParamField>
+<ParamField path="system_prompt" type="string">
+  System-level instructions for the model
+</ParamField>
+
+### SummaryNode
+
+Create summaries of text content.
+
+```python
+summarizer = workflow_def.node("SummaryNode").config(
+    summary_format="Bullet Points",    # "Paragraph", "Bullet Points", "Key Points"
+    summary_topic="Main insights",     # Focus area for summarization
+    max_length=300,                    # Maximum summary length in words
+    language="English",                # Output language
+    include_quotes=False,              # Include relevant quotes
+    extraction_mode="comprehensive"    # "comprehensive", "key_points", "abstract"
+)
+```
+
+<ParamField path="summary_format" type="string" default="Paragraph">
+  Format of the summary: `Paragraph`, `Bullet Points`, `Key Points`
+</ParamField>
+<ParamField path="summary_topic" type="string">
+  Specific focus area or topic for the summary
+</ParamField>
+<ParamField path="max_length" type="number" default="300">
+  Maximum length in words
+</ParamField>
+<ParamField path="language" type="string" default="English">
+  Output language for the summary
+</ParamField>
+
+### TranslationNode
+
+Translate text between languages.
+
+```python
+translator = workflow_def.node("TranslationNode").config(
+    target_language="Spanish",
+    source_language="auto",        # "auto" for auto-detection
+    preserve_formatting=True,
+    translation_style="formal",    # "formal", "casual", "technical"
+    include_original=False
+)
+```
+
+<ParamField path="target_language" type="string" required>
+  Target language for translation
+</ParamField>
+<ParamField path="source_language" type="string" default="auto">
+  Source language or "auto" for automatic detection
+</ParamField>
+<ParamField path="preserve_formatting" type="boolean" default="true">
+  Maintain original text formatting
+</ParamField>
+<ParamField path="translation_style" type="string" default="formal">
+  Translation style: `formal`, `casual`, `technical`
+</ParamField>
+
+### EmbeddingNode
+
+Generate vector embeddings for text.
+
+```python
+embedding = workflow_def.node("EmbeddingNode").config(
+    model="text-embedding-ada-002",
+    chunk_size=1000,
+    chunk_overlap=200,
+    normalize=True
+)
+```
+
+## Data Processing Nodes
+
+### ComposeTextNode
+
+Combine multiple text inputs using templates.
+
+```python
+composer = workflow_def.node("ComposeTextNode").config(
+    template="""# Report: ((Title))
+
+## Summary
+((Summary))
+
+## Analysis
+((Analysis))
+
+## Recommendations
+((Recommendations))
+
+---
+Generated on: {{current_date}}
+Report ID: {{uuid}}
+""",
+    output_format="markdown",      # "text", "markdown", "html"
+    include_metadata=True
+)
+```
+
+<ParamField path="template" type="string" required>
+  Template with variable placeholders `((Variable))` and system variables `{{system_var}}`
+</ParamField>
+<ParamField path="output_format" type="string" default="text">
+  Output format: `text`, `markdown`, `html`
+</ParamField>
+
+**Available System Variables:**
+- `{{current_date}}` - Current date
+- `{{current_time}}` - Current time
+- `{{uuid}}` - Unique identifier
+- `{{workflow_id}}` - Current workflow ID
+
+### ExtractTextNode
+
+Extract text content from various file formats.
+
+```python
+extractor = workflow_def.node("ExtractTextNode").config(
+    preserve_formatting=True,
+    extract_tables=True,
+    extract_images=False,
+    extract_metadata=True,
+    output_format="plain_text",    # "plain_text", "markdown", "structured"
+    language="auto"                # Language hint for OCR
+)
+```
+
+<ParamField path="preserve_formatting" type="boolean" default="true">
+  Maintain original document formatting
+</ParamField>
+<ParamField path="extract_tables" type="boolean" default="true">
+  Extract and format table data
+</ParamField>
+<ParamField path="extract_images" type="boolean" default="false">
+  Extract image descriptions (requires vision models)
+</ParamField>
+
+### FilterNode
+
+Filter data based on conditions.
+
+```python
+filter_node = workflow_def.node("FilterNode").config(
+    condition="length > 100",          # Filter condition
+    filter_type="text_length",         # "text_length", "contains", "regex", "custom"
+    case_sensitive=False,              # For text-based filters
+    regex_pattern=r"\b\w+@\w+\.\w+\b", # For regex filters
+    custom_function="def filter_func(text): return len(text.split()) > 50"
+)
+```
+
+<ParamField path="condition" type="string" required>
+  Filter condition expression
+</ParamField>
+<ParamField path="filter_type" type="string" required>
+  Type of filter: `text_length`, `contains`, `regex`, `custom`
+</ParamField>
+
+### DataTransformNode
+
+Transform and manipulate data.
+
+```python
+transformer = workflow_def.node("DataTransformNode").config(
+    transformation_type="json_to_text",  # "json_to_text", "csv_to_json", "custom"
+    custom_transform="""
+def transform(data):
+    # Custom transformation logic
+    return processed_data
+""",
+    output_schema={                      # Expected output schema
+        "type": "object",
+        "properties": {
+            "result": {"type": "string"}
+        }
+    }
+)
+```
+
+## Logic & Control Flow Nodes
+
+### ConditionalNode
+
+Branch workflow execution based on conditions.
+
+```python
+conditional = workflow_def.node("ConditionalNode").config(
+    condition="length > 1000",
+    condition_type="text_length",      # "text_length", "contains", "equals", "custom"
+    comparison_value="1000",
+    case_sensitive=False,
+    custom_condition="def check(data): return len(data.split()) > 100"
+)
+```
+
+The conditional node has two outputs:
+- `true` - Data that meets the condition
+- `false` - Data that doesn't meet the condition
+
+```python
+# Connect both paths
+workflow_def.link(conditional.output("true"), long_text_processor.input())
+workflow_def.link(conditional.output("false"), short_text_processor.input())
+```
+
+### LoopNode
+
+Iterate over collections of data.
+
+```python
+loop_node = workflow_def.node("LoopNode").config(
+    iteration_type="list",             # "list", "range", "while"
+    max_iterations=100,                # Safety limit
+    parallel_execution=False,          # Process items in parallel
+    batch_size=10,                     # Items per batch (if parallel)
+    break_condition="error_count > 5"  # Early termination condition
+)
+```
+
+### SwitchNode
+
+Route data based on values.
+
+```python
+switch = workflow_def.node("SwitchNode").config(
+    switch_field="category",           # Field to switch on
+    cases={
+        "urgent": "urgent_processor",
+        "normal": "normal_processor",
+        "low": "low_priority_processor"
+    },
+    default_case="normal_processor"    # Default route
+)
+```
+
+### MergeNode
+
+Combine multiple data streams.
+
+```python
+merger = workflow_def.node("MergeNode").config(
+    merge_strategy="concatenate",      # "concatenate", "combine", "latest"
+    separator="\n\n---\n\n",          # For concatenation
+    wait_for_all=True,                # Wait for all inputs
+    timeout_seconds=300               # Timeout for waiting
+)
+```
+
+## External Integration Nodes
+
+### APICallNode
+
+Make HTTP requests to external services.
+
+```python
+api_call = workflow_def.node("APICallNode").config(
+    url="https://api.example.com/endpoint",
+    method="POST",                     # "GET", "POST", "PUT", "DELETE"
+    headers={
+        "Authorization": "Bearer {{api_key}}",
+        "Content-Type": "application/json"
+    },
+    body_template='{"query": "((Query))", "options": {"format": "json"}}',
+    timeout_seconds=30,
+    retry_attempts=3,
+    retry_delay=1
+)
+```
+
+<ParamField path="url" type="string" required>
+  API endpoint URL (can include variables)
+</ParamField>
+<ParamField path="method" type="string" default="GET">
+  HTTP method
+</ParamField>
+<ParamField path="headers" type="object">
+  HTTP headers (can include variables)
+</ParamField>
+<ParamField path="body_template" type="string">
+  Request body template with variables
+</ParamField>
+
+### DatabaseQueryNode
+
+Query databases with SQL.
+
+```python
+db_query = workflow_def.node("DatabaseQueryNode").config(
+    connection_string="postgresql://user:pass@localhost/db",
+    query_template="SELECT * FROM users WHERE name LIKE '%((Name))%'",
+    query_type="SELECT",               # "SELECT", "INSERT", "UPDATE", "DELETE"
+    max_rows=1000,
+    timeout_seconds=30
+)
+```
+
+### WebScraperNode
+
+Extract data from web pages.
+
+```python
+scraper = workflow_def.node("WebScraperNode").config(
+    url_template="https://example.com/search?q=((Query))",
+    selectors={
+        "title": "h1.title",
+        "content": ".content p",
+        "links": "a[href]"
+    },
+    wait_for_element=".content",       # Wait for element to load
+    timeout_seconds=30,
+    user_agent="Mozilla/5.0 (compatible; NoxusBot/1.0)"
+)
+```
+
+### EmailNode
+
+Send emails and notifications.
+
+```python
+email_node = workflow_def.node("EmailNode").config(
+    smtp_server="smtp.gmail.com",
+    smtp_port=587,
+    username="your-email@gmail.com",
+    password="{{email_password}}",     # Use secure variable
+    to_addresses=["recipient@example.com"],
+    subject_template="Workflow Result: ((Subject))",
+    body_template="""
+Hello,
+
+Your workflow has completed with the following result:
+
+((Result))
+
+Best regards,
+Noxus Automation
+""",
+    html_format=False
+)
+```
+
+## Specialized Nodes
+
+### KnowledgeBaseQueryNode
+
+Query Noxus knowledge bases.
+
+```python
+kb_query = workflow_def.node("KnowledgeBaseQueryNode").config(
+    knowledge_base_id="kb_12345",
+    query_template="((User Question))",
+    max_results=5,
+    similarity_threshold=0.7,
+    include_metadata=True,
+    rerank_results=True
+)
+```
+
+### WorkflowCallNode
+
+Call other workflows from within a workflow.
+
+```python
+workflow_call = workflow_def.node("WorkflowCallNode").config(
+    target_workflow_id="workflow_67890",
+    input_mapping={
+        "target_input": "((source_output))"
+    },
+    wait_for_completion=True,
+    timeout_seconds=300
+)
+```
+
+### ValidationNode
+
+Validate data against schemas or rules.
+
+```python
+validator = workflow_def.node("ValidationNode").config(
+    validation_type="json_schema",     # "json_schema", "regex", "custom"
+    schema={
+        "type": "object",
+        "required": ["name", "email"],
+        "properties": {
+            "name": {"type": "string", "minLength": 1},
+            "email": {"type": "string", "format": "email"}
+        }
+    },
+    on_validation_error="stop",        # "stop", "continue", "default_value"
+    default_value="Invalid input"
+)
+```
+
+## Node Configuration Best Practices
+
+<AccordionGroup>
+  <Accordion title="Template Variables" icon="code">
+    Use consistent variable naming:
+    
+    ```python
+    # ✅ Good - descriptive names
+    template = "Analyze ((User Input)) for ((Analysis Type))"
+    
+    # ❌ Bad - unclear names
+    template = "Analyze ((Input1)) for ((Input2))"
+    ```
+  </Accordion>
+
+  <Accordion title="Error Handling" icon="exclamation-triangle">
+    Configure appropriate timeouts and retries:
+    
+    ```python
+    api_call = workflow_def.node("APICallNode").config(
+        url="https://api.example.com/data",
+        timeout_seconds=30,        # Reasonable timeout
+        retry_attempts=3,          # Retry on failure
+        retry_delay=2              # Wait between retries
+    )
+    ```
+  </Accordion>
+
+  <Accordion title="Resource Limits" icon="gauge">
+    Set appropriate limits to prevent resource exhaustion:
+    
+    ```python
+    text_gen = workflow_def.node("TextGenerationNode").config(
+        max_tokens=500,            # Limit output length
+        temperature=0.7,           # Control randomness
+        stop_sequences=["END"]     # Define stop conditions
+    )
+    ```
+  </Accordion>
+
+  <Accordion title="Security" icon="shield">
+    Use secure practices for sensitive data:
+    
+    ```python
+    # Use environment variables for secrets
+    api_call = workflow_def.node("APICallNode").config(
+        headers={
+            "Authorization": "Bearer {{API_KEY}}"  # Secure variable
+        }
+    )
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Getting Node Information
+
+### List Available Nodes
+
+```python
+# Get all available node types
+nodes = client.get_nodes()
+
+for node in nodes:
+    print(f"Type: {node['type']}")
+    print(f"Description: {node['description']}")
+    print(f"Category: {node['category']}")
+    print("---")
+```
+
+### Get Node Configuration Schema
+
+```python
+# Find specific node type
+text_gen_node = next(
+    node for node in nodes 
+    if node['type'] == 'TextGenerationNode'
+)
+
+# View configuration options
+config_schema = text_gen_node['config_schema']
+print(f"Required fields: {config_schema.get('required', [])}")
+print(f"Properties: {list(config_schema.get('properties', {}).keys())}")
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Workflow Examples"
+    icon="code"
+    href="/workflows/examples"
+  >
+    See complete examples using different node types
+  </Card>
+  <Card
+    title="Building Workflows"
+    icon="hammer"
+    href="/workflows/building-workflows"
+  >
+    Learn how to connect nodes into workflows
+  </Card>
+  <Card
+    title="Running Workflows"
+    icon="play"
+    href="/workflows/running-workflows"
+  >
+    Execute workflows and handle results
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/workflows/workflow-definition"
+  >
+    Detailed API reference for workflow nodes
+  </Card>
+</CardGroup>

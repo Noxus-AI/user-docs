@@ -1,0 +1,361 @@
+---
+title: Quick Start
+description: 'Get up and running with the Noxus Client SDK in minutes'
+---
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+- **Python 3.10 or later** installed on your system
+- A **Noxus account** with access to a workspace
+- An **API key** from your Noxus workspace
+
+<Note>
+  Don't have a Noxus account yet? [Sign up here](https://app.noxus.ai/signup) to get started.
+</Note>
+
+## Installation
+
+Install the Noxus Client SDK using pip:
+
+<CodeGroup>
+
+```bash Terminal
+pip install noxus-sdk
+```
+
+```bash Poetry
+poetry add noxus-sdk
+```
+
+```bash Pipenv
+pipenv install noxus-sdk
+```
+
+</CodeGroup>
+
+The SDK requires Python 3.10 or later and automatically installs all necessary dependencies.
+
+## Get Your API Key
+
+<Steps>
+  <Step title="Access Your Workspace">
+    Log in to your Noxus account and navigate to your workspace
+  </Step>
+  <Step title="Open Settings">
+    Go to **Settings → Organization → Workspaces** and select your workspace
+  </Step>
+  <Step title="Generate API Key">
+    Navigate to the **API Keys** tab and create a new API key
+  </Step>
+  <Step title="Copy Your Key">
+    Copy the generated API key - you'll need it for authentication
+  </Step>
+</Steps>
+
+<Warning>
+  Keep your API key secure and never commit it to version control. Consider using environment variables to store it safely.
+</Warning>
+
+## Initialize the Client
+
+Create your first Noxus client:
+
+```python
+from noxus_sdk.client import Client
+
+# Initialize with your API key
+client = Client(api_key="your_api_key_here")
+
+# Or use environment variable
+import os
+client = Client(api_key=os.getenv("NOXUS_API_KEY"))
+
+# For custom backend URL (if needed)
+client = Client(
+    api_key="your_api_key_here",
+    base_url="https://your-custom-backend.com"
+)
+```
+
+<Tip>
+  You can also set the `NOXUS_BACKEND_URL` environment variable instead of passing `base_url` directly.
+</Tip>
+
+## Your First Conversation
+
+Let's create a simple AI conversation:
+
+```python
+from noxus_sdk.client import Client
+from noxus_sdk.resources.conversations import ConversationSettings, MessageRequest
+
+# Initialize the client
+client = Client(api_key="your_api_key_here")
+
+# Configure conversation settings
+settings = ConversationSettings(
+    model=["gpt-4o-mini"],
+    temperature=0.7,
+    max_tokens=150,
+    tools=[],
+    extra_instructions="Be helpful and concise."
+)
+
+# Create a new conversation
+conversation = client.conversations.create(
+    name="My First Conversation",
+    settings=settings
+)
+
+print(f"Created conversation: {conversation.id}")
+
+# Send a message
+message = MessageRequest(content="Hello! What can you help me with?")
+response = conversation.add_message(message)
+
+print(f"AI Response: {response.message_parts}")
+```
+
+## Your First Workflow
+
+Now let's create a simple workflow:
+
+```python
+from noxus_sdk.workflows import WorkflowDefinition
+
+# Create a workflow definition
+workflow_def = WorkflowDefinition(name="Hello World Workflow")
+
+# Add nodes
+input_node = workflow_def.node("InputNode").config(
+    label="User Input",
+    fixed_value=True,
+    value="Tell me a fun fact about space",
+    type="str"
+)
+
+ai_node = workflow_def.node("TextGenerationNode").config(
+    template="Answer this question: ((Input 1))",
+    model=["gpt-4o-mini"]
+)
+
+output_node = workflow_def.node("OutputNode")
+
+# Connect the nodes
+workflow_def.link(input_node.output(), ai_node.input("variables", "Input 1"))
+workflow_def.link(ai_node.output(), output_node.input())
+
+# Save the workflow
+workflow = client.workflows.save(workflow_def)
+print(f"Created workflow: {workflow.id}")
+
+# Run the workflow
+run = workflow.run(body={})
+result = run.wait(interval=2)
+
+print(f"Workflow result: {result.output}")
+```
+
+## Explore Platform Capabilities
+
+Get information about available models and nodes:
+
+```python
+# List available AI models
+models = client.get_models()
+print("Available models:")
+for model in models[:3]:  # Show first 3
+    print(f"- {model['name']}")
+
+# List available workflow nodes
+nodes = client.get_nodes()
+print(f"\nAvailable node types: {len(nodes)}")
+for node in nodes[:5]:  # Show first 5
+    print(f"- {node['type']}")
+
+# Get chat presets
+presets = client.get_chat_presets()
+print(f"\nAvailable chat presets: {len(presets)}")
+```
+
+## Working with Knowledge Bases
+
+Create a knowledge base for document storage and retrieval:
+
+```python
+from noxus_sdk.resources.knowledge_bases import (
+    KnowledgeBaseSettings,
+    KnowledgeBaseIngestion,
+    KnowledgeBaseRetrieval
+)
+
+# Configure knowledge base settings
+settings = KnowledgeBaseSettings(
+    ingestion=KnowledgeBaseIngestion(
+        batch_size=10,
+        default_chunk_size=1000,
+        default_chunk_overlap=200,
+        enrich_chunks_mode="contextual"
+    ),
+    retrieval=KnowledgeBaseRetrieval(
+        type="hybrid_reranking",
+        hybrid_settings={"fts_weight": 0.3}
+    )
+)
+
+# Create knowledge base
+kb = client.knowledge_bases.create(
+    name="My Knowledge Base",
+    description="A sample knowledge base for testing",
+    document_types=["pdf", "txt", "docx"],
+    settings_=settings
+)
+
+print(f"Created knowledge base: {kb.id}")
+```
+
+## Error Handling
+
+Always include proper error handling in your applications:
+
+```python
+from noxus_sdk.client import Client
+import httpx
+
+try:
+    client = Client(api_key="your_api_key_here")
+    workflows = client.workflows.list()
+    print(f"Found {len(workflows)} workflows")
+    
+except httpx.HTTPStatusError as e:
+    if e.response.status_code == 401:
+        print("Authentication failed. Check your API key.")
+    elif e.response.status_code == 403:
+        print("Access denied. Check your permissions.")
+    else:
+        print(f"HTTP error: {e.response.status_code}")
+        
+except httpx.RequestError as e:
+    print(f"Network error: {e}")
+    
+except Exception as e:
+    print(f"Unexpected error: {e}")
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Explore Workflows"
+    icon="diagram-project"
+    href="/workflows/overview"
+  >
+    Learn to build complex AI workflows with visual programming
+  </Card>
+  <Card
+    title="Build Conversations"
+    icon="messages"
+    href="/conversations/overview"
+  >
+    Create intelligent chatbots with tools and context
+  </Card>
+  <Card
+    title="Manage Knowledge"
+    icon="database"
+    href="/knowledge-bases/overview"
+  >
+    Set up knowledge bases for document retrieval
+  </Card>
+  <Card
+    title="Deploy Agents"
+    icon="robot"
+    href="/agents/overview"
+  >
+    Create autonomous AI agents for your applications
+  </Card>
+</CardGroup>
+
+## Example Projects
+
+<AccordionGroup>
+  <Accordion title="Customer Support Bot" icon="headset">
+    ```python
+    # Create a support bot with knowledge base integration
+    from noxus_sdk.resources.conversations import (
+        ConversationSettings, 
+        KnowledgeBaseQaTool
+    )
+    
+    kb_tool = KnowledgeBaseQaTool(
+        enabled=True,
+        kb_id="your_kb_id",
+        extra_instructions="Provide helpful support answers"
+    )
+    
+    settings = ConversationSettings(
+        model=["gpt-4o-mini"],
+        tools=[kb_tool],
+        extra_instructions="You are a helpful customer support agent."
+    )
+    
+    support_bot = client.conversations.create(
+        name="Support Bot",
+        settings=settings
+    )
+    ```
+  </Accordion>
+
+  <Accordion title="Document Processing Workflow" icon="file-text">
+    ```python
+    # Create a workflow that processes and summarizes documents
+    workflow_def = WorkflowDefinition(name="Document Processor")
+    
+    input_node = workflow_def.node("InputNode").config(
+        label="Document Input"
+    )
+    
+    summarizer = workflow_def.node("SummaryNode").config(
+        summary_format="Bullet Points",
+        summary_topic="Key insights and action items"
+    )
+    
+    output_node = workflow_def.node("OutputNode")
+    
+    workflow_def.link(input_node.output(), summarizer.input())
+    workflow_def.link(summarizer.output(), output_node.input())
+    
+    processor = client.workflows.save(workflow_def)
+    ```
+  </Accordion>
+
+  <Accordion title="Research Assistant Agent" icon="magnifying-glass">
+    ```python
+    # Create an agent that can research topics using web search
+    from noxus_sdk.resources.conversations import WebResearchTool
+    
+    web_tool = WebResearchTool(
+        enabled=True,
+        extra_instructions="Focus on recent and reliable sources"
+    )
+    
+    agent_settings = ConversationSettings(
+        model=["gpt-4o-mini"],
+        tools=[web_tool],
+        extra_instructions="You are a research assistant. Provide well-sourced information."
+    )
+    
+    research_agent = client.agents.create(
+        name="Research Assistant",
+        settings=agent_settings
+    )
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Get Help
+
+<Note>
+  Having trouble? Check out our [troubleshooting guide](/guides/troubleshooting) or reach out to [support@noxus.ai](mailto:support@noxus.ai).
+</Note>

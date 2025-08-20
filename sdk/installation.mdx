@@ -1,0 +1,333 @@
+---
+title: Installation
+description: 'Learn how to install and set up the Noxus Client SDK'
+---
+
+## System Requirements
+
+<CardGroup cols={2}>
+  <Card title="Python Version" icon="python">
+    Python 3.10 or later
+  </Card>
+  <Card title="Operating System" icon="desktop">
+    Windows, macOS, Linux
+  </Card>
+</CardGroup>
+
+## Installation Methods
+
+### Using pip (Recommended)
+
+The easiest way to install the Noxus Client SDK is using pip:
+
+```bash
+pip install noxus-sdk
+```
+
+### Using Poetry
+
+If you're using Poetry for dependency management:
+
+```bash
+poetry add noxus-sdk
+```
+
+### Using Pipenv
+
+For Pipenv users:
+
+```bash
+pipenv install noxus-sdk
+```
+
+### Development Installation
+
+If you want to install from source or contribute to the SDK:
+
+```bash
+git clone https://github.com/noxus-ai/noxus-client-sdk.git
+cd noxus-client-sdk
+pip install -e .
+```
+
+<Note>
+  The `-e` flag installs the package in "editable" mode, which is useful for development.
+</Note>
+
+## Dependencies
+
+The SDK automatically installs the following dependencies:
+
+<AccordionGroup>
+  <Accordion title="Core Dependencies" icon="package">
+    - **pydantic** (≥2.0) - Data validation and serialization
+    - **httpx** - HTTP client for API requests
+    - **anyio** - Asynchronous I/O support
+    - **aiofiles** - Asynchronous file operations
+  </Accordion>
+
+  <Accordion title="Optional Dependencies" icon="plus">
+    For development and testing:
+    - **pytest** (≥8.3.3) - Testing framework
+    - **pytest-asyncio** (0.24.0) - Async testing support
+    - **pytest-cov** (≥6.0.0) - Coverage reporting
+    - **mypy** (1.11.2) - Type checking
+    - **ruff** (0.6.3) - Linting and formatting
+  </Accordion>
+</AccordionGroup>
+
+## Virtual Environment Setup
+
+We recommend using a virtual environment to avoid conflicts with other packages:
+
+<CodeGroup>
+
+```bash venv
+# Create virtual environment
+python -m venv noxus-env
+
+# Activate (Linux/macOS)
+source noxus-env/bin/activate
+
+# Activate (Windows)
+noxus-env\Scripts\activate
+
+# Install SDK
+pip install noxus-sdk
+```
+
+```bash conda
+# Create conda environment
+conda create -n noxus-env python=3.10
+
+# Activate environment
+conda activate noxus-env
+
+# Install SDK
+pip install noxus-sdk
+```
+
+```bash poetry
+# Initialize new project with Poetry
+poetry init
+
+# Add SDK dependency
+poetry add noxus-sdk
+
+# Install dependencies
+poetry install
+
+# Activate shell
+poetry shell
+```
+
+</CodeGroup>
+
+## Verify Installation
+
+Test your installation by running this simple script:
+
+```python
+from noxus_sdk.client import Client
+import noxus_sdk
+
+# Check version
+print(f"Noxus SDK version: {noxus_sdk.__version__}")
+
+# Test client initialization (without API key)
+try:
+    # This will fail without API key, but confirms imports work
+    client = Client(api_key="test")
+    print("✅ SDK imported successfully")
+except Exception as e:
+    if "api_key" in str(e).lower():
+        print("✅ SDK imported successfully (API key needed for actual use)")
+    else:
+        print(f"❌ Installation issue: {e}")
+```
+
+## Configuration
+
+### Environment Variables
+
+Set up your environment for easier development:
+
+<CodeGroup>
+
+```bash .env
+# Create a .env file in your project root
+NOXUS_API_KEY=your_api_key_here
+NOXUS_BACKEND_URL=https://backend.noxus.ai
+```
+
+```python python-dotenv
+# Install python-dotenv for .env file support
+pip install python-dotenv
+
+# Use in your code
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+from noxus_sdk.client import Client
+
+client = Client(api_key=os.getenv("NOXUS_API_KEY"))
+```
+
+```bash shell
+# Set environment variables in your shell
+export NOXUS_API_KEY="your_api_key_here"
+export NOXUS_BACKEND_URL="https://backend.noxus.ai"
+```
+
+</CodeGroup>
+
+### Configuration File
+
+Create a configuration file for your project:
+
+```python config.py
+import os
+from dataclasses import dataclass
+
+@dataclass
+class NoxusConfig:
+    api_key: str
+    base_url: str = "https://backend.noxus.ai"
+    timeout: int = 30
+    retries: int = 3
+
+def get_config() -> NoxusConfig:
+    return NoxusConfig(
+        api_key=os.getenv("NOXUS_API_KEY", ""),
+        base_url=os.getenv("NOXUS_BACKEND_URL", "https://backend.noxus.ai"),
+        timeout=int(os.getenv("NOXUS_TIMEOUT", "30")),
+        retries=int(os.getenv("NOXUS_RETRIES", "3"))
+    )
+```
+
+## Troubleshooting Installation
+
+<AccordionGroup>
+  <Accordion title="Permission Errors" icon="lock">
+    If you encounter permission errors during installation:
+    
+    ```bash
+    # Use --user flag to install for current user only
+    pip install --user noxus-sdk
+    
+    # Or use sudo (not recommended)
+    sudo pip install noxus-sdk
+    ```
+  </Accordion>
+
+  <Accordion title="Python Version Issues" icon="exclamation-triangle">
+    Ensure you're using Python 3.10 or later:
+    
+    ```bash
+    # Check Python version
+    python --version
+    
+    # Use specific Python version if needed
+    python3.10 -m pip install noxus-sdk
+    ```
+  </Accordion>
+
+  <Accordion title="Network Issues" icon="wifi">
+    If you're behind a corporate firewall:
+    
+    ```bash
+    # Use proxy settings
+    pip install --proxy http://proxy.company.com:port noxus-sdk
+    
+    # Or configure pip permanently
+    pip config set global.proxy http://proxy.company.com:port
+    ```
+  </Accordion>
+
+  <Accordion title="Dependency Conflicts" icon="triangle-exclamation">
+    If you have dependency conflicts:
+    
+    ```bash
+    # Create fresh virtual environment
+    python -m venv fresh-env
+    source fresh-env/bin/activate  # Linux/macOS
+    # fresh-env\Scripts\activate  # Windows
+    
+    # Install SDK in clean environment
+    pip install noxus-sdk
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## IDE Setup
+
+### VS Code
+
+For the best development experience with VS Code:
+
+1. Install the Python extension
+2. Set up your Python interpreter to use your virtual environment
+3. Install these recommended extensions:
+   - Python
+   - Pylance
+   - Python Docstring Generator
+
+```json settings.json
+{
+    "python.defaultInterpreterPath": "./noxus-env/bin/python",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.formatting.provider": "black"
+}
+```
+
+### PyCharm
+
+For PyCharm users:
+
+1. Create a new project or open existing one
+2. Configure Python interpreter to use your virtual environment
+3. Enable type checking and code inspection
+4. Install the requirements.txt if using development installation
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Quick Start Guide"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Get up and running with your first Noxus application
+  </Card>
+  <Card
+    title="Authentication Setup"
+    icon="key"
+    href="/concepts/authentication"
+  >
+    Learn how to configure API keys and authentication
+  </Card>
+  <Card
+    title="Client Configuration"
+    icon="gear"
+    href="/concepts/client"
+  >
+    Understand client initialization and configuration options
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/introduction"
+  >
+    Explore the complete API documentation
+  </Card>
+</CardGroup>
+
+## Getting Help
+
+<Note>
+  If you encounter any issues during installation, please check our [troubleshooting guide](/guides/troubleshooting) or contact [support@noxus.ai](mailto:support@noxus.ai).
+</Note>

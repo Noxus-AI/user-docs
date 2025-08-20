@@ -1,0 +1,587 @@
+---
+title: Building Workflows
+description: 'Learn how to create powerful AI workflows using the Noxus Client SDK'
+---
+
+## Getting Started
+
+Building workflows with the Noxus SDK is a programmatic approach to creating visual AI automations. You define nodes, configure them, and connect them together to create sophisticated data processing pipelines.
+
+## Basic Workflow Structure
+
+Every workflow starts with a `WorkflowDefinition`:
+
+```python
+from noxus_sdk.client import Client
+from noxus_sdk.workflows import WorkflowDefinition
+
+# Initialize client and create workflow definition
+client = Client(api_key="your_api_key_here")
+workflow_def = WorkflowDefinition(name="My First Workflow")
+```
+
+## Adding Nodes
+
+Nodes are the building blocks of your workflow. Each node performs a specific function:
+
+```python
+# Add an input node
+input_node = workflow_def.node("InputNode").config(
+    label="User Input",
+    type="str",
+    fixed_value=False  # Allow dynamic input
+)
+
+# Add an AI text generation node
+ai_node = workflow_def.node("TextGenerationNode").config(
+    template="Please respond to: ((User Input))",
+    model=["gpt-4o-mini"],
+    temperature=0.7,
+    max_tokens=150
+)
+
+# Add an output node
+output_node = workflow_def.node("OutputNode")
+```
+
+<Note>
+  Node types are case-sensitive and must match exactly. Use `client.get_nodes()` to see all available node types.
+</Note>
+
+## Node Configuration
+
+Each node type has specific configuration options. Here are some common patterns:
+
+### Input Nodes
+
+```python
+# Dynamic input (user provides value at runtime)
+dynamic_input = workflow_def.node("InputNode").config(
+    label="Question",
+    type="str",
+    fixed_value=False
+)
+
+# Fixed input (value set at design time)
+fixed_input = workflow_def.node("InputNode").config(
+    label="System Prompt",
+    type="str",
+    fixed_value=True,
+    value="You are a helpful assistant."
+)
+
+# File input
+file_input = workflow_def.node("FileInputNode").config(
+    label="Document",
+    accepted_types=["pdf", "txt", "docx"],
+    max_size_mb=10
+)
+```
+
+### AI Model Nodes
+
+```python
+# Text generation with template
+text_gen = workflow_def.node("TextGenerationNode").config(
+    template="Answer this question: ((Question))\n\nContext: ((Context))",
+    model=["gpt-4o-mini"],
+    temperature=0.7,
+    max_tokens=200,
+    top_p=0.9
+)
+
+# Summary generation
+summarizer = workflow_def.node("SummaryNode").config(
+    summary_format="Bullet Points",  # or "Paragraph", "Key Points"
+    summary_topic="Main insights and conclusions",
+    max_length=300,
+    language="English"
+)
+
+# Translation
+translator = workflow_def.node("TranslationNode").config(
+    target_language="Spanish",
+    source_language="auto",  # Auto-detect
+    preserve_formatting=True
+)
+```
+
+### Data Processing Nodes
+
+```python
+# Compose multiple text inputs
+composer = workflow_def.node("ComposeTextNode").config(
+    template="""# Report Title: ((Title))
+
+## Summary
+((Summary))
+
+## Details
+((Details))
+
+Generated on: {{current_date}}
+"""
+)
+
+# Extract text from files
+extractor = workflow_def.node("ExtractTextNode").config(
+    preserve_formatting=True,
+    extract_tables=True,
+    extract_images=False
+)
+
+# Filter data based on conditions
+filter_node = workflow_def.node("FilterNode").config(
+    condition="length > 100",  # Filter text longer than 100 characters
+    filter_type="text_length"
+)
+```
+
+## Connecting Nodes
+
+Connections define how data flows between nodes. The basic pattern is:
+
+```python
+# Basic connection: output of one node to input of another
+workflow_def.link(source_node.output(), target_node.input())
+
+# Named connections for specific inputs/outputs
+workflow_def.link(
+    source_node.output("result"), 
+    target_node.input("data")
+)
+
+# Variable inputs (for nodes that accept multiple named inputs)
+workflow_def.link(
+    input_node.output(), 
+    ai_node.input("variables", "User Input")
+)
+```
+
+### Understanding Input Types
+
+Different nodes have different input requirements:
+
+<AccordionGroup>
+  <Accordion title="Simple Inputs" icon="arrow-right">
+    Most nodes have a single input that accepts the previous node's output:
+    
+    ```python
+    # Simple chain: Input → AI → Output
+    workflow_def.link(input_node.output(), ai_node.input())
+    workflow_def.link(ai_node.output(), output_node.input())
+    ```
+  </Accordion>
+
+  <Accordion title="Variable Inputs" icon="code">
+    Some nodes (like TextGenerationNode) accept multiple named variables:
+    
+    ```python
+    # AI node with multiple variables
+    ai_node = workflow_def.node("TextGenerationNode").config(
+        template="Compare ((Item 1)) with ((Item 2))"
+    )
+    
+    # Connect multiple inputs
+    workflow_def.link(input1.output(), ai_node.input("variables", "Item 1"))
+    workflow_def.link(input2.output(), ai_node.input("variables", "Item 2"))
+    ```
+  </Accordion>
+
+  <Accordion title="Named Inputs" icon="tag">
+    Some nodes have specific named inputs:
+    
+    ```python
+    # Conditional node with condition and data inputs
+    conditional = workflow_def.node("ConditionalNode").config(
+        condition="length > 100"
+    )
+    
+    workflow_def.link(text_input.output(), conditional.input("data"))
+    workflow_def.link(condition_input.output(), conditional.input("condition"))
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Complete Workflow Example
+
+Here's a complete example that creates a document analysis workflow:
+
+```python
+from noxus_sdk.client import Client
+from noxus_sdk.workflows import WorkflowDefinition
+
+# Initialize
+client = Client(api_key="your_api_key_here")
+workflow_def = WorkflowDefinition(name="Document Analyzer")
+
+# Step 1: Input nodes
+document_input = workflow_def.node("FileInputNode").config(
+    label="Document to Analyze",
+    accepted_types=["pdf", "txt", "docx"]
+)
+
+analysis_type = workflow_def.node("InputNode").config(
+    label="Analysis Type",
+    type="str",
+    fixed_value=True,
+    value="sentiment and key themes"
+)
+
+# Step 2: Extract text from document
+text_extractor = workflow_def.node("ExtractTextNode").config(
+    preserve_formatting=True
+)
+
+# Step 3: Create summary
+summarizer = workflow_def.node("SummaryNode").config(
+    summary_format="Bullet Points",
+    summary_topic="Key points and main ideas",
+    max_length=200
+)
+
+# Step 4: Perform analysis
+analyzer = workflow_def.node("TextGenerationNode").config(
+    template="""Analyze the following document for ((Analysis Type)):
+
+Document Text:
+((Document Text))
+
+Please provide:
+1. Overall assessment
+2. Key findings
+3. Recommendations
+""",
+    model=["gpt-4o-mini"],
+    temperature=0.3,
+    max_tokens=400
+)
+
+# Step 5: Combine results
+report_composer = workflow_def.node("ComposeTextNode").config(
+    template="""# Document Analysis Report
+
+## Document Summary
+((Summary))
+
+## Detailed Analysis
+((Analysis))
+
+---
+Report generated on {{current_date}}
+"""
+)
+
+# Step 6: Output
+output_node = workflow_def.node("OutputNode")
+
+# Connect all nodes
+workflow_def.link(document_input.output(), text_extractor.input())
+workflow_def.link(text_extractor.output(), summarizer.input())
+workflow_def.link(text_extractor.output(), analyzer.input("variables", "Document Text"))
+workflow_def.link(analysis_type.output(), analyzer.input("variables", "Analysis Type"))
+workflow_def.link(summarizer.output(), report_composer.input("variables", "Summary"))
+workflow_def.link(analyzer.output(), report_composer.input("variables", "Analysis"))
+workflow_def.link(report_composer.output(), output_node.input())
+
+# Save the workflow
+workflow = client.workflows.save(workflow_def)
+print(f"Created workflow: {workflow.id}")
+```
+
+## Advanced Connection Patterns
+
+### Linear Chains
+
+For simple sequential processing:
+
+```python
+# Create a linear chain of nodes
+nodes = [input_node, processor1, processor2, processor3, output_node]
+
+# Connect them in sequence
+for i in range(len(nodes) - 1):
+    workflow_def.link(nodes[i].output(), nodes[i + 1].input())
+
+# Or use the convenience method
+workflow_def.link_many(input_node, processor1, processor2, processor3, output_node)
+```
+
+### Parallel Processing
+
+Process data through multiple paths simultaneously:
+
+```python
+# Split processing into parallel paths
+input_node = workflow_def.node("InputNode")
+
+# Path 1: Summarization
+summarizer = workflow_def.node("SummaryNode")
+workflow_def.link(input_node.output(), summarizer.input())
+
+# Path 2: Sentiment analysis
+sentiment_analyzer = workflow_def.node("TextGenerationNode").config(
+    template="Analyze the sentiment of: ((Input))"
+)
+workflow_def.link(input_node.output(), sentiment_analyzer.input("variables", "Input"))
+
+# Path 3: Key phrase extraction
+key_phrases = workflow_def.node("TextGenerationNode").config(
+    template="Extract key phrases from: ((Input))"
+)
+workflow_def.link(input_node.output(), key_phrases.input("variables", "Input"))
+
+# Combine results
+combiner = workflow_def.node("ComposeTextNode").config(
+    template="""Summary: ((Summary))
+Sentiment: ((Sentiment))
+Key Phrases: ((Key Phrases))"""
+)
+
+workflow_def.link(summarizer.output(), combiner.input("variables", "Summary"))
+workflow_def.link(sentiment_analyzer.output(), combiner.input("variables", "Sentiment"))
+workflow_def.link(key_phrases.output(), combiner.input("variables", "Key Phrases"))
+```
+
+### Conditional Logic
+
+Create branching logic based on conditions:
+
+```python
+# Input processing
+input_node = workflow_def.node("InputNode")
+
+# Condition check
+condition_node = workflow_def.node("ConditionalNode").config(
+    condition="length > 1000",
+    condition_type="text_length"
+)
+
+# Path for long text
+long_text_processor = workflow_def.node("SummaryNode").config(
+    summary_format="Paragraph",
+    max_length=300
+)
+
+# Path for short text
+short_text_processor = workflow_def.node("TextGenerationNode").config(
+    template="Expand on this topic: ((Input))"
+)
+
+# Connect conditional logic
+workflow_def.link(input_node.output(), condition_node.input())
+workflow_def.link(condition_node.output("true"), long_text_processor.input())
+workflow_def.link(condition_node.output("false"), short_text_processor.input())
+```
+
+## Validation and Testing
+
+### Validate Your Workflow
+
+Before saving, validate your workflow structure:
+
+```python
+# Check for common issues
+def validate_workflow(workflow_def):
+    nodes = workflow_def.nodes
+    
+    # Check for orphaned nodes
+    connected_nodes = set()
+    for edge in workflow_def.edges:
+        connected_nodes.add(edge.source_node_id)
+        connected_nodes.add(edge.target_node_id)
+    
+    orphaned = [node for node in nodes if node.id not in connected_nodes]
+    if orphaned:
+        print(f"Warning: Orphaned nodes found: {[n.label for n in orphaned]}")
+    
+    # Check for missing required configurations
+    for node in nodes:
+        if node.type == "TextGenerationNode" and not node.config.get("template"):
+            print(f"Warning: Node '{node.label}' missing template")
+    
+    return len(orphaned) == 0
+
+# Validate before saving
+if validate_workflow(workflow_def):
+    workflow = client.workflows.save(workflow_def)
+else:
+    print("Please fix validation errors before saving")
+```
+
+### Test with Sample Data
+
+Test your workflow with sample inputs:
+
+```python
+# Save and test the workflow
+workflow = client.workflows.save(workflow_def)
+
+# Test with sample data
+test_input = {
+    "User Input": "What are the benefits of renewable energy?"
+}
+
+# Run the workflow
+run = workflow.run(body=test_input)
+result = run.wait(interval=2)
+
+print(f"Test result: {result.output}")
+print(f"Execution time: {result.execution_time}ms")
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Node Naming" icon="tag">
+    Use descriptive labels for your nodes:
+    
+    ```python
+    # ❌ Bad - unclear purpose
+    node1 = workflow_def.node("TextGenerationNode").config(label="Node 1")
+    
+    # ✅ Good - clear purpose
+    question_answerer = workflow_def.node("TextGenerationNode").config(
+        label="Question Answerer"
+    )
+    ```
+  </Accordion>
+
+  <Accordion title="Template Design" icon="code">
+    Create clear, well-structured templates:
+    
+    ```python
+    # ✅ Good template with clear structure
+    template = """You are an expert analyst. Please analyze the following:
+
+Content: ((Input Content))
+Focus Area: ((Analysis Focus))
+
+Please provide:
+1. Key insights
+2. Recommendations
+3. Next steps
+
+Format your response clearly with headers."""
+    ```
+  </Accordion>
+
+  <Accordion title="Error Handling" icon="exclamation-triangle">
+    Plan for potential failures:
+    
+    ```python
+    # Add validation nodes
+    validator = workflow_def.node("ConditionalNode").config(
+        condition="not_empty",
+        condition_type="text_validation"
+    )
+    
+    # Add fallback paths
+    error_handler = workflow_def.node("TextGenerationNode").config(
+        template="Unable to process input. Please provide valid text content."
+    )
+    
+    workflow_def.link(validator.output("false"), error_handler.input())
+    ```
+  </Accordion>
+
+  <Accordion title="Performance Optimization" icon="rocket">
+    Optimize for efficiency:
+    
+    ```python
+    # Use appropriate model sizes
+    quick_task = workflow_def.node("TextGenerationNode").config(
+        model=["gpt-4o-mini"],  # Faster for simple tasks
+        max_tokens=100
+    )
+    
+    complex_task = workflow_def.node("TextGenerationNode").config(
+        model=["gpt-4o"],  # More capable for complex tasks
+        max_tokens=500
+    )
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting Common Issues
+
+<AccordionGroup>
+  <Accordion title="Connection Errors" icon="link-slash">
+    **Problem**: Nodes won't connect or connections fail
+    
+    **Solutions**:
+    - Check that output and input types are compatible
+    - Verify node labels and variable names are correct
+    - Ensure required node configurations are set
+    
+    ```python
+    # Debug connection issues
+    print(f"Source node outputs: {source_node.outputs}")
+    print(f"Target node inputs: {target_node.inputs}")
+    ```
+  </Accordion>
+
+  <Accordion title="Template Variables" icon="code">
+    **Problem**: Template variables not being replaced
+    
+    **Solutions**:
+    - Use exact variable names: `((Variable Name))`
+    - Check that input connections use the correct variable key
+    - Verify node labels match template variables
+    
+    ```python
+    # Correct variable usage
+    template = "Process this: ((User Input))"
+    workflow_def.link(input_node.output(), ai_node.input("variables", "User Input"))
+    ```
+  </Accordion>
+
+  <Accordion title="Node Configuration" icon="gear">
+    **Problem**: Nodes not behaving as expected
+    
+    **Solutions**:
+    - Check required configuration parameters
+    - Verify model names and settings
+    - Test with minimal configurations first
+    
+    ```python
+    # Get available node configuration options
+    nodes = client.get_nodes()
+    text_gen_node = next(n for n in nodes if n["type"] == "TextGenerationNode")
+    print(f"Available config: {text_gen_node['config_schema']}")
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Running Workflows"
+    icon="play"
+    href="/workflows/running-workflows"
+  >
+    Learn how to execute workflows and handle results
+  </Card>
+  <Card
+    title="Node Types Reference"
+    icon="circle-nodes"
+    href="/workflows/node-types"
+  >
+    Explore all available node types and their configurations
+  </Card>
+  <Card
+    title="Workflow Examples"
+    icon="code"
+    href="/workflows/examples"
+  >
+    See complete workflow examples for common use cases
+  </Card>
+  <Card
+    title="Advanced Patterns"
+    icon="diagram-project"
+    href="/workflows/advanced-patterns"
+  >
+    Learn advanced workflow design patterns and techniques
+  </Card>
+</CardGroup>

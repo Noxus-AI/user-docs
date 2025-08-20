@@ -1,0 +1,351 @@
+---
+title: Client
+description: 'Understanding the Noxus Client - your gateway to the Noxus AI platform'
+---
+
+## Overview
+
+The `Client` class is the main entry point for all interactions with the Noxus AI platform. It handles authentication, request management, and provides access to all SDK resources including workflows, conversations, knowledge bases, and agents.
+
+## Basic Initialization
+
+The simplest way to create a client:
+
+```python
+from noxus_sdk.client import Client
+
+client = Client(api_key="your_api_key_here")
+```
+
+## Configuration Options
+
+The client supports several configuration options for different use cases:
+
+```python
+client = Client(
+    api_key="your_api_key_here",
+    base_url="https://backend.noxus.ai",  # Custom backend URL
+    load_nodes=True,                      # Load available node types
+    load_me=True,                         # Load user information
+    extra_headers={"Custom-Header": "value"}  # Additional headers
+)
+```
+
+<ParamField path="api_key" type="string" required>
+  Your Noxus API key for authentication
+</ParamField>
+
+<ParamField path="base_url" type="string" default="https://backend.noxus.ai">
+  The base URL of the Noxus backend. Can also be set via `NOXUS_BACKEND_URL` environment variable
+</ParamField>
+
+<ParamField path="load_nodes" type="boolean" default="true">
+  Whether to automatically load available workflow node types on initialization
+</ParamField>
+
+<ParamField path="load_me" type="boolean" default="true">
+  Whether to load user information and check admin permissions
+</ParamField>
+
+<ParamField path="extra_headers" type="dict" default="None">
+  Additional HTTP headers to include with all requests
+</ParamField>
+
+## Environment Variables
+
+The client respects these environment variables:
+
+<AccordionGroup>
+  <Accordion title="NOXUS_BACKEND_URL" icon="server">
+    Override the default backend URL
+    ```bash
+    export NOXUS_BACKEND_URL="https://your-custom-backend.com"
+    ```
+  </Accordion>
+
+  <Accordion title="NOXUS_API_KEY" icon="key">
+    Set your API key (though passing it directly is recommended)
+    ```bash
+    export NOXUS_API_KEY="your_api_key_here"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Resource Access
+
+The client provides access to all Noxus resources through dedicated services:
+
+```python
+# Access different services
+workflows = client.workflows.list()
+conversations = client.conversations.list()
+knowledge_bases = client.knowledge_bases.list()
+agents = client.agents.list()
+runs = client.runs.list()
+
+# Admin functions (if you have admin permissions)
+if client.admin.enabled:
+    users = client.admin.list_users()
+```
+
+<CardGroup cols={2}>
+  <Card title="Workflows" icon="diagram-project">
+    `client.workflows` - Create and manage AI workflows
+  </Card>
+  <Card title="Conversations" icon="messages">
+    `client.conversations` - Handle chat interactions
+  </Card>
+  <Card title="Knowledge Bases" icon="database">
+    `client.knowledge_bases` - Manage document repositories
+  </Card>
+  <Card title="Agents" icon="robot">
+    `client.agents` - Deploy autonomous AI agents
+  </Card>
+  <Card title="Runs" icon="play">
+    `client.runs` - Monitor workflow executions
+  </Card>
+  <Card title="Admin" icon="shield">
+    `client.admin` - Administrative functions
+  </Card>
+</CardGroup>
+
+## Platform Information Methods
+
+The client provides methods to retrieve platform capabilities:
+
+```python
+# Get available workflow node types
+nodes = client.get_nodes()
+print(f"Available node types: {len(nodes)}")
+
+# Get available AI models
+models = client.get_models()
+for model in models:
+    print(f"Model: {model['name']} - {model['description']}")
+
+# Get chat model presets
+presets = client.get_chat_presets()
+for preset in presets:
+    print(f"Preset: {preset['name']} - {preset['model']}")
+```
+
+### Asynchronous Versions
+
+All platform information methods have async counterparts:
+
+```python
+import asyncio
+
+async def get_platform_info():
+    nodes = await client.aget_nodes()
+    models = await client.aget_models()
+    presets = await client.aget_chat_presets()
+    return nodes, models, presets
+
+# Run async function
+nodes, models, presets = asyncio.run(get_platform_info())
+```
+
+## Error Handling
+
+The client handles various types of errors that can occur during API interactions:
+
+```python
+import httpx
+from noxus_sdk.client import Client
+
+try:
+    client = Client(api_key="your_api_key")
+    workflows = client.workflows.list()
+    
+except httpx.HTTPStatusError as e:
+    if e.response.status_code == 401:
+        print("Authentication failed - check your API key")
+    elif e.response.status_code == 403:
+        print("Access forbidden - check your permissions")
+    elif e.response.status_code == 429:
+        print("Rate limit exceeded - please wait before retrying")
+    else:
+        print(f"HTTP error {e.response.status_code}: {e.response.text}")
+        
+except httpx.RequestError as e:
+    print(f"Network error: {e}")
+    
+except Exception as e:
+    print(f"Unexpected error: {e}")
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="API Key Security" icon="shield-check">
+    Never hardcode API keys in your source code:
+    
+    ```python
+    import os
+    from noxus_sdk.client import Client
+    
+    # ✅ Good - use environment variables
+    client = Client(api_key=os.getenv("NOXUS_API_KEY"))
+    
+    # ❌ Bad - hardcoded API key
+    client = Client(api_key="noxus_1234567890abcdef")
+    ```
+  </Accordion>
+
+  <Accordion title="Client Reuse" icon="recycle">
+    Create one client instance and reuse it throughout your application:
+    
+    ```python
+    # ✅ Good - singleton pattern
+    class NoxusService:
+        _client = None
+        
+        @classmethod
+        def get_client(cls):
+            if cls._client is None:
+                cls._client = Client(api_key=os.getenv("NOXUS_API_KEY"))
+            return cls._client
+    
+    # Use throughout your app
+    client = NoxusService.get_client()
+    ```
+  </Accordion>
+
+  <Accordion title="Error Handling" icon="exclamation-triangle">
+    Always implement proper error handling:
+    
+    ```python
+    def safe_api_call(func, *args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except httpx.HTTPStatusError as e:
+            logger.error(f"API error {e.response.status_code}: {e.response.text}")
+            raise
+        except httpx.RequestError as e:
+            logger.error(f"Network error: {e}")
+            raise
+    
+    # Usage
+    workflows = safe_api_call(client.workflows.list)
+    ```
+  </Accordion>
+
+  <Accordion title="Resource Management" icon="memory">
+    Be mindful of resource usage with large datasets:
+    
+    ```python
+    # ✅ Good - use pagination
+    page = 1
+    while True:
+        workflows = client.workflows.list(page=page, page_size=50)
+        if not workflows:
+            break
+        process_workflows(workflows)
+        page += 1
+    
+    # ❌ Bad - loading everything at once
+    all_workflows = client.workflows.list(page_size=10000)
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Advanced Configuration
+
+### Custom HTTP Client
+
+For advanced use cases, you can customize the underlying HTTP client:
+
+```python
+import httpx
+from noxus_sdk.client import Client
+
+# Create custom HTTP client with specific settings
+http_client = httpx.Client(
+    timeout=60.0,
+    limits=httpx.Limits(max_connections=100, max_keepalive_connections=20)
+)
+
+# Note: This is a conceptual example - the actual SDK doesn't expose this yet
+# but it shows the kind of customization that might be useful
+```
+
+### Logging Configuration
+
+Enable detailed logging for debugging:
+
+```python
+import logging
+from noxus_sdk.client import Client
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("noxus_sdk")
+
+client = Client(api_key="your_api_key")
+
+# Now all HTTP requests will be logged
+workflows = client.workflows.list()
+```
+
+## Testing with the Client
+
+When writing tests, consider using dependency injection:
+
+```python
+import pytest
+from unittest.mock import Mock
+from noxus_sdk.client import Client
+
+class MyService:
+    def __init__(self, client: Client):
+        self.client = client
+    
+    def get_workflow_count(self):
+        workflows = self.client.workflows.list()
+        return len(workflows)
+
+# Test with mock client
+def test_get_workflow_count():
+    mock_client = Mock(spec=Client)
+    mock_client.workflows.list.return_value = [Mock(), Mock(), Mock()]
+    
+    service = MyService(mock_client)
+    count = service.get_workflow_count()
+    
+    assert count == 3
+    mock_client.workflows.list.assert_called_once()
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Authentication"
+    icon="key"
+    href="/concepts/authentication"
+  >
+    Learn about API key management and security
+  </Card>
+  <Card
+    title="Async Operations"
+    icon="bolt"
+    href="/concepts/async-operations"
+  >
+    Understand asynchronous programming with the SDK
+  </Card>
+  <Card
+    title="Workflows"
+    icon="diagram-project"
+    href="/workflows/overview"
+  >
+    Start building AI workflows
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/client/initialization"
+  >
+    Explore the complete client API
+  </Card>
+</CardGroup>

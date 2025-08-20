@@ -1,0 +1,239 @@
+---
+title: API Reference Introduction
+description: 'Complete API reference for the Noxus Client SDK'
+---
+
+## Overview
+
+The Noxus Client SDK provides a comprehensive Python interface to the Noxus AI platform. This API reference covers all classes, methods, and configuration options available in the SDK.
+
+## SDK Structure
+
+The SDK is organized into several main modules:
+
+<CardGroup cols={2}>
+  <Card title="Client" icon="plug">
+    Main entry point for all SDK operations
+  </Card>
+  <Card title="Resources" icon="folder">
+    Service classes for different platform features
+  </Card>
+  <Card title="Workflows" icon="diagram-project">
+    Workflow definition and management
+  </Card>
+  <Card title="Models" icon="cube">
+    Data models and type definitions
+  </Card>
+</CardGroup>
+
+## Import Structure
+
+```python
+# Main client
+from noxus_sdk.client import Client
+
+# Resource services
+from noxus_sdk.resources.conversations import (
+    ConversationService,
+    ConversationSettings,
+    MessageRequest
+)
+from noxus_sdk.resources.workflows import WorkflowService
+from noxus_sdk.resources.knowledge_bases import KnowledgeBaseService
+from noxus_sdk.resources.assistants import AgentService
+
+# Workflow building
+from noxus_sdk.workflows import WorkflowDefinition
+
+# Tools and utilities
+from noxus_sdk.resources.conversations import (
+    WebResearchTool,
+    KnowledgeBaseQaTool,
+    WorkflowTool
+)
+```
+
+## Common Patterns
+
+### Error Handling
+
+All SDK methods can raise HTTP exceptions:
+
+```python
+import httpx
+from noxus_sdk.client import Client
+
+try:
+    client = Client(api_key="your_key")
+    workflows = client.workflows.list()
+except httpx.HTTPStatusError as e:
+    if e.response.status_code == 401:
+        print("Authentication failed")
+    elif e.response.status_code == 403:
+        print("Access denied")
+    else:
+        print(f"HTTP error: {e.response.status_code}")
+except httpx.RequestError as e:
+    print(f"Network error: {e}")
+```
+
+### Async Operations
+
+Most methods have async counterparts prefixed with `a`:
+
+```python
+import asyncio
+
+async def async_example():
+    client = Client(api_key="your_key")
+    
+    # Sync version
+    workflows = client.workflows.list()
+    
+    # Async version
+    workflows = await client.workflows.alist()
+    
+    return workflows
+
+workflows = asyncio.run(async_example())
+```
+
+### Pagination
+
+List methods support pagination:
+
+```python
+# Get first page
+page1 = client.workflows.list(page=1, page_size=10)
+
+# Get specific page
+page2 = client.workflows.list(page=2, page_size=10)
+
+# Iterate through all pages
+all_workflows = []
+page = 1
+while True:
+    workflows = client.workflows.list(page=page, page_size=50)
+    if not workflows:
+        break
+    all_workflows.extend(workflows)
+    page += 1
+```
+
+## Type Hints
+
+The SDK uses comprehensive type hints for better development experience:
+
+```python
+from typing import List, Optional
+from noxus_sdk.client import Client
+from noxus_sdk.resources.workflows import Workflow
+
+def get_workflow_by_name(client: Client, name: str) -> Optional[Workflow]:
+    workflows: List[Workflow] = client.workflows.list()
+    for workflow in workflows:
+        if workflow.name == name:
+            return workflow
+    return None
+```
+
+## Configuration
+
+### Environment Variables
+
+The SDK respects these environment variables:
+
+- `NOXUS_API_KEY` - Your API key
+- `NOXUS_BACKEND_URL` - Custom backend URL
+
+### Client Configuration
+
+```python
+client = Client(
+    api_key="your_key",
+    base_url="https://backend.noxus.ai",
+    load_nodes=True,
+    load_me=True,
+    extra_headers={"Custom-Header": "value"}
+)
+```
+
+## Response Models
+
+All API responses are returned as Pydantic models with full type safety:
+
+```python
+# Workflow response
+workflow = client.workflows.get("workflow_id")
+print(workflow.id)          # str
+print(workflow.name)        # str
+print(workflow.created_at)  # datetime
+print(workflow.nodes)       # List[WorkflowNode]
+
+# Conversation response
+conversation = client.conversations.get("conv_id")
+print(conversation.id)       # str
+print(conversation.settings) # ConversationSettings
+```
+
+## Rate Limits and Retries
+
+The SDK handles rate limits automatically with exponential backoff:
+
+```python
+# The client automatically retries on rate limits
+# You can configure retry behavior in the client
+client = Client(
+    api_key="your_key",
+    # Retry configuration is handled internally
+)
+```
+
+## Debugging
+
+Enable debug logging to see HTTP requests:
+
+```python
+import logging
+
+# Enable debug logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("noxus_sdk")
+
+# Now all HTTP requests will be logged
+client = Client(api_key="your_key")
+workflows = client.workflows.list()
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Client Reference"
+    icon="plug"
+    href="/api-reference/client/initialization"
+  >
+    Complete client API reference
+  </Card>
+  <Card
+    title="Workflows API"
+    icon="diagram-project"
+    href="/api-reference/workflows/workflow-service"
+  >
+    Workflow management API reference
+  </Card>
+  <Card
+    title="Conversations API"
+    icon="messages"
+    href="/api-reference/conversations/conversation-service"
+  >
+    Conversation management API reference
+  </Card>
+  <Card
+    title="Knowledge Bases API"
+    icon="database"
+    href="/api-reference/knowledge-bases/knowledge-base-service"
+  >
+    Knowledge base management API reference
+  </Card>
+</CardGroup>

@@ -1,0 +1,404 @@
+---
+title: Authentication
+description: 'Learn how to securely authenticate with the Noxus AI platform'
+---
+
+## Overview
+
+The Noxus Client SDK uses API key-based authentication to securely connect to the Noxus AI platform. This guide covers everything you need to know about managing authentication in your applications.
+
+## API Key Basics
+
+API keys are unique identifiers that authenticate your application with the Noxus platform. Each key is tied to a specific workspace and has defined permissions.
+
+<CardGroup cols={2}>
+  <Card title="Workspace-Specific" icon="building">
+    Each API key belongs to a specific workspace
+  </Card>
+  <Card title="Permission-Based" icon="shield">
+    Keys inherit permissions from your workspace role
+  </Card>
+  <Card title="Revocable" icon="ban">
+    Keys can be revoked at any time from the dashboard
+  </Card>
+  <Card title="Trackable" icon="chart-line">
+    Usage is tracked and can be monitored
+  </Card>
+</CardGroup>
+
+## Getting Your API Key
+
+<Steps>
+  <Step title="Access Workspace Settings">
+    Log in to your Noxus account and navigate to your workspace
+  </Step>
+  <Step title="Open Organization Settings">
+    Go to **Settings → Organization → Workspaces**
+  </Step>
+  <Step title="Select Your Workspace">
+    Choose the workspace you want to create an API key for
+  </Step>
+  <Step title="Navigate to API Keys">
+    Click on the **API Keys** tab
+  </Step>
+  <Step title="Create New Key">
+    Click **Create API Key** and give it a descriptive name
+  </Step>
+  <Step title="Copy and Store">
+    Copy the generated key immediately - it won't be shown again
+  </Step>
+</Steps>
+
+<Warning>
+  API keys are only displayed once during creation. Make sure to copy and store them securely immediately.
+</Warning>
+
+## Using API Keys
+
+### Direct Initialization
+
+The most straightforward way to use an API key:
+
+```python
+from noxus_sdk.client import Client
+
+client = Client(api_key="noxus_1234567890abcdef...")
+```
+
+### Environment Variables (Recommended)
+
+Store your API key in environment variables for better security:
+
+<CodeGroup>
+
+```python Python
+import os
+from noxus_sdk.client import Client
+
+# Read from environment variable
+client = Client(api_key=os.getenv("NOXUS_API_KEY"))
+
+# With fallback and validation
+api_key = os.getenv("NOXUS_API_KEY")
+if not api_key:
+    raise ValueError("NOXUS_API_KEY environment variable is required")
+
+client = Client(api_key=api_key)
+```
+
+```bash Shell
+# Set environment variable
+export NOXUS_API_KEY="noxus_1234567890abcdef..."
+
+# Or add to your shell profile
+echo 'export NOXUS_API_KEY="noxus_1234567890abcdef..."' >> ~/.bashrc
+```
+
+```bash .env File
+# Create a .env file in your project root
+NOXUS_API_KEY=noxus_1234567890abcdef...
+NOXUS_BACKEND_URL=https://backend.noxus.ai
+```
+
+</CodeGroup>
+
+### Using python-dotenv
+
+For local development, use python-dotenv to load environment variables:
+
+```python
+from dotenv import load_dotenv
+import os
+from noxus_sdk.client import Client
+
+# Load environment variables from .env file
+load_dotenv()
+
+client = Client(api_key=os.getenv("NOXUS_API_KEY"))
+```
+
+## Security Best Practices
+
+<AccordionGroup>
+  <Accordion title="Never Hardcode API Keys" icon="code">
+    ❌ **Don't do this:**
+    ```python
+    # Bad - API key in source code
+    client = Client(api_key="noxus_1234567890abcdef...")
+    ```
+    
+    ✅ **Do this instead:**
+    ```python
+    # Good - API key from environment
+    client = Client(api_key=os.getenv("NOXUS_API_KEY"))
+    ```
+  </Accordion>
+
+  <Accordion title="Use Environment Variables" icon="server">
+    Store API keys in environment variables or secure configuration systems:
+    
+    ```python
+    import os
+    from noxus_sdk.client import Client
+    
+    def create_client():
+        api_key = os.getenv("NOXUS_API_KEY")
+        if not api_key:
+            raise ValueError("NOXUS_API_KEY environment variable is required")
+        return Client(api_key=api_key)
+    ```
+  </Accordion>
+
+  <Accordion title="Rotate Keys Regularly" icon="arrows-rotate">
+    Regularly rotate your API keys for better security:
+    
+    1. Create a new API key in the dashboard
+    2. Update your environment variables
+    3. Test your application with the new key
+    4. Revoke the old key
+  </Accordion>
+
+  <Accordion title="Use Different Keys for Different Environments" icon="layer-group">
+    Use separate API keys for development, staging, and production:
+    
+    ```python
+    import os
+    from noxus_sdk.client import Client
+    
+    def get_client():
+        env = os.getenv("ENVIRONMENT", "development")
+        
+        if env == "production":
+            api_key = os.getenv("NOXUS_API_KEY_PROD")
+        elif env == "staging":
+            api_key = os.getenv("NOXUS_API_KEY_STAGING")
+        else:
+            api_key = os.getenv("NOXUS_API_KEY_DEV")
+        
+        return Client(api_key=api_key)
+    ```
+  </Accordion>
+
+  <Accordion title="Monitor API Key Usage" icon="chart-line">
+    Regularly check your API key usage in the Noxus dashboard to detect any unusual activity.
+  </Accordion>
+</AccordionGroup>
+
+## Configuration Management
+
+### Using Configuration Classes
+
+Create a configuration class to manage your settings:
+
+```python
+import os
+from dataclasses import dataclass
+from typing import Optional
+
+@dataclass
+class NoxusConfig:
+    api_key: str
+    base_url: str = "https://backend.noxus.ai"
+    timeout: int = 30
+    
+    @classmethod
+    def from_env(cls) -> "NoxusConfig":
+        api_key = os.getenv("NOXUS_API_KEY")
+        if not api_key:
+            raise ValueError("NOXUS_API_KEY environment variable is required")
+        
+        return cls(
+            api_key=api_key,
+            base_url=os.getenv("NOXUS_BACKEND_URL", "https://backend.noxus.ai"),
+            timeout=int(os.getenv("NOXUS_TIMEOUT", "30"))
+        )
+
+# Usage
+config = NoxusConfig.from_env()
+client = Client(api_key=config.api_key, base_url=config.base_url)
+```
+
+### Using Pydantic Settings
+
+For more advanced configuration management:
+
+```python
+from pydantic import BaseSettings, Field
+from noxus_sdk.client import Client
+
+class NoxusSettings(BaseSettings):
+    api_key: str = Field(..., env="NOXUS_API_KEY")
+    base_url: str = Field("https://backend.noxus.ai", env="NOXUS_BACKEND_URL")
+    timeout: int = Field(30, env="NOXUS_TIMEOUT")
+    
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+
+# Usage
+settings = NoxusSettings()
+client = Client(api_key=settings.api_key, base_url=settings.base_url)
+```
+
+## Error Handling
+
+Handle authentication errors gracefully:
+
+```python
+import httpx
+from noxus_sdk.client import Client
+
+def create_authenticated_client(api_key: str) -> Client:
+    try:
+        client = Client(api_key=api_key)
+        
+        # Test the connection by making a simple API call
+        client.get_models()
+        
+        return client
+        
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code == 401:
+            raise ValueError("Invalid API key - please check your credentials")
+        elif e.response.status_code == 403:
+            raise ValueError("API key lacks required permissions")
+        else:
+            raise ValueError(f"Authentication failed: {e.response.status_code}")
+            
+    except httpx.RequestError as e:
+        raise ValueError(f"Network error during authentication: {e}")
+
+# Usage with error handling
+try:
+    client = create_authenticated_client(os.getenv("NOXUS_API_KEY"))
+    print("✅ Authentication successful")
+except ValueError as e:
+    print(f"❌ Authentication failed: {e}")
+```
+
+## Testing Authentication
+
+### Mock Authentication for Tests
+
+When writing tests, mock the authentication:
+
+```python
+import pytest
+from unittest.mock import Mock, patch
+from noxus_sdk.client import Client
+
+@patch('noxus_sdk.client.Client')
+def test_workflow_creation(mock_client_class):
+    # Mock the client
+    mock_client = Mock()
+    mock_client_class.return_value = mock_client
+    
+    # Mock API responses
+    mock_client.workflows.create.return_value = Mock(id="workflow_123")
+    
+    # Test your code
+    client = Client(api_key="test_key")
+    workflow = client.workflows.create(name="Test Workflow")
+    
+    assert workflow.id == "workflow_123"
+```
+
+### Integration Tests with Test Keys
+
+For integration tests, use dedicated test API keys:
+
+```python
+import os
+import pytest
+from noxus_sdk.client import Client
+
+@pytest.fixture
+def test_client():
+    test_api_key = os.getenv("NOXUS_TEST_API_KEY")
+    if not test_api_key:
+        pytest.skip("NOXUS_TEST_API_KEY not set - skipping integration tests")
+    
+    return Client(api_key=test_api_key)
+
+def test_list_workflows(test_client):
+    workflows = test_client.workflows.list()
+    assert isinstance(workflows, list)
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Invalid API Key" icon="key">
+    **Error:** `401 Unauthorized`
+    
+    **Solutions:**
+    - Verify your API key is correct
+    - Check if the key has been revoked
+    - Ensure you're using the right workspace key
+    
+    ```python
+    # Debug API key format
+    api_key = os.getenv("NOXUS_API_KEY")
+    print(f"API key starts with: {api_key[:10]}..." if api_key else "No API key found")
+    ```
+  </Accordion>
+
+  <Accordion title="Insufficient Permissions" icon="shield">
+    **Error:** `403 Forbidden`
+    
+    **Solutions:**
+    - Check your workspace role and permissions
+    - Contact your workspace admin
+    - Verify you're accessing the correct workspace
+  </Accordion>
+
+  <Accordion title="Network Issues" icon="wifi">
+    **Error:** Connection timeouts or network errors
+    
+    **Solutions:**
+    - Check your internet connection
+    - Verify the backend URL is correct
+    - Check if you're behind a corporate firewall
+    
+    ```python
+    # Test with custom timeout
+    client = Client(
+        api_key="your_key",
+        base_url="https://backend.noxus.ai"
+    )
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Client Configuration"
+    icon="gear"
+    href="/concepts/client"
+  >
+    Learn about advanced client configuration options
+  </Card>
+  <Card
+    title="Async Operations"
+    icon="bolt"
+    href="/concepts/async-operations"
+  >
+    Understand asynchronous programming patterns
+  </Card>
+  <Card
+    title="Error Handling"
+    icon="exclamation-triangle"
+    href="/advanced/error-handling"
+  >
+    Master error handling and recovery strategies
+  </Card>
+  <Card
+    title="Best Practices"
+    icon="star"
+    href="/guides/best-practices"
+  >
+    Follow security and development best practices
+  </Card>
+</CardGroup>

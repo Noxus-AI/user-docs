@@ -1,0 +1,1090 @@
+---
+title: Workflow Examples
+description: 'Real-world workflow examples for common use cases and patterns'
+---
+
+## Overview
+
+This page provides complete, ready-to-use workflow examples for common scenarios. Each example includes the full code, explanation, and variations you can adapt for your needs.
+
+## Content Generation Workflows
+
+### Blog Post Generator
+
+Create comprehensive blog posts with research and fact-checking.
+
+```python
+from noxus_sdk.client import Client
+from noxus_sdk.workflows import WorkflowDefinition
+
+client = Client(api_key="your_api_key_here")
+
+# Create blog post generation workflow
+blog_workflow = WorkflowDefinition(name="Blog Post Generator")
+
+# Input nodes
+topic_input = blog_workflow.node("InputNode").config(
+    label="Blog Topic",
+    type="str"
+)
+
+audience_input = blog_workflow.node("InputNode").config(
+    label="Target Audience",
+    type="str",
+    fixed_value=True,
+    value="general audience"
+)
+
+# Research phase
+research_node = blog_workflow.node("TextGenerationNode").config(
+    template="""Research the topic "((Blog Topic))" and provide:
+1. Key facts and statistics
+2. Current trends and developments
+3. Common questions people have
+4. Expert opinions or quotes
+
+Topic: ((Blog Topic))
+Target Audience: ((Target Audience))""",
+    model=["gpt-4o-mini"],
+    temperature=0.3,
+    max_tokens=800
+)
+
+# Outline creation
+outline_node = blog_workflow.node("TextGenerationNode").config(
+    template="""Based on this research, create a detailed blog post outline:
+
+Research: ((Research))
+
+Create an outline with:
+- Compelling headline
+- Introduction hook
+- 3-5 main sections with subpoints
+- Conclusion with call-to-action
+
+Target audience: ((Target Audience))""",
+    model=["gpt-4o-mini"],
+    temperature=0.5,
+    max_tokens=400
+)
+
+# Content generation
+content_node = blog_workflow.node("TextGenerationNode").config(
+    template="""Write a complete blog post based on this outline and research:
+
+Outline: ((Outline))
+Research: ((Research))
+
+Requirements:
+- Engaging and informative tone
+- Include relevant examples
+- Use subheadings for readability
+- 800-1200 words
+- Target audience: ((Target Audience))""",
+    model=["gpt-4o"],
+    temperature=0.7,
+    max_tokens=1500
+)
+
+# SEO optimization
+seo_node = blog_workflow.node("TextGenerationNode").config(
+    template="""Optimize this blog post for SEO:
+
+Blog Post: ((Blog Post))
+
+Add:
+- Meta description (150-160 characters)
+- 5-7 relevant keywords
+- Suggested internal/external links
+- Social media snippet""",
+    model=["gpt-4o-mini"],
+    temperature=0.3,
+    max_tokens=300
+)
+
+# Final composition
+final_post = blog_workflow.node("ComposeTextNode").config(
+    template="""# Complete Blog Post Package
+
+## Blog Post
+((Blog Post))
+
+## SEO Optimization
+((SEO Details))
+
+---
+Generated on: {{current_date}}
+""")
+
+output_node = blog_workflow.node("OutputNode")
+
+# Connect the workflow
+blog_workflow.link(topic_input.output(), research_node.input("variables", "Blog Topic"))
+blog_workflow.link(audience_input.output(), research_node.input("variables", "Target Audience"))
+blog_workflow.link(audience_input.output(), outline_node.input("variables", "Target Audience"))
+blog_workflow.link(audience_input.output(), content_node.input("variables", "Target Audience"))
+
+blog_workflow.link(research_node.output(), outline_node.input("variables", "Research"))
+blog_workflow.link(research_node.output(), content_node.input("variables", "Research"))
+blog_workflow.link(outline_node.output(), content_node.input("variables", "Outline"))
+
+blog_workflow.link(content_node.output(), seo_node.input("variables", "Blog Post"))
+blog_workflow.link(content_node.output(), final_post.input("variables", "Blog Post"))
+blog_workflow.link(seo_node.output(), final_post.input("variables", "SEO Details"))
+blog_workflow.link(final_post.output(), output_node.input())
+
+# Save and test
+blog_generator = client.workflows.save(blog_workflow)
+
+# Run with sample input
+result = blog_generator.run(body={
+    "Blog Topic": "The Future of Remote Work in 2024"
+}).wait()
+
+print(result.output)
+```
+
+### Social Media Content Creator
+
+Generate coordinated content across multiple social platforms.
+
+```python
+social_workflow = WorkflowDefinition(name="Social Media Content Creator")
+
+# Inputs
+topic_input = social_workflow.node("InputNode").config(
+    label="Content Topic",
+    type="str"
+)
+
+brand_voice = social_workflow.node("InputNode").config(
+    label="Brand Voice",
+    type="str",
+    fixed_value=True,
+    value="friendly, professional, engaging"
+)
+
+# Core message creation
+core_message = social_workflow.node("TextGenerationNode").config(
+    template="""Create a core message about "((Content Topic))" that:
+- Captures the main value proposition
+- Is engaging and shareable
+- Reflects this brand voice: ((Brand Voice))
+- Can be adapted for different platforms
+
+Keep it concise but impactful.""",
+    model=["gpt-4o-mini"],
+    temperature=0.7,
+    max_tokens=200
+)
+
+# Platform-specific adaptations
+twitter_post = social_workflow.node("TextGenerationNode").config(
+    template="""Adapt this core message for Twitter:
+
+Core Message: ((Core Message))
+
+Requirements:
+- Under 280 characters
+- Include 2-3 relevant hashtags
+- Engaging and conversation-starting
+- Brand voice: ((Brand Voice))""",
+    model=["gpt-4o-mini"],
+    temperature=0.6,
+    max_tokens=100
+)
+
+linkedin_post = social_workflow.node("TextGenerationNode").config(
+    template="""Adapt this core message for LinkedIn:
+
+Core Message: ((Core Message))
+
+Requirements:
+- Professional tone
+- 1-3 paragraphs
+- Include a thought-provoking question
+- Suitable for business audience
+- Brand voice: ((Brand Voice))""",
+    model=["gpt-4o-mini"],
+    temperature=0.5,
+    max_tokens=300
+)
+
+instagram_post = social_workflow.node("TextGenerationNode").config(
+    template="""Adapt this core message for Instagram:
+
+Core Message: ((Core Message))
+
+Requirements:
+- Visual and engaging
+- Include emoji where appropriate
+- 5-10 relevant hashtags
+- Call-to-action in comments
+- Brand voice: ((Brand Voice))""",
+    model=["gpt-4o-mini"],
+    temperature=0.7,
+    max_tokens=200
+)
+
+# Combine all content
+social_package = social_workflow.node("ComposeTextNode").config(
+    template="""# Social Media Content Package
+
+## Core Message
+((Core Message))
+
+## Twitter
+((Twitter Post))
+
+## LinkedIn
+((LinkedIn Post))
+
+## Instagram
+((Instagram Post))
+
+---
+Created: {{current_date}}
+Topic: ((Content Topic))
+""")
+
+output_node = social_workflow.node("OutputNode")
+
+# Connect workflow
+social_workflow.link(topic_input.output(), core_message.input("variables", "Content Topic"))
+social_workflow.link(brand_voice.output(), core_message.input("variables", "Brand Voice"))
+
+social_workflow.link(core_message.output(), twitter_post.input("variables", "Core Message"))
+social_workflow.link(core_message.output(), linkedin_post.input("variables", "Core Message"))
+social_workflow.link(core_message.output(), instagram_post.input("variables", "Core Message"))
+
+social_workflow.link(brand_voice.output(), twitter_post.input("variables", "Brand Voice"))
+social_workflow.link(brand_voice.output(), linkedin_post.input("variables", "Brand Voice"))
+social_workflow.link(brand_voice.output(), instagram_post.input("variables", "Brand Voice"))
+
+social_workflow.link(topic_input.output(), social_package.input("variables", "Content Topic"))
+social_workflow.link(core_message.output(), social_package.input("variables", "Core Message"))
+social_workflow.link(twitter_post.output(), social_package.input("variables", "Twitter Post"))
+social_workflow.link(linkedin_post.output(), social_package.input("variables", "LinkedIn Post"))
+social_workflow.link(instagram_post.output(), social_package.input("variables", "Instagram Post"))
+
+social_workflow.link(social_package.output(), output_node.input())
+
+# Save workflow
+social_creator = client.workflows.save(social_workflow)
+```
+
+## Document Processing Workflows
+
+### Contract Analysis Workflow
+
+Analyze legal contracts and extract key information.
+
+```python
+contract_workflow = WorkflowDefinition(name="Contract Analyzer")
+
+# File input
+contract_input = contract_workflow.node("FileInputNode").config(
+    label="Contract Document",
+    accepted_types=["pdf", "docx", "txt"],
+    max_size_mb=20
+)
+
+# Extract text
+text_extractor = contract_workflow.node("ExtractTextNode").config(
+    preserve_formatting=True,
+    extract_tables=True
+)
+
+# Key terms extraction
+key_terms = contract_workflow.node("TextGenerationNode").config(
+    template="""Analyze this contract and extract key terms:
+
+Contract Text: ((Contract Text))
+
+Extract and format:
+1. Parties involved
+2. Contract duration/dates
+3. Payment terms
+4. Key obligations for each party
+5. Termination clauses
+6. Liability limitations
+7. Governing law
+
+Present in a structured format.""",
+    model=["gpt-4o"],
+    temperature=0.1,
+    max_tokens=800
+)
+
+# Risk assessment
+risk_analysis = contract_workflow.node("TextGenerationNode").config(
+    template="""Perform a risk assessment of this contract:
+
+Contract Text: ((Contract Text))
+Key Terms: ((Key Terms))
+
+Identify:
+1. High-risk clauses
+2. Missing standard protections
+3. Unusual or concerning terms
+4. Recommendations for negotiation
+5. Overall risk level (Low/Medium/High)
+
+Provide specific examples and explanations.""",
+    model=["gpt-4o"],
+    temperature=0.2,
+    max_tokens=600
+)
+
+# Summary generation
+contract_summary = contract_workflow.node("SummaryNode").config(
+    summary_format="Key Points",
+    summary_topic="Contract overview and main provisions",
+    max_length=300
+)
+
+# Compliance check
+compliance_check = contract_workflow.node("TextGenerationNode").config(
+    template="""Check this contract for common compliance issues:
+
+Contract Text: ((Contract Text))
+
+Review for:
+1. Required legal disclosures
+2. Industry-specific regulations
+3. Data protection compliance (GDPR, etc.)
+4. Employment law compliance (if applicable)
+5. Consumer protection requirements
+
+Flag any potential compliance issues.""",
+    model=["gpt-4o"],
+    temperature=0.1,
+    max_tokens=400
+)
+
+# Final report
+final_report = contract_workflow.node("ComposeTextNode").config(
+    template="""# Contract Analysis Report
+
+## Executive Summary
+((Contract Summary))
+
+## Key Terms & Provisions
+((Key Terms))
+
+## Risk Assessment
+((Risk Analysis))
+
+## Compliance Review
+((Compliance Check))
+
+---
+Analysis completed: {{current_date}}
+Report ID: {{uuid}}
+
+**Disclaimer**: This analysis is for informational purposes only and does not constitute legal advice.
+""")
+
+output_node = contract_workflow.node("OutputNode")
+
+# Connect workflow
+contract_workflow.link(contract_input.output(), text_extractor.input())
+contract_workflow.link(text_extractor.output(), key_terms.input("variables", "Contract Text"))
+contract_workflow.link(text_extractor.output(), risk_analysis.input("variables", "Contract Text"))
+contract_workflow.link(text_extractor.output(), contract_summary.input())
+contract_workflow.link(text_extractor.output(), compliance_check.input("variables", "Contract Text"))
+
+contract_workflow.link(key_terms.output(), risk_analysis.input("variables", "Key Terms"))
+
+contract_workflow.link(contract_summary.output(), final_report.input("variables", "Contract Summary"))
+contract_workflow.link(key_terms.output(), final_report.input("variables", "Key Terms"))
+contract_workflow.link(risk_analysis.output(), final_report.input("variables", "Risk Analysis"))
+contract_workflow.link(compliance_check.output(), final_report.input("variables", "Compliance Check"))
+
+contract_workflow.link(final_report.output(), output_node.input())
+
+# Save workflow
+contract_analyzer = client.workflows.save(contract_workflow)
+```
+
+### Research Paper Processor
+
+Process academic papers and generate insights.
+
+```python
+research_workflow = WorkflowDefinition(name="Research Paper Processor")
+
+# Inputs
+paper_input = research_workflow.node("FileInputNode").config(
+    label="Research Paper",
+    accepted_types=["pdf"],
+    max_size_mb=50
+)
+
+research_focus = research_workflow.node("InputNode").config(
+    label="Research Focus",
+    type="str",
+    fixed_value=True,
+    value="methodology, findings, and implications"
+)
+
+# Extract text
+text_extractor = research_workflow.node("ExtractTextNode").config(
+    preserve_formatting=True,
+    extract_tables=True,
+    extract_metadata=True
+)
+
+# Structure identification
+structure_analyzer = research_workflow.node("TextGenerationNode").config(
+    template="""Analyze the structure of this research paper:
+
+Paper Text: ((Paper Text))
+
+Identify and extract:
+1. Title and authors
+2. Abstract
+3. Introduction/background
+4. Methodology
+5. Results/findings
+6. Discussion
+7. Conclusion
+8. References (key ones)
+
+Format each section clearly.""",
+    model=["gpt-4o"],
+    temperature=0.1,
+    max_tokens=1000
+)
+
+# Methodology analysis
+methodology_analysis = research_workflow.node("TextGenerationNode").config(
+    template="""Analyze the methodology of this research:
+
+Paper Structure: ((Paper Structure))
+Full Text: ((Paper Text))
+
+Focus on:
+1. Research design and approach
+2. Data collection methods
+3. Sample size and characteristics
+4. Analysis techniques used
+5. Limitations acknowledged
+6. Validity and reliability considerations
+
+Provide a critical assessment.""",
+    model=["gpt-4o"],
+    temperature=0.2,
+    max_tokens=600
+)
+
+# Key findings extraction
+findings_extractor = research_workflow.node("TextGenerationNode").config(
+    template="""Extract and summarize the key findings:
+
+Paper Structure: ((Paper Structure))
+Full Text: ((Paper Text))
+
+Identify:
+1. Main research questions answered
+2. Primary findings and results
+3. Statistical significance (if applicable)
+4. Unexpected or surprising results
+5. Practical implications
+6. Theoretical contributions
+
+Present findings clearly and objectively.""",
+    model=["gpt-4o"],
+    temperature=0.1,
+    max_tokens=700
+)
+
+# Critical evaluation
+critical_evaluation = research_workflow.node("TextGenerationNode").config(
+    template="""Provide a critical evaluation of this research:
+
+Methodology: ((Methodology Analysis))
+Findings: ((Key Findings))
+Full Paper: ((Paper Text))
+
+Evaluate:
+1. Strengths of the research
+2. Potential weaknesses or limitations
+3. Quality of evidence presented
+4. Generalizability of findings
+5. Contribution to the field
+6. Suggestions for future research
+
+Be balanced and constructive.""",
+    model=["gpt-4o"],
+    temperature=0.3,
+    max_tokens=800
+)
+
+# Executive summary
+executive_summary = research_workflow.node("SummaryNode").config(
+    summary_format="Key Points",
+    summary_topic="Research paper overview for non-experts",
+    max_length=400
+)
+
+# Final report
+research_report = research_workflow.node("ComposeTextNode").config(
+    template="""# Research Paper Analysis Report
+
+## Executive Summary
+((Executive Summary))
+
+## Paper Structure & Content
+((Paper Structure))
+
+## Methodology Assessment
+((Methodology Analysis))
+
+## Key Findings
+((Key Findings))
+
+## Critical Evaluation
+((Critical Evaluation))
+
+---
+Analysis completed: {{current_date}}
+Focus area: ((Research Focus))
+""")
+
+output_node = research_workflow.node("OutputNode")
+
+# Connect workflow
+research_workflow.link(paper_input.output(), text_extractor.input())
+research_workflow.link(text_extractor.output(), structure_analyzer.input("variables", "Paper Text"))
+research_workflow.link(text_extractor.output(), executive_summary.input())
+
+research_workflow.link(structure_analyzer.output(), methodology_analysis.input("variables", "Paper Structure"))
+research_workflow.link(text_extractor.output(), methodology_analysis.input("variables", "Paper Text"))
+
+research_workflow.link(structure_analyzer.output(), findings_extractor.input("variables", "Paper Structure"))
+research_workflow.link(text_extractor.output(), findings_extractor.input("variables", "Paper Text"))
+
+research_workflow.link(methodology_analysis.output(), critical_evaluation.input("variables", "Methodology Analysis"))
+research_workflow.link(findings_extractor.output(), critical_evaluation.input("variables", "Key Findings"))
+research_workflow.link(text_extractor.output(), critical_evaluation.input("variables", "Paper Text"))
+
+research_workflow.link(research_focus.output(), research_report.input("variables", "Research Focus"))
+research_workflow.link(executive_summary.output(), research_report.input("variables", "Executive Summary"))
+research_workflow.link(structure_analyzer.output(), research_report.input("variables", "Paper Structure"))
+research_workflow.link(methodology_analysis.output(), research_report.input("variables", "Methodology Analysis"))
+research_workflow.link(findings_extractor.output(), research_report.input("variables", "Key Findings"))
+research_workflow.link(critical_evaluation.output(), research_report.input("variables", "Critical Evaluation"))
+
+research_workflow.link(research_report.output(), output_node.input())
+
+# Save workflow
+research_processor = client.workflows.save(research_workflow)
+```
+
+## Customer Support Workflows
+
+### Ticket Classification and Response
+
+Automatically classify support tickets and generate initial responses.
+
+```python
+support_workflow = WorkflowDefinition(name="Support Ticket Processor")
+
+# Inputs
+ticket_input = support_workflow.node("InputNode").config(
+    label="Support Ticket",
+    type="str"
+)
+
+customer_tier = support_workflow.node("InputNode").config(
+    label="Customer Tier",
+    type="str",
+    fixed_value=True,
+    value="standard"
+)
+
+# Ticket classification
+classifier = support_workflow.node("TextGenerationNode").config(
+    template="""Classify this support ticket:
+
+Ticket: ((Support Ticket))
+
+Classify by:
+1. Category (Technical, Billing, Account, Feature Request, Bug Report, Other)
+2. Priority (Low, Medium, High, Critical)
+3. Urgency (Low, Medium, High)
+4. Complexity (Simple, Moderate, Complex)
+5. Department (Support, Engineering, Sales, Billing)
+
+Provide reasoning for each classification.""",
+    model=["gpt-4o-mini"],
+    temperature=0.1,
+    max_tokens=300
+)
+
+# Sentiment analysis
+sentiment_analyzer = support_workflow.node("TextGenerationNode").config(
+    template="""Analyze the sentiment and tone of this support ticket:
+
+Ticket: ((Support Ticket))
+
+Determine:
+1. Overall sentiment (Positive, Neutral, Negative, Very Negative)
+2. Emotional indicators (frustrated, confused, angry, satisfied, etc.)
+3. Urgency level from customer perspective
+4. Communication style needed in response
+
+Provide specific examples from the text.""",
+    model=["gpt-4o-mini"],
+    temperature=0.2,
+    max_tokens=200
+)
+
+# Knowledge base search (simulated)
+kb_search = support_workflow.node("TextGenerationNode").config(
+    template="""Based on this ticket classification, suggest relevant knowledge base articles:
+
+Ticket: ((Support Ticket))
+Classification: ((Classification))
+
+Suggest:
+1. Most relevant help articles (by title)
+2. Common solutions for this type of issue
+3. Troubleshooting steps
+4. Related documentation
+
+Format as a helpful resource list.""",
+    model=["gpt-4o-mini"],
+    temperature=0.3,
+    max_tokens=400
+)
+
+# Response generation
+response_generator = support_workflow.node("TextGenerationNode").config(
+    template="""Generate a professional support response:
+
+Ticket: ((Support Ticket))
+Classification: ((Classification))
+Sentiment Analysis: ((Sentiment Analysis))
+Suggested Resources: ((KB Search))
+Customer Tier: ((Customer Tier))
+
+Create a response that:
+1. Acknowledges the customer's issue
+2. Shows empathy if needed
+3. Provides initial troubleshooting steps
+4. References helpful resources
+5. Sets expectations for follow-up
+6. Matches the appropriate tone
+
+Keep it professional but personalized.""",
+    model=["gpt-4o"],
+    temperature=0.4,
+    max_tokens=500
+)
+
+# Escalation check
+escalation_check = support_workflow.node("ConditionalNode").config(
+    condition="priority == 'Critical' or priority == 'High'",
+    condition_type="custom"
+)
+
+# Escalation notice
+escalation_notice = support_workflow.node("TextGenerationNode").config(
+    template="""Generate escalation notice:
+
+Ticket: ((Support Ticket))
+Classification: ((Classification))
+Sentiment: ((Sentiment Analysis))
+
+Create internal escalation notice including:
+1. Reason for escalation
+2. Customer impact
+3. Recommended next steps
+4. Timeline requirements""",
+    model=["gpt-4o-mini"],
+    temperature=0.1,
+    max_tokens=200
+)
+
+# Final package
+support_package = support_workflow.node("ComposeTextNode").config(
+    template="""# Support Ticket Analysis
+
+## Ticket Classification
+((Classification))
+
+## Sentiment Analysis
+((Sentiment Analysis))
+
+## Suggested Response
+((Response))
+
+## Recommended Resources
+((KB Search))
+
+## Escalation Status
+((Escalation Notice))
+
+---
+Processed: {{current_date}}
+Customer Tier: ((Customer Tier))
+""")
+
+output_node = support_workflow.node("OutputNode")
+
+# Connect workflow
+support_workflow.link(ticket_input.output(), classifier.input("variables", "Support Ticket"))
+support_workflow.link(ticket_input.output(), sentiment_analyzer.input("variables", "Support Ticket"))
+
+support_workflow.link(ticket_input.output(), kb_search.input("variables", "Support Ticket"))
+support_workflow.link(classifier.output(), kb_search.input("variables", "Classification"))
+
+support_workflow.link(ticket_input.output(), response_generator.input("variables", "Support Ticket"))
+support_workflow.link(classifier.output(), response_generator.input("variables", "Classification"))
+support_workflow.link(sentiment_analyzer.output(), response_generator.input("variables", "Sentiment Analysis"))
+support_workflow.link(kb_search.output(), response_generator.input("variables", "KB Search"))
+support_workflow.link(customer_tier.output(), response_generator.input("variables", "Customer Tier"))
+
+# Escalation logic
+support_workflow.link(classifier.output(), escalation_check.input())
+support_workflow.link(escalation_check.output("true"), escalation_notice.input("variables", "Classification"))
+support_workflow.link(ticket_input.output(), escalation_notice.input("variables", "Support Ticket"))
+support_workflow.link(sentiment_analyzer.output(), escalation_notice.input("variables", "Sentiment Analysis"))
+
+# Final assembly
+support_workflow.link(classifier.output(), support_package.input("variables", "Classification"))
+support_workflow.link(sentiment_analyzer.output(), support_package.input("variables", "Sentiment Analysis"))
+support_workflow.link(response_generator.output(), support_package.input("variables", "Response"))
+support_workflow.link(kb_search.output(), support_package.input("variables", "KB Search"))
+support_workflow.link(escalation_notice.output(), support_package.input("variables", "Escalation Notice"))
+support_workflow.link(customer_tier.output(), support_package.input("variables", "Customer Tier"))
+
+support_workflow.link(support_package.output(), output_node.input())
+
+# Save workflow
+support_processor = client.workflows.save(support_workflow)
+```
+
+## Data Analysis Workflows
+
+### Survey Response Analyzer
+
+Analyze survey responses and generate insights.
+
+```python
+survey_workflow = WorkflowDefinition(name="Survey Response Analyzer")
+
+# Input
+survey_data = survey_workflow.node("InputNode").config(
+    label="Survey Responses",
+    type="str",
+    description="Paste survey responses (CSV format or structured text)"
+)
+
+survey_topic = survey_workflow.node("InputNode").config(
+    label="Survey Topic",
+    type="str"
+)
+
+# Data preprocessing
+data_processor = survey_workflow.node("TextGenerationNode").config(
+    template="""Process and structure this survey data:
+
+Raw Data: ((Survey Responses))
+Topic: ((Survey Topic))
+
+Tasks:
+1. Identify response patterns
+2. Count total responses
+3. Categorize response types
+4. Flag incomplete or invalid responses
+5. Prepare data for analysis
+
+Present in a structured format.""",
+    model=["gpt-4o-mini"],
+    temperature=0.1,
+    max_tokens=600
+)
+
+# Sentiment analysis
+sentiment_analysis = survey_workflow.node("TextGenerationNode").config(
+    template="""Analyze sentiment in these survey responses:
+
+Processed Data: ((Processed Data))
+
+Provide:
+1. Overall sentiment distribution (% positive, neutral, negative)
+2. Key positive themes
+3. Key negative themes
+4. Sentiment by question/topic (if applicable)
+5. Notable emotional indicators""",
+    model=["gpt-4o-mini"],
+    temperature=0.2,
+    max_tokens=500
+)
+
+# Theme extraction
+theme_extractor = survey_workflow.node("TextGenerationNode").config(
+    template="""Extract key themes from survey responses:
+
+Processed Data: ((Processed Data))
+Survey Topic: ((Survey Topic))
+
+Identify:
+1. Most frequently mentioned topics
+2. Emerging themes or patterns
+3. Unexpected insights
+4. Common suggestions or requests
+5. Areas of consensus vs. disagreement
+
+Group similar responses and quantify when possible.""",
+    model=["gpt-4o"],
+    temperature=0.3,
+    max_tokens=700
+)
+
+# Statistical summary
+stats_generator = survey_workflow.node("TextGenerationNode").config(
+    template="""Generate statistical summary:
+
+Processed Data: ((Processed Data))
+Themes: ((Themes))
+Sentiment: ((Sentiment Analysis))
+
+Create summary including:
+1. Response rate and demographics (if available)
+2. Key metrics and percentages
+3. Statistical significance of findings
+4. Confidence levels
+5. Data quality assessment""",
+    model=["gpt-4o-mini"],
+    temperature=0.1,
+    max_tokens=400
+)
+
+# Recommendations
+recommendations = survey_workflow.node("TextGenerationNode").config(
+    template="""Based on the survey analysis, provide actionable recommendations:
+
+Themes: ((Themes))
+Sentiment: ((Sentiment Analysis))
+Statistics: ((Statistics))
+Survey Topic: ((Survey Topic))
+
+Recommend:
+1. Priority actions based on feedback
+2. Areas requiring immediate attention
+3. Long-term strategic considerations
+4. Follow-up survey questions
+5. Implementation timeline suggestions
+
+Focus on practical, data-driven recommendations.""",
+    model=["gpt-4o"],
+    temperature=0.4,
+    max_tokens=600
+)
+
+# Executive summary
+exec_summary = survey_workflow.node("SummaryNode").config(
+    summary_format="Key Points",
+    summary_topic="Survey results and main insights",
+    max_length=300
+)
+
+# Final report
+survey_report = survey_workflow.node("ComposeTextNode").config(
+    template="""# Survey Analysis Report: ((Survey Topic))
+
+## Executive Summary
+((Executive Summary))
+
+## Response Overview
+((Statistics))
+
+## Sentiment Analysis
+((Sentiment Analysis))
+
+## Key Themes & Insights
+((Themes))
+
+## Recommendations
+((Recommendations))
+
+---
+Analysis Date: {{current_date}}
+Report ID: {{uuid}}
+""")
+
+output_node = survey_workflow.node("OutputNode")
+
+# Connect workflow
+survey_workflow.link(survey_data.output(), data_processor.input("variables", "Survey Responses"))
+survey_workflow.link(survey_topic.output(), data_processor.input("variables", "Survey Topic"))
+
+survey_workflow.link(data_processor.output(), sentiment_analysis.input("variables", "Processed Data"))
+survey_workflow.link(data_processor.output(), theme_extractor.input("variables", "Processed Data"))
+survey_workflow.link(survey_topic.output(), theme_extractor.input("variables", "Survey Topic"))
+
+survey_workflow.link(data_processor.output(), stats_generator.input("variables", "Processed Data"))
+survey_workflow.link(theme_extractor.output(), stats_generator.input("variables", "Themes"))
+survey_workflow.link(sentiment_analysis.output(), stats_generator.input("variables", "Sentiment Analysis"))
+
+survey_workflow.link(theme_extractor.output(), recommendations.input("variables", "Themes"))
+survey_workflow.link(sentiment_analysis.output(), recommendations.input("variables", "Sentiment Analysis"))
+survey_workflow.link(stats_generator.output(), recommendations.input("variables", "Statistics"))
+survey_workflow.link(survey_topic.output(), recommendations.input("variables", "Survey Topic"))
+
+survey_workflow.link(data_processor.output(), exec_summary.input())
+
+survey_workflow.link(survey_topic.output(), survey_report.input("variables", "Survey Topic"))
+survey_workflow.link(exec_summary.output(), survey_report.input("variables", "Executive Summary"))
+survey_workflow.link(stats_generator.output(), survey_report.input("variables", "Statistics"))
+survey_workflow.link(sentiment_analysis.output(), survey_report.input("variables", "Sentiment Analysis"))
+survey_workflow.link(theme_extractor.output(), survey_report.input("variables", "Themes"))
+survey_workflow.link(recommendations.output(), survey_report.input("variables", "Recommendations"))
+
+survey_workflow.link(survey_report.output(), output_node.input())
+
+# Save workflow
+survey_analyzer = client.workflows.save(survey_workflow)
+```
+
+## Running the Examples
+
+### Test the Blog Post Generator
+
+```python
+# Run the blog post generator
+blog_result = blog_generator.run(body={
+    "Blog Topic": "The Impact of AI on Small Businesses"
+}).wait()
+
+print("Generated Blog Post:")
+print(blog_result.output)
+```
+
+### Test the Contract Analyzer
+
+```python
+# Test with a sample contract (you'd upload a real file)
+contract_result = contract_analyzer.run(body={
+    # File would be uploaded through the UI or API
+}).wait()
+
+print("Contract Analysis:")
+print(contract_result.output)
+```
+
+### Test the Support Ticket Processor
+
+```python
+# Test support ticket processing
+support_result = support_processor.run(body={
+    "Support Ticket": """
+    Hi, I'm really frustrated. I've been trying to log into my account for 3 days 
+    and keep getting an error message saying 'invalid credentials' even though I'm 
+    sure my password is correct. I've tried resetting it twice but still can't get in. 
+    This is blocking me from accessing important files for a client presentation tomorrow. 
+    Please help ASAP!
+    """,
+    "Customer Tier": "premium"
+}).wait()
+
+print("Support Analysis:")
+print(support_result.output)
+```
+
+## Workflow Patterns and Best Practices
+
+<AccordionGroup>
+  <Accordion title="Error Handling Pattern" icon="exclamation-triangle">
+    Add validation and error handling to your workflows:
+    
+    ```python
+    # Add input validation
+    validator = workflow_def.node("ValidationNode").config(
+        validation_type="text_length",
+        min_length=10,
+        on_validation_error="default_value",
+        default_value="Please provide more detailed input."
+    )
+    
+    # Add conditional error paths
+    error_handler = workflow_def.node("ConditionalNode").config(
+        condition="contains_error",
+        condition_type="custom"
+    )
+    ```
+  </Accordion>
+
+  <Accordion title="Parallel Processing Pattern" icon="arrows-split-up-and-left">
+    Process multiple aspects simultaneously:
+    
+    ```python
+    # Split input to multiple processors
+    workflow_def.link(input_node.output(), processor1.input())
+    workflow_def.link(input_node.output(), processor2.input())
+    workflow_def.link(input_node.output(), processor3.input())
+    
+    # Merge results
+    merger = workflow_def.node("MergeNode").config(
+        merge_strategy="combine",
+        wait_for_all=True
+    )
+    ```
+  </Accordion>
+
+  <Accordion title="Quality Control Pattern" icon="check-circle">
+    Add quality checks and refinement:
+    
+    ```python
+    # Initial generation
+    generator = workflow_def.node("TextGenerationNode")
+    
+    # Quality check
+    quality_check = workflow_def.node("TextGenerationNode").config(
+        template="Review this content for quality and suggest improvements: ((Content))"
+    )
+    
+    # Refinement
+    refiner = workflow_def.node("TextGenerationNode").config(
+        template="Improve this content based on feedback: ((Content)) Feedback: ((Feedback))"
+    )
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Building Workflows"
+    icon="hammer"
+    href="/workflows/building-workflows"
+  >
+    Learn the fundamentals of workflow construction
+  </Card>
+  <Card
+    title="Running Workflows"
+    icon="play"
+    href="/workflows/running-workflows"
+  >
+    Execute workflows and handle results effectively
+  </Card>
+  <Card
+    title="Node Types"
+    icon="circle-nodes"
+    href="/workflows/node-types"
+  >
+    Explore all available node types and configurations
+  </Card>
+  <Card
+    title="Advanced Patterns"
+    icon="diagram-project"
+    href="/advanced/workflow-patterns"
+  >
+    Master advanced workflow design patterns
+  </Card>
+</CardGroup>
